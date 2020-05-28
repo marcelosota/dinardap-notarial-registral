@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" 
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="notarial-registral-pu">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:jboss/datasources/dinardapDS</jta-data-source>
+		<class>ec.gob.dinardap.seguridad.Asignacion</class>
+		<class>ec.gob.dinardap.seguridad.AsignacionUsuario</class>
+		<class>ec.gob.dinardap.seguridad.Campo</class>
+		<class>ec.gob.dinardap.seguridad.CampoPaquete</class>
+		<class>ec.gob.dinardap.seguridad.Fuente</class>
+		<class>ec.gob.dinardap.seguridad.Institucion</class>
+		<class>ec.gob.dinardap.seguridad.Opcion</class>
+		<class>ec.gob.dinardap.seguridad.Paquete</class>
+		<class>ec.gob.dinardap.seguridad.Parametro</class>
+		<class>ec.gob.dinardap.seguridad.Perfil</class>
+		<class>ec.gob.dinardap.seguridad.Permiso</class>
+		<class>ec.gob.dinardap.seguridad.Pregunta</class>
+		<class>ec.gob.dinardap.seguridad.Respuesta</class>
+		<class>ec.gob.dinardap.seguridad.Sistema</class>
+		<class>ec.gob.dinardap.seguridad.TipoInstitucion</class>
+		<class>ec.gob.dinardap.seguridad.Usuario</class>
+		<properties>
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<property name="hibernate.default_schema" value="ec_dinardap_notarial_registral" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.archive.autodetection" value="class, hbm"/>
+		</properties>
+	</persistence-unit>
+</persistence>
