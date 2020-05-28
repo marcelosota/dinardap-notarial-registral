@@ -1,0 +1,20 @@
+1) Abrir el archivo pom del módulo EJB
+	- Eliminar las etiquetas groupId y version que se marcan como warning, pues esos valores se toman del proyecto padre
+	- Verificar que las dependencias de que se encuentran comentadas se encuentren disponibles en el repositorio maven e incluirlas al proyecto
+
+2) Abrir el archivo pom del módulo WEB
+	- Eliminar las etiquetas groupId y version que se marcan como warning, pues esos valores se toman del proyecto padre
+	- Verificar que las dependencias de que se encuentran comentadas se encuentren disponibles en el repositorio maven e incluirlas al proyecto
+3) Modificar en el archivo web.xml con los valores que corresponda para las etiquetas <param-value>
+
+4) Abrir el archivo pom del módulo EAR
+	- Eliminar las etiquetas groupId y version que se marcan como warning, pues esos valores se toman del proyecto padre
+	- Incluir los proyctos EJB y WEB como dependencias llenando los valores correspondientes para el groupId y artifactId
+	- Verificar que las dependencias de que se encuentran comentadas se encuentren disponibles en el repositorio maven e incluirlas al proyecto
+	- Incluir en el webModule el groupId y artifactId del proyecto WEB
+	- Incluir dentro del webModule el contextRoot especificado en el web.xml. Ejemplo: /proyecto
+	- Incluir en el ejbModule el groupId y artifactId del proyecto EJB
+
+5) Ejecutar un maven update para los módulos EAR, EJB y WEB
+
+6) Elimine este archivo del proyecto

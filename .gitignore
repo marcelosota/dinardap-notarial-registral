@@ -1,0 +1,7 @@
+#Ignorar carpeta target
+target/
+.project
+.settings/
+.nbactions.xml
+nbactions.xml
+#pom.xml

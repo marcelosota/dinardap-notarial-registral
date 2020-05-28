@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>dinardap-notarial-registral</artifactId>
+		<groupId>ec.gob.dinardap.notarialregistral</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>dinardap-notarial-registral-ear</artifactId>
+	<packaging>ear</packaging>
+
+	<name>dinardap-notarial-registral-ear</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
+	<dependencies>
+		<!-- Agrega como dependencia al módulo EJB -->
+		<dependency>
+			<groupId>ec.gob.dinardap.notarialregistral</groupId>
+			<artifactId>dinardap-notarial-registral-ejb</artifactId>
+			<version>${project.version}</version>
+			<type>ejb</type>
+		</dependency>
+		<!-- Agrega como dependencia al módulo WEB -->
+		<dependency>
+			<groupId>ec.gob.dinardap.notarialregistral</groupId>
+			<artifactId>dinardap-notarial-registral-web</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+		<!-- Eliminar los comentarios una vez se verifique que la dependencia existe 
+			en el repositorio maven -->
+		<dependency>
+			<groupId>ec.gob.dinardap.seguridad</groupId>
+			<artifactId>dinardap-seguridad-ejb</artifactId>
+			<type>ejb</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${nemonico-sistema}</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>3.0.1</version>
+				<configuration>
+					<defaultLibBundleDir>lib</defaultLibBundleDir>
+					<version>7</version>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+					<modules>
+						<webModule>
+							<groupId>ec.gob.dinardap.notarialregistral</groupId>
+							<artifactId>dinardap-notarial-registral-web</artifactId>
+							<contextRoot>/notarial</contextRoot>
+						</webModule>
+						<ejbModule>
+							<groupId>ec.gob.dinardap.notarialregistral</groupId>
+							<artifactId>dinardap-notarial-registral-ejb</artifactId>
+						</ejbModule>
+					</modules>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<version>2.0.0.Final</version>
+
+				<configuration>
+					<hostname>${wildfly.host}</hostname>
+					<port>${wildfly.port}</port>
+					<username>${wildfly.user}</username>
+					<password>${wildfly.password}</password>
+					<jboss-home>${path.server.deployments}</jboss-home>
+					<name>${project.build.finalName}.${project.packaging}</name>
+				</configuration>
+				<executions>
+					<!-- Undeploy the application on clean -->
+					<execution>
+						<id>undeploy</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>undeploy</goal>
+						</goals>
+						<configuration>
+							<ignoreMissingDeployment>true</ignoreMissingDeployment>
+						</configuration>
+					</execution>
+
+					<!-- Deploy the application on install -->
+					<execution>
+						<id>deploy</id>
+						<phase>install</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

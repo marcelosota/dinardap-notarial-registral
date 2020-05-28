@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="es" xml:lang="es"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:b="http://bootsfaces.net/ui">
+
+<f:view>
+	<h:head>
+		<title>Dirección Nacional de Registro de Datos Públicos</title>
+		<meta name="author" content="Marcelo Muñoz" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="shortcut icon"
+			href="#{facesContext.externalContext.requestContextPath}/resources/images/favicon.ico"
+			type="image/x-icon" />
+		<link rel="icon"
+			href="#{facesContext.externalContext.requestContextPath}/resources/images/favicon.ico"
+			type="image/x-icon" />
+		<link rel="stylesheet" type="text/css" 
+			href="#{facesContext.externalContext.requestContextPath}/resource/css/dinardap.css"/>
+	</h:head>
+	<h:body>
+		<div>
+			<ui:insert name="header">
+				<ui:include src="/template/comun/header.xhtml" />
+			</ui:insert>
+		</div>
+		
+		<div class="contenido">
+			<ui:insert name="content">
+				Contenido por defecto
+			</ui:insert>
+		</div>
+		
+		<div class="pie">
+			<ui:insert name="footer">
+				<ui:include src="/template/comun/footer.xhtml" />
+			</ui:insert>
+		</div>
+	</h:body>
+</f:view>
+</html>
