@@ -1,20 +1,24 @@
 <?xml version="1.0"?>
 <faces-config version="2.3"
-	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd">
-	<application>
-		<locale-config>
-			<default-locale>es</default-locale>
-			<supported-locale>es</supported-locale>
-		</locale-config>
-		<resource-bundle>
-			<base-name>ec.gob.dinardap.notarialregistral.recursos.etiquetas</base-name>
-			<var>etiquetas</var>
-		</resource-bundle>
-		<resource-bundle>
-			<base-name>ec.gob.dinardap.notarialregistral.recursos.mensajes</base-name>
-			<var>mensajes</var>
-		</resource-bundle>
-	</application>
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd">
+    <application>
+        <locale-config>
+            <default-locale>es</default-locale>
+            <supported-locale>es</supported-locale>
+        </locale-config>
+        <resource-bundle>
+            <base-name>ec.gob.dinardap.notarialregistral.recursos.etiquetas</base-name>
+            <var>etiquetas</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>ec.gob.dinardap.notarialregistral.recursos.mensajes</base-name>
+            <var>mensajes</var>
+        </resource-bundle>
+    </application>
+    <validator>
+        <validator-id>emailValidator</validator-id>
+        <validator-class>ec.gob.dinardap.notarialregistral.validator.EmailValidator</validator-class>
+    </validator>
 </faces-config>
