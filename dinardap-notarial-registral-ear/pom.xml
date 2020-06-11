@@ -42,6 +42,16 @@
 			<artifactId>dinardap-seguridad-ejb</artifactId>
 			<type>ejb</type>
 		</dependency>
+		<!--dependency>
+			<groupId>ec.gob.dinardap.correo</groupId>
+			<artifactId>dinardap-correo</artifactId>
+			<type>ejb</type>
+		</dependency-->
+		<!--dependency>
+			<groupId>ec.gob.dinardap.geografico</groupId>
+			<artifactId>dinardap-geografico-ejb</artifactId>
+			<type>ejb</type>
+		</dependency-->
 	</dependencies>
 
 	<build>
@@ -75,6 +85,14 @@
 							<groupId>ec.gob.dinardap.notarialregistral</groupId>
 							<artifactId>dinardap-notarial-registral-ejb</artifactId>
 						</ejbModule>
+						<!--ejbModule>
+							<groupId>ec.gob.dinardap.geografico</groupId>
+							<artifactId>dinardap-geografico-ejb</artifactId>
+						</ejbModule>
+						<ejbModule>
+							<groupId>ec.gob.dinardap.correo</groupId>
+							<artifactId>dinardap-correo</artifactId>
+						</ejbModule-->
 					</modules>
 				</configuration>
 			</plugin>

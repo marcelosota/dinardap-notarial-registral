@@ -129,7 +129,7 @@
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
 		<servlet-name>Faces Servlet</servlet-name>
 	</filter-mapping>
-	
+<!--	
 	<filter>
 		<filter-name>FiltroAutorizacion</filter-name>
 		<filter-class>ec.gob.dinardap.autorizacion.util.FiltroAutorizacion</filter-class>
@@ -138,7 +138,7 @@
 		<filter-name>FiltroAutorizacion</filter-name>
 		<url-pattern>/paginas/*</url-pattern>
 	</filter-mapping>
-
+-->
 	<!-- Servlet -->
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>

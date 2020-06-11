@@ -68,8 +68,18 @@
 			<groupId>ec.gob.dinardap.seguridad</groupId>
 			<artifactId>dinardap-seguridad-ejb</artifactId>
 			<type>ejb</type>
-			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>ec.gob.dinardap.geografico</groupId>
+			<artifactId>dinardap-geografico-ejb</artifactId>
+			<type>ejb</type>
+		</dependency>
+		<!--dependency>
+        	<groupId>ec.gob.dinardap.correo</groupId>
+        	<artifactId>dinardap-correo</artifactId>
+        	<type>ejb</type>
+        	<scope>provided</scope>
+        </dependency-->
 	</dependencies>
 
 	<build>

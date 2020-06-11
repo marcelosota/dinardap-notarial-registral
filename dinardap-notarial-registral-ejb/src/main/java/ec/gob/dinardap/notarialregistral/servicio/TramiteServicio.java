@@ -8,4 +8,5 @@ import ec.gob.dinardap.persistence.servicio.GenericService;
 @Local
 public interface TramiteServicio extends GenericService<Tramite, Long> {
 
+	public void enviarCorreo();
 }

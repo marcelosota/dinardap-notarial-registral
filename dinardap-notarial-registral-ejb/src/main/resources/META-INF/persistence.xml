@@ -6,22 +6,27 @@
 	<persistence-unit name="notarial-registral-pu">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>java:jboss/datasources/dinardapDS</jta-data-source>
-		<class>ec.gob.dinardap.seguridad.Asignacion</class>
-		<class>ec.gob.dinardap.seguridad.AsignacionUsuario</class>
-		<class>ec.gob.dinardap.seguridad.Campo</class>
-		<class>ec.gob.dinardap.seguridad.CampoPaquete</class>
-		<class>ec.gob.dinardap.seguridad.Fuente</class>
-		<class>ec.gob.dinardap.seguridad.Institucion</class>
-		<class>ec.gob.dinardap.seguridad.Opcion</class>
-		<class>ec.gob.dinardap.seguridad.Paquete</class>
-		<class>ec.gob.dinardap.seguridad.Parametro</class>
-		<class>ec.gob.dinardap.seguridad.Perfil</class>
-		<class>ec.gob.dinardap.seguridad.Permiso</class>
-		<class>ec.gob.dinardap.seguridad.Pregunta</class>
-		<class>ec.gob.dinardap.seguridad.Respuesta</class>
-		<class>ec.gob.dinardap.seguridad.Sistema</class>
-		<class>ec.gob.dinardap.seguridad.TipoInstitucion</class>
-		<class>ec.gob.dinardap.seguridad.Usuario</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Asignacion</class>
+		<class>ec.gob.dinardap.seguridad.modelo.AsignacionInstitucion</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Campo</class>
+		<class>ec.gob.dinardap.seguridad.modelo.CampoPaquete</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Fuente</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Institucion</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Opcion</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Paquete</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Parametro</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Perfil</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Permiso</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Pregunta</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Respuesta</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Sistema</class>
+		<class>ec.gob.dinardap.seguridad.modelo.TipoInstitucion</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Usuario</class>
+		<class>ec.gob.dinardap.seguridad.modelo.UsuarioPerfil</class>
+		<class>ec.gob.dinardap.geografico.modelo.Canton</class>
+		<class>ec.gob.dinardap.geografico.modelo.Parroquia</class>
+		<class>ec.gob.dinardap.geografico.modelo.Provincia</class>
+		<class>ec.gob.dinardap.geografico.modelo.Zona</class>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.hbm2ddl.auto" value="validate" />
