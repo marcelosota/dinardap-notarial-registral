@@ -15,7 +15,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <nemonico-sistema>dinardap-notarial-registral</nemonico-sistema>
-        <path.server.deployments>C:/wildfly-14.0.1.Final</path.server.deployments>
+        <path.server.deployments>/opt/wildfly14/</path.server.deployments>
         <wildfly.user>admin</wildfly.user>
         <wildfly.password>dINARDAP.2019</wildfly.password>
         <wildfly.host>localhost</wildfly.host>
@@ -49,18 +49,18 @@
             </dependency>
 
 			<!-- EJBs -->
-			<dependency>
+			<!--dependency>
 				<groupId>ec.gob.dinardap.seguridad</groupId>
 				<artifactId>dinardap-seguridad-ejb</artifactId>
 				<version>2.0-SNAPSHOT</version>
 				<type>ejb</type>
-			</dependency>
-			<dependency>
+			</dependency-->
+			<!--dependency>
 				<groupId>ec.gob.dinardap.geografico</groupId>
 				<artifactId>dinardap-geografico-ejb</artifactId>
 				<version>1.5-SNAPSHOT</version>
 				<type>ejb</type>
-			</dependency>
+			</dependency-->
 			<!--dependency>
 				<groupId>ec.gob.dinardap.correo</groupId>
 				<artifactId>dinardap-correo</artifactId>

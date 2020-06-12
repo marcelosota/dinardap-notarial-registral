@@ -73,12 +73,16 @@
 		<dependency>
 			<groupId>ec.gob.dinardap.seguridad</groupId>
 			<artifactId>dinardap-seguridad-ejb</artifactId>
+			<version>2.0-SNAPSHOT</version>
 			<type>ejb</type>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>ec.gob.dinardap.geografico</groupId>
 			<artifactId>dinardap-geografico-ejb</artifactId>
+			<version>1.5-SNAPSHOT</version>
 			<type>ejb</type>
+			<scope>provided</scope>
 		</dependency>
 		<!--dependency>
         	<groupId>ec.gob.dinardap.correo</groupId>

@@ -121,7 +121,7 @@
     </context-param>
 	
 	<!-- Filters -->
-<!--
+
 	<filter>
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
 		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
@@ -130,7 +130,7 @@
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
 		<servlet-name>Faces Servlet</servlet-name>
 	</filter-mapping>
-	
+<!--	
 	<filter>
 		<filter-name>FiltroAutorizacion</filter-name>
 		<filter-class>ec.gob.dinardap.autorizacion.util.FiltroAutorizacion</filter-class>
@@ -139,7 +139,7 @@
 		<filter-name>FiltroAutorizacion</filter-name>
 		<url-pattern>/paginas/*</url-pattern>
 	</filter-mapping>
--->
+
 	<filter>
         <filter-name>FiltroAutorizacionIndependiente</filter-name>
         <filter-class>ec.gob.dinardap.autorizacion.util.FiltroAutorizacionIndependiente</filter-class>
@@ -148,7 +148,7 @@
         <filter-name>FiltroAutorizacionIndependiente</filter-name>
         <url-pattern>/paginas/*</url-pattern>
     </filter-mapping>
-    
+-->    
 	<!-- Servlet -->
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
