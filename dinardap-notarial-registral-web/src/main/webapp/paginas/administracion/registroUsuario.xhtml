@@ -14,7 +14,15 @@
             	<p:panel style="width:100%;">
 	                <h:panelGrid columns="2" id="logueo" style="width:90%;"
 						columnClasses="form-label-derecha, form-input-izquierda"> 
-	                             
+						<p:outputLabel value="#{etiquetas['tipo.identificacion']}*:" />
+						<p:selectOneRadio id="rbtTipoIdentificacion"
+							value="#{registroUsuarioCtrl.tipoIdentificacion}"
+							required="true"
+							requiredMessage="#{etiquetas['tipo.identificacion']} #{mensajes['requerido']}">
+							<p:ajax event="change" update="txtNombre" listener="#{registroUsuarioCtrl.seleccionarTipoIdentificacion}"/>
+							<f:selectItem itemLabel="#{etiquetas['cedula']}" itemValue="1" />
+							<f:selectItem itemLabel="#{etiquetas['pasaporte']}" itemValue="2" />
+						</p:selectOneRadio>
 	                    <p:outputLabel value="#{etiquetas['documento.identificacion']}*:" />
 	                    <p:inputText id="txtCedula"
 	                                 value="#{registroUsuarioCtrl.usuarioDto.cedula}"
@@ -27,7 +35,7 @@
 	                    <p:outputLabel value="#{etiquetas['nombre']}*:" />
 	                    <p:inputText id="txtNombre" 
 							value="#{registroUsuarioCtrl.usuarioDto.nombre}"
-	                        disabled="true"
+	                        disabled="#{registroUsuarioCtrl.flagNombre}"
 	                        required="true"
 	                        requiredMessage="#{etiquetas['nombre']} #{mensajes['requerido']}"
 	                        size="40" />
@@ -42,14 +50,19 @@
 							size="40"
 							maxlength="256"
 							required="true"
-							requiredMessage="#{etiquetas['correo.electronico']} #{mensaje['requerido']}" />
+							requiredMessage="#{etiquetas['correo.electronico']} #{mensaje['requerido']}" >
+							<f:validator validatorId="emailValidator" />
+						</p:inputText>
 	                    <p:outputLabel value="#{etiquetas['telefono']}*:" />
 						<p:inputText id="txtTelefono"
 							value="#{registroUsuarioCtrl.usuarioDto.telefono}"
 							size="10"
 							maxlength="10"
 							required="true"
-							requiredMessage="#{etiquetas['telefono']} #{mensaje['requerido']}" />
+							requiredMessage="#{etiquetas['telefono']} #{mensaje['requerido']}">
+							<p:keyFilter regEx="/[\d]/" />
+							<f:validator validatorId="cellPhoneValidator" />
+						</p:inputText>
 	                    <p:outputLabel value="#{etiquetas['contrasena']}*:" />
 	                    <p:password id="txtContrasena" 
 	                        value="#{registroUsuarioCtrl.usuarioDto.contrasena}" 
@@ -57,7 +70,7 @@
 	                        requiredMessage="#{etiquetas['contrasena']} #{mensajes['requerido']}"
 	                        size="40" />
 	                    <p:outputLabel value="#{etiquetas['asignar.institucion']}:" />
-	                    <p:selectBooleanButton onLabel="Si" offLabel="No" value="#{registroUsuarioCtrl.asignarEntidad}">
+	                    <p:selectBooleanButton id="sbbEntidad" onLabel="Si" offLabel="No" value="#{registroUsuarioCtrl.asignarEntidad}">
 	                    	<p:ajax event="change" update="pnlSalida" 
 	                    		process="@this" listener="#{registroUsuarioCtrl.habilitarPanel}" />
 	                    </p:selectBooleanButton>
@@ -69,7 +82,11 @@
 	                             columnClasses="form-label-derecha, form-input-izquierda">
 		                	<p:outputLabel value="#{etiquetas['provincia']}*:" />
 		                	<p:selectOneMenu id="cmbProvincia" 
-								value="#{registroUsuarioCtrl.usuarioDto.provinciaId}" 
+								value="#{registroUsuarioCtrl.usuarioDto.provinciaId}"
+								editable="true"
+								effect="fade"
+								filter="true"
+								filterMatchMode="startsWith" 
 								style="font-size:x-small; width: 100%;">
 								<p:ajax event="change" process="@this"
 									listener="#{registroUsuarioCtrl.cantonPorProvincia}"
@@ -81,6 +98,10 @@
 							<p:outputLabel value="#{etiquetas['canton']}*:" />
 							<p:selectOneMenu id="cmbCanton" 
 								value="#{registroUsuarioCtrl.usuarioDto.cantonId}"
+								editable="true"
+								filter="true" 
+								filterMatchMode="startsWith"
+								effect="fold" 
 								disabled="#{registroUsuarioCtrl.flagCanton}"
 								style="font-size:x-small; width:100%">
 								<p:ajax event="change" listener="#{registroUsuarioCtrl.cantonSeleccionado}" 
@@ -91,7 +112,10 @@
 							</p:selectOneMenu>
 							<p:outputLabel value="#{etiquetas['tipo.institucion']}*:" />
 							<p:selectOneMenu id="cmbTipoInstitucion" 
-								value="#{registroUsuarioCtrl.usuarioDto.tipoInstitucionId}" 
+								value="#{registroUsuarioCtrl.usuarioDto.tipoInstitucionId}"
+								editable="true"
+								effect="fold"  
+								disabled="#{registroUsuarioCtrl.flagTipoEntidad}"
 								style="font-size:x-small; width:100%">
 								<p:ajax event="change" update="cmbEntidades" 
 									listener="#{registroUsuarioCtrl.buscarInstitucion}" 
@@ -103,6 +127,11 @@
 		                    <p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
 		                    <p:selectOneMenu id="cmbEntidades" 
 								value="#{registroUsuarioCtrl.usuarioDto.institucionId}"
+								editable="true"
+								filter="true" 
+								filterMatchMode="contains"
+								effect="fold" 
+								disabled="#{registroUsuarioCtrl.flagEntidad}"
 		                        required="true"
 		                        required-message="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}"
 		                        styleClass="form-combo-centrado">
@@ -113,14 +142,17 @@
 		                </h:panelGrid>
 	                </p:panel>
                 </p:outputPanel>
-                <p:commandButton value="#{etiquetas['guardar']}"
-                                 actionListener="#{registroUsuarioCtrl.guardarUsuario}"
-                                 update="txtCedula txtNombre txtContrasena cmbEntidades msgMensajes"/>
+                <p:commandButton id="btnGuardar"
+                	value="#{etiquetas['guardar']}"
+                    actionListener="#{registroUsuarioCtrl.guardarUsuario}"
+                    update="rbtTipoIdentificacion txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena sbbEntidad
+                    	pnlEntidad cmbProvincia cmbCanton cmbTipoInstitucion cmbEntidades msgMensajes"/>
                 <p:spacer width="10px" />
                 <p:commandButton value="#{etiquetas['cancelar']}"
-                                 actionListener="#{registroUsuarioCtrl.limpiarCampos}"
-                                 update="txtCedula txtNombre txtContrasena cmbEntidades msgMensajes"
-                                 process="@this" />
+                    actionListener="#{registroUsuarioCtrl.limpiarCampos}"
+                    update="rbtTipoIdentificacion txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena sbbEntidad
+                    	pnlEntidad cmbProvincia cmbCanton cmbTipoInstitucion cmbEntidades msgMensajes"
+                    process="@this" />
             </h:form>
         </ui:define>
     </ui:composition>

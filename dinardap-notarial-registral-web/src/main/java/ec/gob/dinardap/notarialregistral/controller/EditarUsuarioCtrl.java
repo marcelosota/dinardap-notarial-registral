@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
-import ec.gob.dinardap.notarialregistral.dto.UsuarioDto;
+import ec.gob.dinardap.seguridad.dto.UsuarioDto;
 import ec.gob.dinardap.seguridad.modelo.AsignacionInstitucion;
 import ec.gob.dinardap.seguridad.modelo.Institucion;
 import ec.gob.dinardap.seguridad.modelo.Perfil;
