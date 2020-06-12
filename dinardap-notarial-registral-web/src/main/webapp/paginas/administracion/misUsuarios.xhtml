@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/general.xhtml">
+	<ui:define name="content">
+		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Mis Usuarios</h1>
+		<h:form id="formInicio">
+			<p:dataTable id="dtbMisUsuarios"
+				value="#{misUsuariosCtrl.listaUsuario}"
+				filteredValue="#{misUsuariosCtrl.filtro}" var="usu" paginator="true"
+				rows="15" paginatorPosition="bottom">
+				<p:column headerText="" 
+					sortBy="#{usu.usuarioId}"
+					filterBy="#{usu.usuarioId}" 
+					filterMatchMode="contains" 
+					width="10%"
+					visible="false">
+					<h:outputText value="#{usu.usuarioId}" />
+				</p:column>
+				<p:column headerText="#{etiquetas['cedula']}" 
+					sortBy="#{usu.cedula}"
+					filterBy="#{usu.cedula}" 
+					filterMatchMode="contains" 
+					width="15%">
+					<h:outputText value="#{usu.cedula}" />
+				</p:column>
+				<p:column headerText="#{etiquetas['nombre']}" 
+					sortBy="#{usu.nombre}"
+					filterBy="#{usu.nombre}" 
+					filterMatchMode="contains" 
+					width="25%">
+					<h:outputText value="#{usu.nombre}" />
+				</p:column>
+				<p:column headerText="#{etiquetas['registro.mercantil']}" 
+					sortBy="#{usu.registroMercantil.nombre}"
+					filterBy="#{usu.registroMercantil.nombre}" 
+					filterMatchMode="contains" 
+					width="35%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{usu.registroMercantil.nombre}" />
+				</p:column>
+				<p:column headerText="#{etiquetas['perfil']}" 
+					sortBy="#{usu.perfil}"
+					filterBy="#{usu.perfil}" 
+					filterMatchMode="contains" 
+					width="10%">
+					<h:outputText value="#{usu.perfil.nombre}" />
+				</p:column>
+				<p:column headerText="#{etiquetas['estado']}" 
+					sortBy="#{usu.estado}"
+					filterBy="#{usu.estado}" 
+					filterMatchMode="contains" 
+					width="10%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{usu.estado}" />
+				</p:column>
+				<p:column headerText="#{etiquetas['acciones']}"
+					width="10%">
+					<p:commandButton id="btnVer"
+						action="#{misUsuariosCtrl.verUsuario}"
+						icon="fa fa-fw fa-eye" immediate="true" process="@this"
+						partialSubmit="true">
+						<f:setPropertyActionListener value="#{usu.usuarioId}" target="#{misUsuariosCtrl.usuarioId}" />
+					</p:commandButton>
+					<p:tooltip for="btnVer" value="#{etiquetas['ver.usuario']}" />
+					</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

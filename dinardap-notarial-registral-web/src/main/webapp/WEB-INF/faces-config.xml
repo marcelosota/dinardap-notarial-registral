@@ -17,4 +17,12 @@
 			<var>mensajes</var>
 		</resource-bundle>
 	</application>
+	<validator>
+        <validator-id>emailValidator</validator-id>
+        <validator-class>ec.gob.dinardap.notarialregistral.validator.EmailValidator</validator-class>
+    </validator>
+    <validator>
+        <validator-id>cellPhoneValidator</validator-id>
+        <validator-class>ec.gob.dinardap.notarialregistral.validator.CellPhoneValidator</validator-class>
+    </validator>
 </faces-config>

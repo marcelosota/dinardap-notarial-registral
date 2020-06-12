@@ -21,13 +21,16 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 
 	@EJB
 	private TramiteDao tramiteDao;
+
 	@EJB
 	private DocumentoServicio documentoServicio;
+
 	
 	@Override
 	public GenericDao<Tramite, Long> getDao() {
 		return tramiteDao;
 	}
+
 	@Override
 	public boolean guardarRegistro(TramiteRegistradorDto tramiteDto, DocumentoDto documentoDto) {
 		try {
@@ -69,6 +72,38 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 			return false;
 		}
 	}
+
+
+	
+	@Override
+	public void enviarCorreo() {
+		/*try {
+			MailMessage mailMessage = new MailMessage();
+			List<String> to = new ArrayList<String>();
+			String asunto = "PRUEBA";
+			String mensaje = "Cuerpo del mensaje de prueba";
+			to.add("jadira.paspuel@dinardap.gob.ec");
+			mailMessage = determinarCredenciales();
+			mailMessage.setTo(to);
+			mailMessage.setSubject(asunto.toString());
+			mailMessage.setText(mensaje);
+			mailMessage.setTieneAdjunto(false);
+			mailServicio.sendMail(mailMessage);
+			System.out.println("Mail enviado");
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+	}
+	
+	/*private MailMessage determinarCredenciales() {
+		MailMessage credenciales = new MailMessage();
+		credenciales.setFrom("leonardo.munoz@dinardap.gob.ec");
+		credenciales.setUsername("leonardo.munoz");
+		credenciales.setPassword("G3n3r1ca.321");
+		return credenciales;
+	}*/
 
 
 }

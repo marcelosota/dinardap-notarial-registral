@@ -182,8 +182,9 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 			if (tramiteDto.getTramite() != null) {
 
 				origen = parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
-				String ruta = origen.concat(anio).concat("/").concat(mes).concat("/").concat(dia).concat("/")
-						.concat(String.valueOf(tramiteDto.getTramite().getInstitucionId())).concat("/");
+				String ruta =null;
+						//origen.concat(anio).concat("/").concat(mes).concat("/").concat(dia).concat("/")
+						//.concat(String.valueOf(tramiteDto.getTramite().getInstitucionId())).concat("/");
 				System.out.println("subir" + ruta);
 
 				Tramite objTramite = tramiteServicio.findByPk(tramiteId);

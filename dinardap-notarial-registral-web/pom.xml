@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>6.2</version>
+			<version>7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.primefaces.themes</groupId>
@@ -103,7 +103,6 @@
 			<groupId>ec.gob.dinardap.seguridad</groupId>
 			<artifactId>dinardap-seguridad-ejb</artifactId>
 			<type>ejb</type>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>ec.gob.dinardap.autorizacion</groupId>
@@ -120,6 +119,12 @@
         	<groupId>ec.gob.dinardap.notarialregistral</groupId>
         	<artifactId>dinardap-notarial-registral-ejb</artifactId>
         	<version>${project.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>ec.gob.dinardap.geografico</groupId>
+        	<artifactId>dinardap-geografico-ejb</artifactId>
+        	<!--version>1.5-SNAPSHOT</version-->
+        	<type>ejb</type>
         </dependency>
 	</dependencies>
 

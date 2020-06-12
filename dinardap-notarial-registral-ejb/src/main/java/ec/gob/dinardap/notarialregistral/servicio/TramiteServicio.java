@@ -11,4 +11,5 @@ import ec.gob.dinardap.persistence.servicio.GenericService;
 public interface TramiteServicio extends GenericService<Tramite, Long> {
 	public boolean guardarRegistro(TramiteRegistradorDto tramiteDto, DocumentoDto documentoDto);
 
+	public void enviarCorreo();
 }
