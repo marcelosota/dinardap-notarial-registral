@@ -1,5 +1,7 @@
 package ec.gob.dinardap.notarialregistral.servicio.impl;
 
+import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
+import ec.gob.dinardap.correo.util.MailMessage;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -19,6 +21,9 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 
     @EJB
     private TramiteDao tramiteDao;
+    
+    @EJB
+    private ClienteQueueMailServicio clienteQueueMailServicio;
 
     @Override
     public GenericDao<Tramite, Long> getDao() {
@@ -29,6 +34,44 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     public void crearTramite(Tramite tramite) {
         tramite.setCodigo(GeneradorCodigo.generarCodigo(tramite.getInstitucionId()));
         this.create(tramite);
+    }
+
+    @Override
+    public void actuliazarEstadoTramite(Tramite tramite) {
+        this.update(tramite);
+
+        String parametroAmbiente = "DESARROLLO";
+        MailMessage mailMessage = new MailMessage();
+        
+        StringBuilder html = new StringBuilder(200);
+        html.append("<br />Estimado/a: <br />");
+        html.append("<br /><br />Le informamos que se ha cargado el Acto Notarial para su Trámite con Código de Validación de Trámite Único: ");
+        html.append(tramite.getCodigo());
+        html.append("<br/>");
+        html.append("<br/>Atentamente,<br/>");
+        html.append("<br/><FONT COLOR=\"#0000ff\" FACE=\"Arial Narrow, sans-serif\"><B> ");
+        html.append("<br/>");
+        html.append("SANYR");
+        html.append("</B></FONT>");
+
+        List<String> to = new ArrayList<String>();
+        StringBuilder asunto = new StringBuilder(200);
+
+        if (parametroAmbiente.equals("PRODUCCION")) {
+
+        } else {
+
+            to.add(tramite.getCorreoRequirente());            
+            asunto.append("Notificación SANYR");
+        }
+//        asunto.append("Confirmación de solicitud para categorizar a la empresa: ");
+        mailMessage = determinarCredenciales();
+        mailMessage.setTo(to);
+        mailMessage.setSubject(asunto.toString());
+        mailMessage.setText(html.toString());
+        //mailServicio.sender(mailMessage);
+        clienteQueueMailServicio.encolarMail(mailMessage);
+
     }
 
     @Override
@@ -88,4 +131,14 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
         }
         return tramiteList;
     }
+
+    private MailMessage determinarCredenciales() {
+        MailMessage credenciales = new MailMessage();
+        credenciales.setFrom("dinardap.capacitadora@dinardap.gob.ec");
+//        parametroServicio.findByPk(ParametroEnum.SERVIDOR_SFTP.name()).getValor()
+        credenciales.setUsername("dinardap.capacitadora");
+        credenciales.setPassword("aV-Capacitacion-3007");
+        return credenciales;
+    }
+
 }
