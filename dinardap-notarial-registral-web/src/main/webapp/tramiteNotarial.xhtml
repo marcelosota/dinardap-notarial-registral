@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/template/general.xhtml">
+        <ui:define name="content">
+
+            <p:dialog id="generacionTramiteDlg"
+                      header="Generacion de Trámite" 
+                      modal="true"
+                      widgetVar="generacionTramiteDlg" 
+                      width="35%"
+                      position="top"
+                      height="auto"
+                      blockScroll="true"
+                      resizable="false">
+                <h:form id="formGeneracionTramiteDlg">
+                    <b:panel style="width: 100%;" title="Trámite Generado">                        
+
+                        <p:panelGrid id="tramiteGenerado" style="width: 100%">
+                            <f:facet name="header">
+                                <p:row>
+                                    <p:column colspan="2"><h:outputText value="Trámite Generado" /></p:column>
+                                </p:row>
+                            </f:facet>
+
+                            <p:row>
+                                <p:column><h:outputText value="#{etiquetas['nombre.identificacion']}" /></p:column>
+                                <p:column><h:outputText value="#{tramiteNotarialCtrl.tramiteGenerado.identificacionRequirente}"/></p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column><h:outputText value="#{etiquetas['nombre.nombre']}" /></p:column>
+                                <p:column><h:outputText value="#{tramiteNotarialCtrl.tramiteGenerado.nombreRequirente}"/></p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column><h:outputText value="#{etiquetas['nombre.correoElectronico']}" /></p:column>
+                                <p:column><h:outputText value="#{tramiteNotarialCtrl.tramiteGenerado.correoRequirente}"/></p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column><h:outputText value="#{etiquetas['nombre.fechaRegistro']}" /></p:column>
+                                <p:column>
+                                    <h:outputText value="#{tramiteNotarialCtrl.tramiteGenerado.fechaRegistro}">
+                                        <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                                    </h:outputText>
+                                </p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column colspan="2" style="text-align: center">
+                                    <h:outputText style="font-weight: bold" value="#{etiquetas['nombre.codigoValidacionTramite']}" />
+                                </p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column colspan="2" style="text-align: center">
+                                    <h:outputText style="font-weight: 900; font-size: 150%" value="#{tramiteNotarialCtrl.tramiteGenerado.codigo}"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+
+                        <b:panelGrid colSpans="12" style="width: 100%; margin: 4px 5px; align-content: center;">
+                            <p:commandButton value="#{etiquetas['imprimir']}" type="button" icon="pi pi-print" style="display:block;margin-bottom: 20px">
+                                <p:printer target="tramiteGenerado" />
+                            </p:commandButton>                            
+                        </b:panelGrid>                       
+
+                    </b:panel>                    
+                </h:form>
+            </p:dialog>
+
+            <h1 class="h-wai">#{etiquetas['nombre.sistema']} - #{etiquetas['nombre.modulo']}</h1>
+
+            <h:form id="formRegistroTramite" >
+                <b:panel style="width: 75%" title="#{etiquetas['nombre.registroInfoTramite']}">                    
+
+                    <b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
+<!--                        <p:outputLabel for="tipoTramite" value="#{etiquetas['nombre.tipoTramite']}"/>
+                        <p:autoComplete id="tipoTramite"                                        
+                                        value="#{tramiteNotarialCtrl.tramite.tipoTramite}"
+                                        completeMethod="#{tramiteNotarialCtrl.completeEstadoTramite}"
+                                        converter="#{tipoTramiteConverter}"
+                                        var="tipoTramite"
+                                        itemLabel="#{tipoTramite.nombre}"
+                                        itemValue="#{tipoTramite}"
+                                        style="width: 90%" 
+                                        inputStyle="width: 100%"
+                                        maxResults="20"
+                                        required="true"
+                                        title="#{tramiteNotarialCtrl.tramite.tipoTramite}"/>-->
+
+                        <p:outputLabel for="tipoIdentificacion" value="#{etiquetas['nombre.tipoIdentificacion']}" />
+                        <p:selectOneMenu id="tipoIdentificacion" value="#{tramiteNotarialCtrl.tipoIdentificacion}"
+                                         style="width: 90%">
+                            <p:ajax event="itemSelect" 
+                                    update="formRegistroTramite:auxCedula, 
+                                    formRegistroTramite:auxLblCedula,
+                                    formRegistroTramite:auxPasaporte,
+                                    formRegistroTramite:auxLblPasaporte,
+                                    formRegistroTramite:nombre,
+                                    formRegistroTramite:auxLblNacionalidad,
+                                    formRegistroTramite:auxNacionalidad"
+                                    listener="#{tramiteNotarialCtrl.onTipoIdentificacion}"/>
+                            <f:selectItems value="#{tramiteNotarialCtrl.tipoIdentificacionList}" />
+                        </p:selectOneMenu>
+
+                        <h:panelGroup id="auxLblCedula">
+                            <p:outputLabel for="cedula" value="#{etiquetas['nombre.identificacion']}" rendered="#{tramiteNotarialCtrl.onCedula}"/>
+                        </h:panelGroup>
+                        <h:panelGroup id="auxCedula">
+                            <p:inputText id="cedula" rendered="#{tramiteNotarialCtrl.onCedula}"
+                                         maxlength="10"
+                                         value="#{tramiteNotarialCtrl.tramite.identificacionRequirente}"
+                                         style="width: 90%" 
+                                         required="true">
+                                <p:ajax event="blur" update="formRegistroTramite:nombre" listener="#{tramiteNotarialCtrl.blurIdentificacionCedula}"/>
+                                <p:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="auxLblPasaporte">
+                            <p:outputLabel for="pasaporte" value="#{etiquetas['nombre.identificacion']}" rendered="#{tramiteNotarialCtrl.onPasaporte}" />
+                        </h:panelGroup>
+                        <h:panelGroup id="auxPasaporte">
+                            <p:inputText id="pasaporte" rendered="#{tramiteNotarialCtrl.onPasaporte}"
+                                         maxlength="20"
+                                         value="#{tramiteNotarialCtrl.tramite.identificacionRequirente}"
+                                         style="width: 90%"
+                                         required="true">                            
+                            </p:inputText>
+                        </h:panelGroup>
+
+                        <p:outputLabel for="nombre" value="#{etiquetas['nombre.nombre']}"/>
+                        <p:inputText id="nombre" 
+                                     disabled="#{tramiteNotarialCtrl.disableCampos}"
+                                     maxlength="150"
+                                     value="#{tramiteNotarialCtrl.tramite.nombreRequirente}"
+                                     style="width: 90%"
+                                     required="true">
+                        </p:inputText>
+
+                        <h:panelGroup id="auxLblNacionalidad">
+                            <p:outputLabel for="nacionalidad" value="#{etiquetas['nombre.nacionalidad']}" rendered="#{tramiteNotarialCtrl.onPasaporte}"/>
+                        </h:panelGroup>
+                        <h:panelGroup id="auxNacionalidad">
+                            <p:inputText id="nacionalidad" 
+                                         rendered="#{tramiteNotarialCtrl.onPasaporte}"
+                                         value="#{tramiteNotarialCtrl.tramite.nacionalidadRequirente}"
+                                         disabled="#{tramiteNotarialCtrl.disableCampos}"
+                                         maxlength="300" 
+                                         style="width: 90%" required="true"/>
+                        </h:panelGroup>
+
+                        <p:outputLabel for="correoElectronico" value="#{etiquetas['nombre.correoElectronico']}" />
+                        <p:inputText id="correoElectronico" value="#{tramiteNotarialCtrl.tramite.correoRequirente}" 
+                                     maxlength="300" 
+                                     style="width: 90%" required="true">
+                            <f:validator validatorId="emailValidator"></f:validator>
+                        </p:inputText>
+
+                        <p:outputLabel value="#{etiquetas['nombre.actualizacionTramite']}" />
+                        <p:selectBooleanCheckbox id="checkRestablecerClave" 
+                                                 value="#{tramiteNotarialCtrl.tramiteOrigen}">
+                            <p:ajax update="auxLblTramiteInicial, auxTramiteInicial" listener="#{tramiteNotarialCtrl.onCheckTramiteOrigen}"/>
+                        </p:selectBooleanCheckbox>
+
+                        <h:panelGroup id="auxLblTramiteInicial">
+                            <p:outputLabel for="tramiteInicial" value="#{etiquetas['nombre.codigoValidacionTramite']}"
+                                           rendered="#{tramiteNotarialCtrl.tramiteOrigen}"/>
+                        </h:panelGroup>
+                        <h:panelGroup id="auxTramiteInicial">
+                            <p:inputText id="tramiteInicial" 
+                                         value="#{tramiteNotarialCtrl.codigoTramiteInicial}" 
+                                         maxlength="20" 
+                                         style="width: 90%" 
+                                         rendered="#{tramiteNotarialCtrl.tramiteOrigen}"
+                                         required="true"/>
+                        </h:panelGroup>
+
+
+                    </b:panelGrid>
+                    <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">
+                        <p:commandButton value="#{etiquetas['crearTramite']}" id="crearTramiteBtn" 
+                                         style="margin-right:20px;" icon="fa fa-fw fa-check-square-o"
+                                         action="#{tramiteNotarialCtrl.crearTramite}"
+                                         update="formRegistroTramite, formGeneracionTramiteDlg">
+                            <p:confirm header="#{etiquetas['confirmacion']}" message="#{mensajes['mensaje.creacionTramite']}" icon="fa fa-fw fa-warning" />
+                        </p:commandButton>
+
+                        <p:commandButton value="#{etiquetas['cancelar']}" id="cancelarTramiteBtn" 
+                                         style="margin-right:20px;" icon="fa fa-fw fa-ban"
+                                         action="#{tramiteNotarialCtrl.cancelar}"
+                                         update="formRegistroTramite"
+                                         process="@this"/>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="#{etiquetas['si']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
+                            <p:commandButton value="#{etiquetas['no']}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-fw fa-remove" />
+                        </p:confirmDialog>
+                    </b:panelGrid>
+                </b:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

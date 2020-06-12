@@ -200,7 +200,7 @@ public class Tramite implements Serializable {
 		return this.institucion;
 	}
 
-	public void setInstitucionId(Institucion institucion) {
+	public void setInstitucion(Institucion institucion) {
 		this.institucion = institucion;
 	}
 

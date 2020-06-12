@@ -28,5 +28,4 @@ public enum InteroperabilidadEnum {
 		}
 		return valor;
 	}
-
 }
