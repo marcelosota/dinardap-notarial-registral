@@ -104,7 +104,7 @@ public class gestionTramiteNotarialCtrl extends BaseCtrl implements Serializable
         tramiteSeleccionado.setEstado(EstadoTramiteEnum.CARGADO.getEstado());
 
         SftpDto sftpDto = new SftpDto();
-        sftpDto.getCredencialesSFTP().setDirDestino(documento.getRuta());
+        sftpDto.getCredencialesSFTP().setDirDestino(documento.getRuta());       
         sftpDto.setArchivo(fileByte);
 
         documentoServicio.crearDocumento(documento, sftpDto);

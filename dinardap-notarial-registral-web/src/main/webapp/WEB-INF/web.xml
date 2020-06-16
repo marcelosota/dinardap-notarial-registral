@@ -9,7 +9,7 @@
         <description>Identificador del sistema</description>
         <param-name>sistema.identificacion</param-name>
         <!--<param-value>SAU sistemaId-pruebas</param-value> Pruebas -->
-        <param-value>SAU sistemaId-desarrollo</param-value> <!-- Desarrollo --> 
+        <param-value>6</param-value> <!-- Desarrollo --> 
     </context-param>
     <context-param>
         <description>Secret key genereado al momento de aprobar la creación del aplicativo dentro del sistema SAU</description>
@@ -120,45 +120,34 @@
         <param-value>true</param-value>
     </context-param>
 	
-	<!-- Filters -->
+    <!-- Filters -->
 
-	<filter>
-		<filter-name>PrimeFaces FileUpload Filter</filter-name>
-		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>PrimeFaces FileUpload Filter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
-<!--	
-	<filter>
-		<filter-name>FiltroAutorizacion</filter-name>
-		<filter-class>ec.gob.dinardap.autorizacion.util.FiltroAutorizacion</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>FiltroAutorizacion</filter-name>
-		<url-pattern>/paginas/*</url-pattern>
-	</filter-mapping>
-
-	<filter>
-        <filter-name>FiltroAutorizacionIndependiente</filter-name>
-        <filter-class>ec.gob.dinardap.autorizacion.util.FiltroAutorizacionIndependiente</filter-class>
+    <filter>
+        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>FiltroAutorizacionIndependiente</filter-name>
-        <url-pattern>/paginas/*</url-pattern>
+        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
--->    
-	<!-- Servlet -->
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.jsf</url-pattern>
-	</servlet-mapping>
+    <filter>
+        <filter-name>FiltroAutorizacionBasico</filter-name>
+        <filter-class>ec.gob.dinardap.autorizacion.util.FiltroAutorizacionBasico</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>FiltroAutorizacionBasico</filter-name>
+        <url-pattern>/paginas/*</url-pattern>
+    </filter-mapping>    
+    <!-- Servlet -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
 	
     <!-- Tpos de archivos -->
     <mime-mapping>

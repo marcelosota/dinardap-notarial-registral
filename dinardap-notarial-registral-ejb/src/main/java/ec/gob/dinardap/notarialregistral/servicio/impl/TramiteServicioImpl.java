@@ -68,7 +68,7 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     @Override
     public List<Tramite> getTramiteList(Integer institucionId, Short estado) {
         List<Tramite> tramiteList = new ArrayList<Tramite>();
-        String[] criteriaNombres = {"institucionId", "estado"};
+        String[] criteriaNombres = {"institucion.institucionId", "estado"};
         CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
         Object[] criteriaValores = {institucionId, estado};
         String[] orderBy = {"tramiteId"};
