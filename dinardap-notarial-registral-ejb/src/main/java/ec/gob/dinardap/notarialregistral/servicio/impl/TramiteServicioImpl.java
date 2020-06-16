@@ -6,10 +6,10 @@ import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.DocumentoDto;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
+import ec.gob.dinardap.notarialregistral.modelo.LogDescarga;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.DocumentoServicio;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
@@ -25,14 +25,12 @@ import java.util.List;
 @Stateless(name = "TramiteServicio")
 public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> implements TramiteServicio {
 
-
 	@EJB
 	private TramiteDao tramiteDao;
 
 	@EJB
 	private DocumentoServicio documentoServicio;
 
-	
 	@Override
 	public GenericDao<Tramite, Long> getDao() {
 		return tramiteDao;
@@ -42,89 +40,87 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 	public boolean guardarRegistro(TramiteRegistradorDto tramiteDto) {
 		try {
 			FechaHoraSistema fecha = new FechaHoraSistema();
-			String fechaActual=fecha.obtenerFecha();
-			
-			
-		 if(tramiteDto.getTramite()!=null)
-		 {
-			 tramiteDto.getTramite().setFechaCierre(new Timestamp(new Date().getTime()));
-			 tramiteDto.getTramite().setFechaDescarga(tramiteDto.getFechaDescarga());
-			 tramiteDto.getTramite().setCerradoPor(tramiteDto.getCerradoPor());
-			 tramiteDto.getTramite().setObservacion(tramiteDto.getObservacionRegistro());
-			 tramiteDto.getTramite().setEstado(tramiteDto.getEstado());
-			 update(tramiteDto.getTramite());					 
-			 
-		 }			  
+			String fechaActual = fecha.obtenerFecha();
+
+			if (tramiteDto.getTramite() != null) {
+				tramiteDto.getTramite().setFechaCierre(new Timestamp(new Date().getTime()));
+				tramiteDto.getTramite().setFechaDescarga(tramiteDto.getFechaDescarga());
+				tramiteDto.getTramite().setCerradoPor(tramiteDto.getCerradoPor());
+				tramiteDto.getTramite().setObservacion(tramiteDto.getObservacionRegistro());
+				tramiteDto.getTramite().setEstado(tramiteDto.getEstado());
+				update(tramiteDto.getTramite());
+
+			}
 			return true;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
+	}	
+
+	@Override
+	public void crearTramite(Tramite tramite) {
+		tramite.setCodigo(GeneradorCodigo.generarCodigo(tramite.getInstitucion().getInstitucionId()));
+		this.create(tramite);
 	}
 
-    @Override
-    public void crearTramite(Tramite tramite) {
-        tramite.setCodigo(GeneradorCodigo.generarCodigo(tramite.getInstitucion().getInstitucionId()));
-        this.create(tramite);
-    }
+	@Override
+	public Tramite getTramiteByCodigoValidacionTramite(String codigoValidacionTramite) {
+		List<Tramite> tramiteList = new ArrayList<Tramite>();
+		Tramite tramite = new Tramite();
+		String[] criteriaNombres = { "codigo" };
+		CriteriaTypeEnum[] criteriaTipos = { CriteriaTypeEnum.STRING_EQUALS };
+		Object[] criteriaValores = { codigoValidacionTramite };
+		String[] orderBy = { "tramiteId" };
+		boolean[] asc = { true };
+		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+		tramiteList = findByCriterias(criteria);
+		if (!tramiteList.isEmpty()) {
+			tramite = tramiteList.get(tramiteList.size() - 1);
+		}
+		return tramite;
+	}
 
-    @Override
-    public Tramite getTramiteByCodigoValidacionTramite(String codigoValidacionTramite) {
-        List<Tramite> tramiteList = new ArrayList<Tramite>();
-        Tramite tramite = new Tramite();
-        String[] criteriaNombres = {"codigo"};
-        CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.STRING_EQUALS};
-        Object[] criteriaValores = {codigoValidacionTramite};
-        String[] orderBy = {"tramiteId"};
-        boolean[] asc = {true};
-        Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
-        tramiteList = findByCriterias(criteria);
-        if (!tramiteList.isEmpty()) {
-            tramite = tramiteList.get(tramiteList.size() - 1);
-        }
-        return tramite;
-    }
+	@Override
+	public Boolean existenciaTramiteAsociado(Long tramiteId) {
+		List<Tramite> tramiteList = new ArrayList<Tramite>();
+		Boolean existenciaTramiteAsociado = Boolean.FALSE;
+		String[] criteriaNombres = { "tramite.tramiteId" };
+		CriteriaTypeEnum[] criteriaTipos = { CriteriaTypeEnum.LONG_EQUALS };
+		Object[] criteriaValores = { tramiteId };
+		String[] orderBy = { "tramiteId" };
+		boolean[] asc = { true };
+		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+		tramiteList = findByCriterias(criteria);
+		if (!tramiteList.isEmpty()) {
+			existenciaTramiteAsociado = Boolean.TRUE;
+		}
+		return existenciaTramiteAsociado;
+	}
 
-    @Override
-    public Boolean existenciaTramiteAsociado(Long tramiteId) {
-        List<Tramite> tramiteList = new ArrayList<Tramite>();
-        Boolean existenciaTramiteAsociado = Boolean.FALSE;
-        String[] criteriaNombres = {"tramite.tramiteId"};
-        CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.LONG_EQUALS};
-        Object[] criteriaValores = {tramiteId};
-        String[] orderBy = {"tramiteId"};
-        boolean[] asc = {true};
-        Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
-        tramiteList = findByCriterias(criteria);
-        if (!tramiteList.isEmpty()) {
-            existenciaTramiteAsociado = Boolean.TRUE;
-        }
-        return existenciaTramiteAsociado;
-    }
+	@Override
+	public List<Tramite> getTramiteList(Integer institucionId, Short estado) {
+		List<Tramite> tramiteList = new ArrayList<Tramite>();
+		String[] criteriaNombres = { "institucionId", "estado" };
+		CriteriaTypeEnum[] criteriaTipos = { CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS };
+		Object[] criteriaValores = { institucionId, estado };
+		String[] orderBy = { "tramiteId" };
+		boolean[] asc = { true };
 
-    @Override
-    public List<Tramite> getTramiteList(Integer institucionId, Short estado) {
-        List<Tramite> tramiteList = new ArrayList<Tramite>();
-        String[] criteriaNombres = {"institucionId", "estado"};
-        CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
-        Object[] criteriaValores = {institucionId, estado};
-        String[] orderBy = {"tramiteId"};
-        boolean[] asc = {true};
-
-        Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
-        if (!findByCriterias(criteria).isEmpty()) {
-            tramiteList = findByCriterias(criteria);
-            for (Tramite tramite : tramiteList) {
-                if (tramite.getTramite() != null) {
-                    tramite.getTramite().getTramiteId();
-                }
-                if (tramite.getTipoTramite() != null) {
-                    tramite.getTipoTramite().getTipoTramiteId();
-                }
-            }
-        }
-        return tramiteList;
-    }
+		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+		if (!findByCriterias(criteria).isEmpty()) {
+			tramiteList = findByCriterias(criteria);
+			for (Tramite tramite : tramiteList) {
+				if (tramite.getTramite() != null) {
+					tramite.getTramite().getTramiteId();
+				}
+				if (tramite.getTipoTramite() != null) {
+					tramite.getTipoTramite().getTipoTramiteId();
+				}
+			}
+		}
+		return tramiteList;
+	}
 
 }

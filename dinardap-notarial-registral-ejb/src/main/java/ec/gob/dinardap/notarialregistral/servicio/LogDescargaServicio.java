@@ -7,5 +7,7 @@ import ec.gob.dinardap.persistence.servicio.GenericService;
 
 @Local
 public interface LogDescargaServicio extends GenericService<LogDescarga, Integer> {
+	public boolean guardarLogDescarga(LogDescarga logDescarga);
+		
 
 }

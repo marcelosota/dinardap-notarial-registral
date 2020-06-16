@@ -24,8 +24,10 @@ import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.DocumentoDto;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
 import ec.gob.dinardap.notarialregistral.modelo.Documento;
+import ec.gob.dinardap.notarialregistral.modelo.LogDescarga;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.DocumentoServicio;
+import ec.gob.dinardap.notarialregistral.servicio.LogDescargaServicio;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
 import ec.gob.dinardap.notarialregistral.util.FechaHoraSistema;
 import ec.gob.dinardap.seguridad.modelo.Usuario;
@@ -46,6 +48,8 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	DocumentoServicio documentoServicio;
 	@EJB
 	UsuarioServicio usuarioServicio;
+	@EJB
+	LogDescargaServicio logDescargaServicio;
 
 	@EJB
 	private ParametroServicio parametroServicio;
@@ -60,6 +64,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	private Boolean subirArchivoB;
 	private Short estadoTramite;
 	private Boolean estadoInconsistente;
+	private Usuario usuario;
 
 	@PostConstruct
 	protected void init() {
@@ -71,6 +76,8 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		documentoDto = new DocumentoDto();
 		subirArchivoB = true;
 		estadoInconsistente = true;
+		usuario = new Usuario();
+		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
 
 		//// modificar el canton del usuario logueado
 
@@ -176,13 +183,12 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 			documento = documentoServicio.buscarPorTramiteRegistros(tramiteDto.getTramite().getTramiteId(),
 					ContextoEnum.NOTARIAL.getContexto());
 			if (documento != null) {
-				String ruta = documento.getRuta();				
+				String ruta = documento.getRuta();
 				int inicio = ruta.lastIndexOf("/");
-				String nombre = ruta.substring(inicio + 1);				
+				String nombre = ruta.substring(inicio + 1);
 				byte[] archivoAdjunto = documentoServicio.descargarArchivo(ruta);
-				//Date fechaActual = new Date();
 				tramiteDto.setFechaDescarga(fecha.convertirTimestamp(fecha.obtenerFechaHora()));
-				System.out.println(tramiteDto.getFechaDescarga());
+				guardarLogDescarga(documento);
 				downloadFile(archivoAdjunto, tipoArchivo.obtenerTipoArchivo(ruta), nombre);
 			} else {
 
@@ -251,10 +257,28 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 	}
 
+	private void guardarLogDescarga(Documento documento) {
+		try {
+			LogDescarga logDescarga = new LogDescarga();
+			logDescarga.setUsuarioId(usuario.getUsuarioId());
+			logDescarga.setDocumento(documento);
+			logDescarga.setFecha(tramiteDto.getFechaDescarga());
+			// logDescarga.setResponsable(getLoggedUser());
+			logDescarga.setResponsable("1714284856");
+			if (logDescargaServicio.guardarLogDescarga(logDescarga) == true)
+				System.out.println("guardadoLogDescarga");
+			else
+				System.out.println("no guardoLogDescarga");
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+	}
+
 	public void guardarTramite() {
 		try {
-			Usuario usuario = new Usuario();
-			usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
+
 			if (tramiteId != 0L) {
 				// si el estado es inconsistente no debe cargar el documento y si observar
 				if (estadoTramite == EstadoTramiteEnum.INCONSISTENTE.getEstado()) {
@@ -286,42 +310,18 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 						}
 
 					} else
-						addErrorMessage(null, "Documento registral" + getBundleMensaje("requerido", null), null);			
+						addErrorMessage(null, "Documento registral" + getBundleMensaje("requerido", null), null);
 
 				}
 			} else
 				addErrorMessage(null, "No ha seleccionado el trámite", null);
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
 
 		}
 
-		/*
-		 * if (tramiteServicio.guardarRegistro(tramiteDto, documentoDto) == true) {
-		 * addInfoMessage(getBundleMensaje("guardado.satisfactorio", null), null); }
-		 * else addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
-		 */
-
-		/*
-		 * if (beneficioDto.getInstitucion().getInstitucionId() > 0 &&
-		 * !beneficioDto.getCoberturaGeografica().equals("-1") &&
-		 * beneficioDto.getTipoNaturaleza().getTipoNaturalezaId() > 0 &&
-		 * beneficioDto.getPeriodicidad()>0 && documentoHab.size() ==
-		 * beneficioDto.getArchivosDto().size()) {
-		 * beneficioDto.setInstitucion(institucionServicio.findByPk(beneficioDto.
-		 * getInstitucion().getInstitucionId())); beneficioDto.setTipoNaturaleza(
-		 * tipoNatutalezaSevicio.findByPk(beneficioDto.getTipoNaturaleza().
-		 * getTipoNaturalezaId()));
-		 */
-		// if (beneficioServicio.editarBeneficio(beneficioDto) == true) {
-		/// addInfoMessage(getBundleMensaje("guardado.satisfactorio", null), null);
-		// } else
-		// addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
-		/*
-		 * } else addErrorMessage(null, getBundleMensaje("error.validacion", null),
-		 * null);
-		 */
 	}
 
 }
