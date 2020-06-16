@@ -3,6 +3,7 @@ package ec.gob.dinardap.notarialregistral.dto;
 import java.util.Date;
 
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
+import ec.gob.dinardap.seguridad.modelo.Usuario;
 
 public class TramiteRegistradorDto {
 	
@@ -15,7 +16,12 @@ public class TramiteRegistradorDto {
 	private String identificacionRequirente;
 	private String nombreRequirente;
 	private String observacionRegistro;
+	private Date fechaCierre;
+	private Date fechaDescarga;
+	private Usuario cerradoPor;
+	private Short estado;
 	private Tramite tramite;
+	
 	
 	
 	public Long getTramiteId() {
@@ -78,6 +84,29 @@ public class TramiteRegistradorDto {
 	public void setTramite(Tramite tramite) {
 		this.tramite = tramite;
 	}
-	
+	public Date getFechaCierre() {
+		return fechaCierre;
+	}
+	public void setFechaCierre(Date fechaCierre) {
+		this.fechaCierre = fechaCierre;
+	}
+	public Date getFechaDescarga() {
+		return fechaDescarga;
+	}
+	public void setFechaDescarga(Date fechaDescarga) {
+		this.fechaDescarga = fechaDescarga;
+	}	
+	public Usuario getCerradoPor() {
+		return cerradoPor;
+	}
+	public void setCerradoPor(Usuario cerradoPor) {
+		this.cerradoPor = cerradoPor;
+	}
+	public Short getEstado() {
+		return estado;
+	}
+	public void setEstado(Short estado) {
+		this.estado = estado;
+	}	
 	
 }

@@ -2,37 +2,35 @@
 *	Author: Marcelo Muñoz
 *	Fecha:  2019-01-30
 */
-
-/* secciones */
-{
-	font-family: "Arial","sans";
+secciones {
+	font-family: "Arial", "sans";
 }
 
 html {
-    font-size: initial;
-    /* -webkit-tap-highlight-color: rgba(0, 0, 0, 0); */
+	font-size: initial;
+	/* -webkit-tap-highlight-color: rgba(0, 0, 0, 0); */
 }
 
-body{
+body {
 	/*font-family: inital;
 	font-size: initial;*/
 	font-size: 12px;
-    font-weight: initial;
-    line-height: initial;
-    color: initial;
-    background-color: initial;
-    /*margin:8px;*/
+	font-weight: initial;
+	line-height: initial;
+	color: initial;
+	background-color: initial;
+	/*margin:8px;*/
 }
 
-.pie{
+.pie {
 	/*position: fixed;*/
 	text-align: center;
-	bottom: 0;
-	width: 100%; 
-	height: 30%;
+	bottom: 0px;
+	width: 100%;
+	height: 100%;
 }
 
-.h-wai{
+.h-wai {
 	color: #9FA3A5;
 	font-size: 18px;
 	font-weight: bold;
@@ -40,13 +38,12 @@ body{
 	margin-top: 5px;
 }
 
-.contenido{
+.contenido {
 	padding-left: 5%;
 	padding-right: 5%;
-	padding-bottom: 3%;
 }
 
-table{
+table {
 	margin-bottom: 3px;
 }
 
@@ -303,22 +300,21 @@ table{
 	font-size: 12px;
 }
 
-input[disabled], 
-textarea[disabled] {
+input[disabled], textarea[disabled] {
 	color: #000000;
 	background-color: #ffffff;
 	border: none;
 }
 
 .unresizable {
-    resize: none;
+	resize: none;
 }
 
-.margenError.ui-panel{
-	padding:5%;
-	margin:5%;
-	border-color:#99091E; 
-	border-style:solid;
+.margenError.ui-panel {
+	padding: 5%;
+	margin: 5%;
+	border-color: #99091E;
+	border-style: solid;
 	border-width: 10px;
 }
 
@@ -331,72 +327,78 @@ textarea[disabled] {
 	font-size: 18px;
 }
 
-.divBotones{
-	margin-bottom:3%; 
-	padding-top:1%; 
-	padding-bottom:2%;
-	text-align:center;
+.divBotones {
+	margin-bottom: 3%;
+	padding-top: 1%;
+	padding-bottom: 2%;
+	text-align: center;
 }
 
 /* Bootsfaces */
 .navbar {
-  min-height: 30px;
-  margin-bottom: 0px;
+	min-height: 30px;
+	margin-bottom: 0px;
 }
 
-.form-group{
+.form-group {
 	margin: 0;
 }
 
 /* Primefaces */
 h1.pf {
-    font-size: 2em;
-    -webkit-margin-before: 0.67em;
-    -webkit-margin-after: 0.67em;
-    -webkit-margin-start: 0px;
-    -webkit-margin-end: 0px;
-    font-weight: bold;
+	font-size: 2em;
+	-webkit-margin-before: 0.67em;
+	-webkit-margin-after: 0.67em;
+	-webkit-margin-start: 0px;
+	-webkit-margin-end: 0px;
+	font-weight: bold;
 }
 
 h2.pf {
-    font-size: 1.5em;
-    -webkit-margin-before: 0.83em;
-    -webkit-margin-after: 0.83em;
-    -webkit-margin-start: 0px;
-    -webkit-margin-end: 0px;
-    font-weight: bold;
+	font-size: 1.5em;
+	-webkit-margin-before: 0.83em;
+	-webkit-margin-after: 0.83em;
+	-webkit-margin-start: 0px;
+	-webkit-margin-end: 0px;
+	font-weight: bold;
 }
 
 h3.pf {
-    font-size: 1.17em;
-    -webkit-margin-before: 1em;
-    -webkit-margin-after: 1em;
-    -webkit-margin-start: 0px;
-    -webkit-margin-end: 0px;
-    font-weight: bold;
+	font-size: 1.17em;
+	-webkit-margin-before: 1em;
+	-webkit-margin-after: 1em;
+	-webkit-margin-start: 0px;
+	-webkit-margin-end: 0px;
+	font-weight: bold;
 }
 
-.pf,
-.pf * {
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
+.pf, .pf * {
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
 }
 
 label.pf {
-    font-weight: initial;
+	font-weight: initial;
 }
 
-table.pf,
-.pf table {
-    border-spacing: 2px;
-    border-collapse: separate;
+table.pf, .pf table {
+	border-spacing: 2px;
+	border-collapse: separate;
 }
+
 .pf td {
-    padding:1px;
+	padding: 1px;
 }
 
 .nest-bf-in-pf 
 .form-group {
-    margin-bottom:0px;
+	margin-bottom: 0px;
+}
+
+.ui-widget-header {
+	border: 1px solid #3465a4;
+	background: #3465a4;
+	color: #ffffff;
+	font-weight: bold;
 }

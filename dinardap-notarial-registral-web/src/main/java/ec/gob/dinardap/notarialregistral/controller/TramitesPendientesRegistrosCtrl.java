@@ -3,6 +3,7 @@ package ec.gob.dinardap.notarialregistral.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +27,10 @@ import ec.gob.dinardap.notarialregistral.modelo.Documento;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.DocumentoServicio;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
+import ec.gob.dinardap.notarialregistral.util.FechaHoraSistema;
+import ec.gob.dinardap.seguridad.modelo.Usuario;
 import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
+import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
 import ec.gob.dinardap.util.TipoArchivo;
 import ec.gob.dinardap.util.constante.EstadoEnum;
 
@@ -41,6 +45,9 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	@EJB
 	DocumentoServicio documentoServicio;
 	@EJB
+	UsuarioServicio usuarioServicio;
+
+	@EJB
 	private ParametroServicio parametroServicio;
 
 	private List<TramiteRegistradorDto> listaTramitePendiente;
@@ -50,7 +57,9 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	private Long tramiteId;
 	private Integer institucionId;
 	private DocumentoDto documentoDto;
-	private Boolean subirArchivo;
+	private Boolean subirArchivoB;
+	private Short estadoTramite;
+	private Boolean estadoInconsistente;
 
 	@PostConstruct
 	protected void init() {
@@ -60,7 +69,8 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		tramiteDto.setTramite(new Tramite());
 		tramiteId = 0L;
 		documentoDto = new DocumentoDto();
-		subirArchivo = true;
+		subirArchivoB = true;
+		estadoInconsistente = true;
 
 		//// modificar el canton del usuario logueado
 
@@ -128,15 +138,31 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		this.documentoDto = documentoDto;
 	}
 
-	public Boolean getSubirArchivo() {
-		return subirArchivo;
+	public Short getEstadoTramite() {
+		return estadoTramite;
 	}
 
-	public void setSubirArchivo(Boolean subirArchivo) {
-		this.subirArchivo = subirArchivo;
+	public void setEstadoTramite(Short estadoTramite) {
+		this.estadoTramite = estadoTramite;
 	}
 
-////////////////////funciones
+	public Boolean getSubirArchivoB() {
+		return subirArchivoB;
+	}
+
+	public void setSubirArchivoB(Boolean subirArchivoB) {
+		this.subirArchivoB = subirArchivoB;
+	}
+
+	public Boolean getEstadoInconsistente() {
+		return estadoInconsistente;
+	}
+
+	public void setEstadoInconsistente(Boolean estadoInconsistente) {
+		this.estadoInconsistente = estadoInconsistente;
+	}
+
+	//////////////////// funciones
 	public void filaSeleccionada(SelectEvent event) {
 		tramiteId = Long.parseLong(((TramiteRegistradorDto) event.getObject()).getTramiteId().toString());
 
@@ -144,18 +170,19 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 	public void descargarActoNotarial() {
 		try {
-
+			FechaHoraSistema fecha = new FechaHoraSistema();
 			TipoArchivo tipoArchivo = new TipoArchivo();
 			Documento documento = new Documento();
 			documento = documentoServicio.buscarPorTramiteRegistros(tramiteDto.getTramite().getTramiteId(),
 					ContextoEnum.NOTARIAL.getContexto());
 			if (documento != null) {
-				String ruta = documento.getRuta();
+				String ruta = documento.getRuta();				
 				int inicio = ruta.lastIndexOf("/");
-				String nombre = ruta.substring(inicio + 1);
-				System.out.println("nombre" + nombre);
-				System.out.println("ruta" + ruta);
+				String nombre = ruta.substring(inicio + 1);				
 				byte[] archivoAdjunto = documentoServicio.descargarArchivo(ruta);
+				//Date fechaActual = new Date();
+				tramiteDto.setFechaDescarga(fecha.convertirTimestamp(fecha.obtenerFechaHora()));
+				System.out.println(tramiteDto.getFechaDescarga());
 				downloadFile(archivoAdjunto, tipoArchivo.obtenerTipoArchivo(ruta), nombre);
 			} else {
 
@@ -173,18 +200,20 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		try {
 			Calendar c = Calendar.getInstance();
 			/// calcula la fecha actual fechaInicio = c.getTime();
+			int mesActual = (c.get(Calendar.MONTH)) + 1;
+			System.out.println("mes" + mesActual);
 			String anio = String.valueOf(c.get(Calendar.YEAR));
-			String mes = String.valueOf(c.get(Calendar.MONTH));
+			String mes = String.valueOf(mesActual);
 			String dia = String.valueOf(c.get(Calendar.DATE));
 			String origen = null;
-			System.out.println("tramiteobjeto"+tramiteDto.getTramite());
+			System.out.println("tramiteobjeto" + tramiteDto.getTramite());
 
 			if (tramiteDto.getTramite() != null) {
 
 				origen = parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
-				String ruta =null;
-						//origen.concat(anio).concat("/").concat(mes).concat("/").concat(dia).concat("/")
-						//.concat(String.valueOf(tramiteDto.getTramite().getInstitucionId())).concat("/");
+				String ruta = origen.concat(anio).concat("/").concat(mes).concat("/").concat(dia).concat("/")
+						.concat(String.valueOf(tramiteDto.getTramite().getInstitucion().getInstitucionId()))
+						.concat("/");
 				System.out.println("subir" + ruta);
 
 				Tramite objTramite = tramiteServicio.findByPk(tramiteId);
@@ -194,7 +223,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 				documentoDto.getDocumento().setContextoArchivo(ContextoEnum.REGISTRAL.getContexto());
 				documentoDto.getDocumento().setNombreCarga(event.getFile().getFileName());
 				documentoDto.setContenido(IOUtils.toByteArray(event.getFile().getInputstream()));
-				documentoDto.getDocumento().setEstado(EstadoEnum.ACTIVO.getEstado());			
+				documentoDto.getDocumento().setEstado(EstadoEnum.ACTIVO.getEstado());
 				// cambiar al tener accesos
 				// miArchivo.getDocumento().setSubidoPor(getLoggedUser());
 				documentoDto.getDocumento().setSubidoPor(1);
@@ -213,31 +242,86 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 			e.printStackTrace();
 		}
 	}
-public void guardarTramite() {
-	if(tramiteServicio.guardarRegistro(tramiteDto, documentoDto)==true)
-	{
-		addInfoMessage(getBundleMensaje("guardado.satisfactorio", null), null);
-	}
-	else
-		addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
 
-	  
-		/*
-		if (beneficioDto.getInstitucion().getInstitucionId() > 0 && !beneficioDto.getCoberturaGeografica().equals("-1")
-				&& beneficioDto.getTipoNaturaleza().getTipoNaturalezaId() > 0 && beneficioDto.getPeriodicidad()>0
-				&& documentoHab.size() == beneficioDto.getArchivosDto().size()) {
-			beneficioDto.setInstitucion(institucionServicio.findByPk(beneficioDto.getInstitucion().getInstitucionId()));
-			beneficioDto.setTipoNaturaleza(
-					tipoNatutalezaSevicio.findByPk(beneficioDto.getTipoNaturaleza().getTipoNaturalezaId()));
-					*/
-			//if (beneficioServicio.editarBeneficio(beneficioDto) == true) {
-				///addInfoMessage(getBundleMensaje("guardado.satisfactorio", null), null);
-			//} else
-				//addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
-			/*
-		} else
+	public void cambiarEstadoTramite() {
+		if (estadoTramite == EstadoTramiteEnum.INCONSISTENTE.getEstado())
+			estadoInconsistente = false;
+		else
+			estadoInconsistente = true;
+
+	}
+
+	public void guardarTramite() {
+		try {
+			Usuario usuario = new Usuario();
+			usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
+			if (tramiteId != 0L) {
+				// si el estado es inconsistente no debe cargar el documento y si observar
+				if (estadoTramite == EstadoTramiteEnum.INCONSISTENTE.getEstado()) {
+					// tramiteDto.setCerradoPor(getLoggedUser());
+					tramiteDto.setCerradoPor(usuario);
+					tramiteDto.setEstado(EstadoTramiteEnum.INCONSISTENTE.getEstado());
+					if (tramiteServicio.guardarRegistro(tramiteDto) == true)
+						addInfoMessage(getBundleMensaje("registro.guardado", null), null);
+					else
+						addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
+
+				}
+				if (estadoTramite == EstadoTramiteEnum.CERRADO.getEstado()) {
+					// tramiteDto.setCerradoPor(getLoggedUser());
+					tramiteDto.setCerradoPor(usuario);
+					tramiteDto.setEstado(EstadoTramiteEnum.CERRADO.getEstado());
+
+					if (documentoDto.getContenido() != null) {
+						if (documentoServicio.subirArchivos(documentoDto) == true) {
+							System.out.println("documento registral subido");
+							if (tramiteServicio.guardarRegistro(tramiteDto) == true)
+								addInfoMessage(getBundleMensaje("registro.guardado", null), null);
+							else
+								addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
+						} else {
+							Object[] param = new Object[1];
+							param[0] = " documento registral";
+							addErrorMessage(null, getBundleMensaje("error.subir.archivo", param), null);
+						}
+
+					} else
+						addErrorMessage(null, "Documento registral" + getBundleMensaje("requerido", null), null);			
+
+				}
+			} else
+				addErrorMessage(null, "No ha seleccionado el trámite", null);
+
+		} catch (Exception e) {
 			addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
-			*/
+
+		}
+
+		/*
+		 * if (tramiteServicio.guardarRegistro(tramiteDto, documentoDto) == true) {
+		 * addInfoMessage(getBundleMensaje("guardado.satisfactorio", null), null); }
+		 * else addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
+		 */
+
+		/*
+		 * if (beneficioDto.getInstitucion().getInstitucionId() > 0 &&
+		 * !beneficioDto.getCoberturaGeografica().equals("-1") &&
+		 * beneficioDto.getTipoNaturaleza().getTipoNaturalezaId() > 0 &&
+		 * beneficioDto.getPeriodicidad()>0 && documentoHab.size() ==
+		 * beneficioDto.getArchivosDto().size()) {
+		 * beneficioDto.setInstitucion(institucionServicio.findByPk(beneficioDto.
+		 * getInstitucion().getInstitucionId())); beneficioDto.setTipoNaturaleza(
+		 * tipoNatutalezaSevicio.findByPk(beneficioDto.getTipoNaturaleza().
+		 * getTipoNaturalezaId()));
+		 */
+		// if (beneficioServicio.editarBeneficio(beneficioDto) == true) {
+		/// addInfoMessage(getBundleMensaje("guardado.satisfactorio", null), null);
+		// } else
+		// addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
+		/*
+		 * } else addErrorMessage(null, getBundleMensaje("error.validacion", null),
+		 * null);
+		 */
 	}
 
 }

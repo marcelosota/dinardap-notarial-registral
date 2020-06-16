@@ -5,7 +5,6 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
 
-<!-- f:view contentType="text/html" locale="es"-->
 	<h:head>
 		<title>#{etiquetas['institucion']}</title>
 		<meta name="author" content="Marcelo Muñoz" />
@@ -21,34 +20,37 @@
 			href="#{facesContext.externalContext.requestContextPath}/resource/css/dinardap.css" />
 	</h:head>
 	<h:body>
-		<p:growl id="msgMensajes" autoUpdate="true" sticky="true" keepAlive="true" />
+		<p:growl id="msgMensajes" showDetail="true" sticky="true"
+			keepAlive="true">
+			<p:autoUpdate />
+		</p:growl>
 		<div id="contenedor">
 			<div>
 				<ui:insert name="header">
 					<ui:include src="/template/comun/menu.xhtml" />
 				</ui:insert>
 			</div>
-
+	
 			<div class="contenido">
 				<ui:insert name="content">
-				Contenido por defecto
-			</ui:insert>
+	            	Contenido por defecto
+				</ui:insert>
 			</div>
-
+	
 			<div class="pie">
 				<ui:insert name="footer">
 					<ui:include src="/template/comun/footer.xhtml" />
 				</ui:insert>
 			</div>
 		</div>
-		<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
 		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
 			closable="false" resizable="false" showHeader="false">
 			<div align="center">
-				<p:graphicImage value="/resource/images/procesando.gif" width="64"/>
+				<p:graphicImage value="/resource/images/procesando.gif" width="64" />
 			</div>
 		</p:dialog>
-
+	
 	</h:body>
-<!--/f:view-->
 </html>

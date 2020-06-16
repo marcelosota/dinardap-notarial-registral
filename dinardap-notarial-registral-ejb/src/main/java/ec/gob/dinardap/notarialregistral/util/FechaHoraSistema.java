@@ -74,7 +74,7 @@ public class FechaHoraSistema {
 	}
 	
 	public String obtenerFechaHora(){
-		DateFormat formato = new SimpleDateFormat("yyyyMMdd-HHmmss");
+		DateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		return formato.format(fecha);
 	}
 	
@@ -137,7 +137,7 @@ public class FechaHoraSistema {
 	}
 	
 	public Timestamp convertirTimestamp(String cadena){
-		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		Date fecha = null;
 		try {
 			fecha = formato.parse(cadena);
