@@ -31,6 +31,8 @@ import ec.gob.dinardap.notarialregistral.servicio.LogDescargaServicio;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
 import ec.gob.dinardap.notarialregistral.util.FechaHoraSistema;
 import ec.gob.dinardap.seguridad.modelo.Usuario;
+import ec.gob.dinardap.seguridad.servicio.AsignacionInstitucionServicio;
+import ec.gob.dinardap.seguridad.servicio.InstitucionServicio;
 import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
 import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
 import ec.gob.dinardap.util.TipoArchivo;
@@ -50,7 +52,9 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	UsuarioServicio usuarioServicio;
 	@EJB
 	LogDescargaServicio logDescargaServicio;
-
+    @EJB
+    InstitucionServicio institucionServicio;
+	
 	@EJB
 	private ParametroServicio parametroServicio;
 
@@ -65,6 +69,8 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	private Short estadoTramite;
 	private Boolean estadoInconsistente;
 	private Usuario usuario;
+	
+	
 
 	@PostConstruct
 	protected void init() {
@@ -78,14 +84,17 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		estadoInconsistente = true;
 		usuario = new Usuario();
 		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
-
+		//institucionId = Integer.parseInt(this.getSessionVariable("institucionId"));
+		institucionId = 6;
 		//// modificar el canton del usuario logueado
 
 	}
 
-	public List<TramiteRegistradorDto> getListaTramitePendiente() {
-		Integer cantonId = 178;
+	public List<TramiteRegistradorDto> getListaTramitePendiente() {		
+		Integer cantonId = institucionServicio.findByPk(institucionId).getCanton().getCantonId();	
+				
 		listaTramitePendiente = tramiteDao.tramitesPendientes(EstadoTramiteEnum.CARGADO.getEstado(), cantonId);
+		
 		if (filtro == null)
 			filtro = listaTramitePendiente;
 		return listaTramitePendiente;
@@ -232,7 +241,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 				documentoDto.getDocumento().setEstado(EstadoEnum.ACTIVO.getEstado());
 				// cambiar al tener accesos
 				// miArchivo.getDocumento().setSubidoPor(getLoggedUser());
-				documentoDto.getDocumento().setSubidoPor(1);
+				documentoDto.getDocumento().setSubidoPor(usuario.getUsuarioId());
 
 				// setSubirArchivo(true);
 			} else {
@@ -264,7 +273,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 			logDescarga.setDocumento(documento);
 			logDescarga.setFecha(tramiteDto.getFechaDescarga());
 			// logDescarga.setResponsable(getLoggedUser());
-			logDescarga.setResponsable("1714284856");
+			logDescarga.setResponsable(usuario.getCedula());
 			if (logDescargaServicio.guardarLogDescarga(logDescarga) == true)
 				System.out.println("guardadoLogDescarga");
 			else
@@ -274,6 +283,17 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 		}
 
+	}
+	public void limpiar()
+	{
+		
+		listaTramitePendiente = new ArrayList<>();
+		tramiteDto = new TramiteRegistradorDto();
+		selectedTramite = new TramiteRegistradorDto();
+		tramiteDto.setTramite(new Tramite());
+		tramiteId = 0L;
+		documentoDto = new DocumentoDto();		
+		estadoInconsistente = true;
 	}
 
 	public void guardarTramite() {
@@ -286,7 +306,10 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 					tramiteDto.setCerradoPor(usuario);
 					tramiteDto.setEstado(EstadoTramiteEnum.INCONSISTENTE.getEstado());
 					if (tramiteServicio.guardarRegistro(tramiteDto) == true)
+					{
+						 limpiar();
 						addInfoMessage(getBundleMensaje("registro.guardado", null), null);
+					}
 					else
 						addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
 
@@ -300,7 +323,10 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 						if (documentoServicio.subirArchivos(documentoDto) == true) {
 							System.out.println("documento registral subido");
 							if (tramiteServicio.guardarRegistro(tramiteDto) == true)
+							{
+								limpiar();
 								addInfoMessage(getBundleMensaje("registro.guardado", null), null);
+							}	
 							else
 								addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
 						} else {

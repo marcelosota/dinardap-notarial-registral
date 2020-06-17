@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+<!-- 
+		Replace path to template, title, header and body
+		with actual data.
+	 -->
+<ui:composition template="/template/general.xhtml">
+	<ui:define name="content">
+		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Mis Trámites
+			Registrador</h1>
+		<h:form id="formInicio">
+			<h:panelGrid columns="1" style="width: 100%;">
+				<p:dataTable id="dtbtramites" var="dtb"					
+					value="#{misTramitesRegistrosCtrl.listaTramitesCerrados}"
+					rows="7" paginator="true" paginatorPosition="bottom"
+					selectionMode="single"
+					rowKey="#{dtb.codigo}"
+					selection="#{misTramitesRegistrosCtrl.selectedTramite}"
+					lazy="true" 
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					emptyMessage="No existen registros"
+					filteredValue="#{misTramitesRegistrosCtrl.filtro}">
+					<p:column headerText="#{etiquetas['nombre.codigoCVTU']}" width="20%"
+						filterBy="#{dtb.codigo}" sortBy="#{dtb.codigo}"
+						filterMatchMode="contains">
+						<h:outputText value="#{dtb.codigo}" />
+					</p:column>
+					<p:column headerText="#{etiquetas['nombre.institucion']}"
+						width="20%" filterBy="#{dtb.institucion}" sortBy="#{dtb.institucion}"
+						filterMatchMode="contains">
+						<h:outputText value="#{dtb.institucion}"
+							styleClass="texto-justificado" />
+					</p:column>
+					<p:column headerText="#{etiquetas['fecha.registro']}" width="20%"
+					 filterBy="#{dtb.fechaRegistro}" sortBy="#{dtb.fechaRegistro}"
+						filterMatchMode="contains">
+						<h:outputText value="#{dtb.fechaRegistro}"
+							styleClass="texto-justificado">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{etiquetas['fecha.cierre']}" width="20%"
+						 filterBy="#{dtb.fechaCierre}" sortBy="#{dtb.fechaCierre}"
+						filterMatchMode="contains">
+						<h:outputText value="#{dtb.fechaCierre}"
+							styleClass="texto-justificado">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{etiquetas['acto.notarial']}" width="20%"
+					style="text-align: center">
+						<h:commandLink id="btDescargaActo" target="_blank"
+							disabled="" immediate="true"
+							style="text-align: center"
+							action="#{misTramitesRegistrosCtrl.descargarActoNotarial}">
+							<i class="fa fa-file-pdf-o fa-lg actoNotarial"></i>
+							<f:setPropertyActionListener
+								target="#{misTramitesRegistrosCtrl.rutaNotarial}" value="#{dtb.rutaNotarial}" />
+							<f:setPropertyActionListener
+								target="#{misTramitesRegistrosCtrl.tramiteId}" value="#{dtb.tramiteId}" />	
+								
+						</h:commandLink>
+						<p:tooltip for="btDescargaActo" value="Descargar Acto Notarial" />
+					</p:column>
+					<p:column headerText="#{etiquetas['documento.registral']}"
+						width="20%" style="text-align: center">
+						<h:commandLink id="btDescargaRegistral" target="_blank"
+							disabled="" immediate="true"
+							action="#{misTramitesRegistrosCtrl.descargarDocumentoRegistral}"
+							style="text-align: center">
+							<i class="fa fa-file-pdf-o fa-lg documentoRegistral"></i>
+							<f:setPropertyActionListener
+								target="#{misTramitesRegistrosCtrl.rutaRegistral}" value="#{dtb.rutaRegistral}" />
+							<f:setPropertyActionListener
+								target="#{misTramitesRegistrosCtrl.tramiteId}" value="#{dtb.tramiteId}" />	
+						</h:commandLink>
+						<p:tooltip for="btDescargaRegistral" value="Descargar documento Registral" />
+					</p:column>
+				</p:dataTable>
+
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

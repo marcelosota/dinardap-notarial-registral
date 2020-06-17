@@ -17,10 +17,10 @@
 				<p:dataTable id="dtbPendientes" var="dtb"
 					value="#{tramitesPendientesRegistrosCtrl.listaTramitePendiente}"
 					rows="7" paginator="true" paginatorPosition="bottom"
-					scrollable="true" scrollWidth="99%" selectionMode="single"
+					selectionMode="single"
 					rowKey="#{dtb.codigo}"
 					selection="#{tramitesPendientesRegistrosCtrl.selectedTramite}"
-					lazy="true" style="font-size: 9pt; margin-bottom:20px;"
+					lazy="true" 
 					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
 					emptyMessage="No existen registros"
 					filteredValue="#{tramitesPendientesRegistrosCtrl.filtro}">
@@ -86,7 +86,7 @@
 					<h:commandLink id="btnDescargaActoNotarial" target="_blank"
 						value="Descargar" immediate="true"
 						action="#{tramitesPendientesRegistrosCtrl.descargarActoNotarial}">
-						<i class="fa fa-file-pdf-o fa-lg notarizado"></i>
+						<i class="fa fa-file-pdf-o fa-lg actoNotarial"></i>
 					</h:commandLink>										
 				</h:panelGrid>
 				</p:panel>
@@ -148,9 +148,9 @@
 				</p:panel>
 				<h:panelGrid colSpans="12"
 					style="width: 100%; margin: 4px 5px; text-align: center;">
-					<p:commandButton value="#{etiquetas['guardar.tramite']}"
-						id="guardarBtn" style="margin-right:20px;" icon="fa fa-fw fa-th"
-						update=""
+					<p:commandButton value="#{etiquetas['guardar']}"
+						id="guardarBtn" style="margin-right:20px;" icon="ui-icon-disk"
+						update="@form formInicio:dtbPendientes formRegistrador "
 						action="#{tramitesPendientesRegistrosCtrl.guardarTramite}" />
 				</h:panelGrid>
 				

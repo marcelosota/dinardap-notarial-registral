@@ -21,6 +21,8 @@ public class TramiteRegistradorDto {
 	private Usuario cerradoPor;
 	private Short estado;
 	private Tramite tramite;
+	private String rutaNotarial;
+	private String rutaRegistral;
 	
 	
 	
@@ -107,6 +109,19 @@ public class TramiteRegistradorDto {
 	}
 	public void setEstado(Short estado) {
 		this.estado = estado;
+	}
+	public String getRutaNotarial() {
+		return rutaNotarial;
+	}
+	public void setRutaNotarial(String rutaNotarial) {
+		this.rutaNotarial = rutaNotarial;
+	}
+	public String getRutaRegistral() {
+		return rutaRegistral;
+	}
+	public void setRutaRegistral(String rutaRegistral) {
+		this.rutaRegistral = rutaRegistral;
 	}	
+	
 	
 }
