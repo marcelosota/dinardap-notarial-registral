@@ -19,6 +19,9 @@ import ec.gob.dinardap.notarialregistral.modelo.TipoTramite;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.TipoTramiteServicio;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
+import ec.gob.dinardap.seguridad.servicio.InstitucionServicio;
+import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
+
 import java.util.Date;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -53,6 +56,12 @@ public class tramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
     @EJB
     private TramiteServicio tramiteServicio;
+    
+    @EJB
+    private InstitucionServicio institucionServicio;
+    
+    @EJB
+    private UsuarioServicio usuariosServicio;
 
     @PostConstruct
     protected void init() {
@@ -81,7 +90,8 @@ public class tramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
     }
 
-    public void blurIdentificacionCedula() {
+    @SuppressWarnings("unused")
+	public void blurIdentificacionCedula() {
 //        String nombreAux = getNombreCiudadano(tramite.getIdentificacionRequirente());
         String nombreAux = "Christian Gaona";
         if (nombreAux != null) {
@@ -104,9 +114,10 @@ public class tramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
     public void crearTramite() {
         tramiteGenerado = new Tramite();
-        tramite.setInstitucionId(institucionId);
+        
+        tramite.setInstitucion(institucionServicio.findByPk(institucionId));
         tramite.setFechaRegistro(new Date());
-        tramite.setRegistradoPor(1);
+        tramite.setRegistradoPor(usuariosServicio.findByPk(1));
         tramite.setEstado(EstadoTramiteEnum.GENERADO.getEstado());
         if (tramiteOrigen) {
             Tramite tramiteOriginal = tramiteServicio.getTramiteByCodigoValidacionTramite(codigoTramiteInicial);

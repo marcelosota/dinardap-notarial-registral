@@ -1,9 +1,13 @@
 package ec.gob.dinardap.notarialregistral.servicio.impl;
 
-import ec.gob.dinardap.notarialregistral.constante.ParametroEnum;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import ec.gob.dinardap.notarialregistral.constante.ParametroEnum;
 import ec.gob.dinardap.notarialregistral.dao.DocumentoDao;
 import ec.gob.dinardap.notarialregistral.dto.SftpDto;
 import ec.gob.dinardap.notarialregistral.modelo.Documento;
@@ -14,8 +18,6 @@ import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
 import ec.gob.dinardap.sftp.exception.FtpException;
 import ec.gob.dinardap.sftp.util.CredencialesSFTP;
 import ec.gob.dinardap.sftp.util.GestionSFTP;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Stateless(name = "DocumentoServicio")
 public class DocumentoServicioImpl extends GenericServiceImpl<Documento, Long> implements DocumentoServicio {
@@ -57,7 +59,8 @@ public class DocumentoServicioImpl extends GenericServiceImpl<Documento, Long> i
         return credencialesSFTP;
     }
 
-    private void guardarArchivo(SftpDto sftpDto) {
+    @SuppressWarnings("unused")
+	private void guardarArchivo(SftpDto sftpDto) {
         try {
             GestionSFTP.subirArchivo(sftpDto.getArchivo(), sftpDto.getCredencialesSFTP());
         } catch (FtpException ex) {

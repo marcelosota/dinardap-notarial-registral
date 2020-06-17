@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">    
+    <ui:composition template="/template/generalLogin.xhtml">
+        <ui:define name="content">
+            <b:container> 
+                <b:panel>
+                    <h:form id="loginForm">
+                        <b:row>
+                            <b:column col-md="4" col-xs="12" offset="4" >
+                                <b:inputText
+                                    id="usuario"
+                                    value="#{loginCtrl.nombreUsuario}"
+                                    placeholder="#{etiquetas['nombre.usuario']}" 
+                                    required="true">
+                                    <f:facet name="prepend">
+                                        <b:icon name="user" />
+                                    </f:facet>
+                                </b:inputText>
+                            </b:column>                            
+                        </b:row>
+
+                        <b:row>
+                            <b:column col-md="4" col-xs="12" offset="4" >
+                                <b:inputSecret 
+                                    id="clave"
+                                    value="#{loginCtrl.contrasena}"
+                                    placeholder="#{etiquetas['nombre.clave']}" 
+                                    required="true" >
+                                    <f:facet name="prepend">
+                                        <b:iconAwesome name="key"/>
+                                    </f:facet>
+                                </b:inputSecret>
+                            </b:column>
+                        </b:row>
+
+                        <b:row style="text-align: center; margin-top: 5px;">
+                            <b:column col-md="4" col-xs="12" offset="4">
+                                <b:panelGrid colSpans="6,6" 
+                                             style="width: 100%; text-align: center;">
+                                    <p:commandButton id="ingresarBtn" 
+                                                     value="#{etiquetas['ingresar']}"
+                                                     action="#{loginCtrl.validarUsuario}"
+                                                     icon="fa fa-fw fa-unlock-alt"
+                                                     update="loginForm, msgMensajes"
+                                                     style="width: 100%"/>
+                                    <p:commandButton id="cancelarBtn"
+                                                     value="#{etiquetas['cancelar']}"  
+                                                     action="#{loginCtrl.cancelar}"
+                                                     icon="fa fa-fw fa-lock"                                                     
+                                                     update="loginForm"
+                                                     process="@this"                                                     
+                                                     style="width: 100%"/>
+                                </b:panelGrid>                              
+                            </b:column>
+                        </b:row>                    
+                        <b:row style="text-align: center; margin-top: 5px;">
+                            <b:column col-md="4" offset="4">
+                                <p:commandButton id="olvideClaveBtn"
+                                                 value="#{etiquetas['nombre.olvideClave']}"
+                                                 action="#{loginCtrl.recuperarClave}"
+                                                 icon="fa fa-fw fa-question"
+                                                 process="@this"                                                 
+                                                 style="width: 100%"/>                                
+                            </b:column>
+                        </b:row>
+                    </h:form>
+
+                </b:panel>              
+            </b:container>
+        </ui:define>
+    </ui:composition>
+</html>

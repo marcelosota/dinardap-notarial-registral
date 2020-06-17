@@ -16,7 +16,7 @@ public class GeneradorCodigo {
         String separador = "-";
         long epoch = System.currentTimeMillis() / 1000;
         codigoGenerado = Long.toHexString(epoch).toUpperCase().concat(separador)
-                .concat(generarAleatorio()).concat(separador)
+                .concat(generarAleatorio(6)).concat(separador)
                 .concat(generarCodigoInstitucion(institucionId));
         return codigoGenerado;
     }
@@ -26,11 +26,11 @@ public class GeneradorCodigo {
         return String.format("%0" + totalDigitos + "d", institucionId);
     }
 
-    private static String generarAleatorio() {
+    public static String generarAleatorio(Integer numLetras) {
         String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         String claveGenerada = "";
         int numero;
-        for (Integer i = 0; i < 6; i++) {
+        for (Integer i = 0; i < numLetras; i++) {
             numero = (int) (Math.random() * 36);
             claveGenerada = claveGenerada + str.substring(numero, numero + 1);
         }

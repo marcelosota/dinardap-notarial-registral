@@ -13,12 +13,4 @@ public class DocumentoDaoEjb extends GenericDaoEjb<Documento, Long> implements D
         super(Documento.class);
     }
 
-//        public void getTurnos() {
-//        Query query = em.createQuery("SELECT t FROM Tramite t WHERE t.institucionId");
-//        query.setParameter("dia", turno.getDia());
-//        query.setParameter("cedula", turno.getCedula());
-//        query.setParameter("registroMercantil", turno.getRegistroMercantil().getRegistroMercantilId());
-//        List<Turno> turnoList = new ArrayList<Turno>();
-//        turnoList = query.getResultList();
-//    }
 }

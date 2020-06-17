@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import ec.gob.dinardap.seguridad.modelo.Institucion;
+import ec.gob.dinardap.seguridad.modelo.Usuario;
+
 
 /**
  * The persistent class for the tramite database table.
@@ -35,8 +38,8 @@ public class Tramite implements Serializable {
 	@Column(name="tramite_id")
 	private Long tramiteId;
 
-	@Column(name="cerrado_por")
-	private Integer cerradoPor;
+	//@Column(name="cerrado_por")
+	//private Integer cerradoPor;
 
 	private String codigo;
 
@@ -63,8 +66,8 @@ public class Tramite implements Serializable {
 	@Column(name="identificacion_requirente")
 	private String identificacionRequirente;
 
-	@Column(name="institucion_id")
-	private Integer institucionId;
+	//@Column(name="institucion_id")
+	//private Integer institucionId;
 
 	@Column(name="nacionalidad_requirente")
 	private String nacionalidadRequirente;
@@ -74,14 +77,29 @@ public class Tramite implements Serializable {
 
 	private String observacion;
 
-	@Column(name="registrado_por")
-	private Integer registradoPor;
+	//@Column(name="registrado_por")
+	//private Integer registradoPor;
 
+	//bi-directional many-to-one association to Documento
+	@ManyToOne
+	@JoinColumn(name="cerrado_por", referencedColumnName = "usuario_id")
+	private Usuario cerradoPor;
+	
+	//bi-directional many-to-one association to Documento
+	@ManyToOne
+	@JoinColumn(name="institucion_id", referencedColumnName = "institucion_id")
+	private Institucion institucion;
+	
+	//bi-directional many-to-one association to Documento
+	@ManyToOne
+	@JoinColumn(name="registrado_por", referencedColumnName = "usuario_id")
+	private Usuario registradoPor;
+	
 	//bi-directional many-to-one association to Documento
 	@OneToMany(mappedBy="tramite")
 	private List<Documento> documentos;
 
-	//bi-directional many-to-one association to TipoTramite
+	//bi-directional many-to-one associatioinn to TipoTramite
 	@ManyToOne
 	@JoinColumn(name="tipo_tramite_id")
 	private TipoTramite tipoTramite;
@@ -106,11 +124,11 @@ public class Tramite implements Serializable {
 		this.tramiteId = tramiteId;
 	}
 
-	public Integer getCerradoPor() {
+	public Usuario getCerradoPor() {
 		return this.cerradoPor;
 	}
 
-	public void setCerradoPor(Integer cerradoPor) {
+	public void setCerradoPor(Usuario cerradoPor) {
 		this.cerradoPor = cerradoPor;
 	}
 
@@ -178,12 +196,12 @@ public class Tramite implements Serializable {
 		this.identificacionRequirente = identificacionRequirente;
 	}
 
-	public Integer getInstitucionId() {
-		return this.institucionId;
+	public Institucion getInstitucion() {
+		return this.institucion;
 	}
 
-	public void setInstitucionId(Integer institucionId) {
-		this.institucionId = institucionId;
+	public void setInstitucion(Institucion institucion) {
+		this.institucion = institucion;
 	}
 
 	public String getNacionalidadRequirente() {
@@ -210,11 +228,11 @@ public class Tramite implements Serializable {
 		this.observacion = observacion;
 	}
 
-	public Integer getRegistradoPor() {
+	public Usuario getRegistradoPor() {
 		return this.registradoPor;
 	}
 
-	public void setRegistradoPor(Integer registradoPor) {
+	public void setRegistradoPor(Usuario registradoPor) {
 		this.registradoPor = registradoPor;
 	}
 

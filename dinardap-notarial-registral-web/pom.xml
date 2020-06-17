@@ -95,21 +95,26 @@
             <artifactId>junit</artifactId>
         </dependency>
 
-        <!-- EJB's -->
-
-        <!-- Eliminar los comentarios una vez se verifique que la dependencia existe 
-        en el repositorio maven -->
+        <!-- EJB's -->        
         <dependency>
-            <groupId>ec.gob.dinardap.notarialRegistral</groupId>
-            <artifactId>dinardap-notarial-registral-ejb</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <type>jar</type>
+            <groupId>ec.gob.dinardap.seguridad</groupId>
+            <artifactId>dinardap-seguridad-ejb</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>ejb</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ec.gob.dinardap.autorizacion</groupId>
             <artifactId>dinardap-autorizacion</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>       
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ec.gob.dinardap.geografico</groupId>
+            <artifactId>dinardap-geografico-ejb</artifactId>
+            <version>1.5-SNAPSHOT</version>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>ec.gob.dinardap.clientesw</groupId>
             <artifactId>clienteInteroperador-V2</artifactId>
@@ -120,7 +125,7 @@
             <groupId>ec.gob.dinardap.notarialregistral</groupId>
             <artifactId>dinardap-notarial-registral-ejb</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>        
     </dependencies>
 
     <build>
