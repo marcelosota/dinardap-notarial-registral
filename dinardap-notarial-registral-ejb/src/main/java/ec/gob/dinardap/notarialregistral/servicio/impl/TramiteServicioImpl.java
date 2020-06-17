@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
+import ec.gob.dinardap.notarialregistral.util.Credenciales;
 import ec.gob.dinardap.notarialregistral.util.GeneradorCodigo;
 import ec.gob.dinardap.persistence.constante.CriteriaTypeEnum;
 import ec.gob.dinardap.persistence.dao.GenericDao;
@@ -21,7 +22,7 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 
     @EJB
     private TramiteDao tramiteDao;
-    
+
     @EJB
     private ClienteQueueMailServicio clienteQueueMailServicio;
 
@@ -42,7 +43,7 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 
         String parametroAmbiente = "DESARROLLO";
         MailMessage mailMessage = new MailMessage();
-        
+
         StringBuilder html = new StringBuilder(200);
         html.append("<br />Estimado/a: <br />");
         html.append("<br /><br />Le informamos que se ha cargado el Acto Notarial para su Trámite con Código de Validación de Trámite Único: ");
@@ -60,11 +61,11 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
         if (parametroAmbiente.equals("PRODUCCION")) {
 
         } else {
-            to.add(tramite.getCorreoRequirente());            
+            to.add(tramite.getCorreoRequirente());
             asunto.append("Notificación SANYR");
         }
 //        asunto.append("Confirmación de solicitud para categorizar a la empresa: ");
-        mailMessage = determinarCredenciales();
+        mailMessage = new Credenciales().credencialesCorreo();
         mailMessage.setTo(to);
         mailMessage.setSubject(asunto.toString());
         mailMessage.setText(html.toString());
@@ -129,14 +130,4 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
         }
         return tramiteList;
     }
-
-    private MailMessage determinarCredenciales() {
-        MailMessage credenciales = new MailMessage();
-        credenciales.setFrom("dinardap.capacitadora@dinardap.gob.ec");
-//        parametroServicio.findByPk(ParametroEnum.SERVIDOR_SFTP.name()).getValor()
-        credenciales.setUsername("dinardap.capacitadora");
-        credenciales.setPassword("aV-Capacitacion-3007");
-        return credenciales;
-    }
-
 }
