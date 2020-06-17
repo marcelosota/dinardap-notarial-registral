@@ -99,7 +99,7 @@ public class Tramite implements Serializable {
 	@OneToMany(mappedBy="tramite")
 	private List<Documento> documentos;
 
-	//bi-directional many-to-one association to TipoTramite
+	//bi-directional many-to-one associatioinn to TipoTramite
 	@ManyToOne
 	@JoinColumn(name="tipo_tramite_id")
 	private TipoTramite tipoTramite;

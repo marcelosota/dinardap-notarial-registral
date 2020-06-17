@@ -12,6 +12,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class BaseCtrl implements Serializable {
 
@@ -196,9 +197,11 @@ public class BaseCtrl implements Serializable {
      * @return
      */
     protected HttpServletResponse getHttpServletResponse() {
-
         return (HttpServletResponse) getExternalContext().getResponse();
+    }
 
+    public String getIdentificacionSistema() {
+        return FacesContext.getCurrentInstance().getExternalContext().getInitParameter("sistema.identificacion");
     }
 
     //Funciones Christian Gaona
@@ -206,9 +209,10 @@ public class BaseCtrl implements Serializable {
         Map<String, Object> sesion = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         return sesion.get(variableName).toString();
     }
-    
-    public String getIdentificacionSistema(){
-		return FacesContext.getCurrentInstance().getExternalContext().getInitParameter("sistema.identificacion");
-	}
+
+    protected static void setSessionVariable(String variableName, String value) {
+        HttpSession httpSession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        httpSession.setAttribute(variableName, value);
+    }
 
 }

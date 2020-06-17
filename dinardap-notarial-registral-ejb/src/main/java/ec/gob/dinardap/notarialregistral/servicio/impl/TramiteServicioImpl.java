@@ -1,11 +1,14 @@
 package ec.gob.dinardap.notarialregistral.servicio.impl;
 
+import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
+import ec.gob.dinardap.correo.util.MailMessage;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
+import ec.gob.dinardap.notarialregistral.util.Credenciales;
 import ec.gob.dinardap.notarialregistral.util.GeneradorCodigo;
 import ec.gob.dinardap.persistence.constante.CriteriaTypeEnum;
 import ec.gob.dinardap.persistence.dao.GenericDao;
@@ -20,6 +23,9 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     @EJB
     private TramiteDao tramiteDao;
 
+    @EJB
+    private ClienteQueueMailServicio clienteQueueMailServicio;
+
     @Override
     public GenericDao<Tramite, Long> getDao() {
         return tramiteDao;
@@ -29,6 +35,42 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     public void crearTramite(Tramite tramite) {
         tramite.setCodigo(GeneradorCodigo.generarCodigo(tramite.getInstitucion().getInstitucionId()));
         this.create(tramite);
+    }
+
+    @Override
+    public void actuliazarEstadoTramite(Tramite tramite) {
+        this.update(tramite);
+
+        String parametroAmbiente = "DESARROLLO";
+        MailMessage mailMessage = new MailMessage();
+
+        StringBuilder html = new StringBuilder(200);
+        html.append("<br />Estimado/a: <br />");
+        html.append("<br /><br />Le informamos que se ha cargado el Acto Notarial para su Trámite con Código de Validación de Trámite Único: ");
+        html.append(tramite.getCodigo());
+        html.append("<br/>");
+        html.append("<br/>Atentamente,<br/>");
+        html.append("<br/><FONT COLOR=\"#0000ff\" FACE=\"Arial Narrow, sans-serif\"><B> ");
+        html.append("<br/>");
+        html.append("SANYR");
+        html.append("</B></FONT>");
+
+        List<String> to = new ArrayList<String>();
+        StringBuilder asunto = new StringBuilder(200);
+
+        if (parametroAmbiente.equals("PRODUCCION")) {
+
+        } else {
+            to.add(tramite.getCorreoRequirente());
+            asunto.append("Notificación SANYR");
+        }
+//        asunto.append("Confirmación de solicitud para categorizar a la empresa: ");
+        mailMessage = new Credenciales().credencialesCorreo();
+        mailMessage.setTo(to);
+        mailMessage.setSubject(asunto.toString());
+        mailMessage.setText(html.toString());
+        //mailServicio.sender(mailMessage);
+        clienteQueueMailServicio.encolarMail(mailMessage);
     }
 
     @Override
@@ -68,7 +110,7 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     @Override
     public List<Tramite> getTramiteList(Integer institucionId, Short estado) {
         List<Tramite> tramiteList = new ArrayList<Tramite>();
-        String[] criteriaNombres = {"institucionId", "estado"};
+        String[] criteriaNombres = {"institucion.institucionId", "estado"};
         CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
         Object[] criteriaValores = {institucionId, estado};
         String[] orderBy = {"tramiteId"};

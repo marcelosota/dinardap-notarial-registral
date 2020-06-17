@@ -131,8 +131,8 @@
 								filterMatchMode="contains"
 								effect="fold" 
 								disabled="#{registroUsuarioCtrl.flagEntidad}"
-		                        required="true"
-		                        required-message="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}"
+		                        required="true"                                        
+                                        requiredMessage="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}"
 		                        styleClass="form-combo-centrado">
 		                        <f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
 		                        <f:selectItems value="#{registroUsuarioCtrl.listaInstituciones}" var="inst" 
