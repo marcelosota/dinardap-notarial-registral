@@ -206,5 +206,9 @@ public class BaseCtrl implements Serializable {
         Map<String, Object> sesion = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         return sesion.get(variableName).toString();
     }
+    
+    public String getIdentificacionSistema(){
+		return FacesContext.getCurrentInstance().getExternalContext().getInitParameter("sistema.identificacion");
+	}
 
 }

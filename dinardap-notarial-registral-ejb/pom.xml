@@ -21,13 +21,7 @@
 	</properties>
 
 	<dependencies>
-	 <dependency>
-	  <groupId>ec.gob.dinardap.sftp</groupId>
-	  <artifactId>dinardap-sftp</artifactId>
-	  <version>1.0-SNAPSHOT</version>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
+		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 		</dependency>
@@ -84,12 +78,14 @@
 			<type>ejb</type>
 			<scope>provided</scope>
 		</dependency>
-		<!--dependency>
-        	<groupId>ec.gob.dinardap.correo</groupId>
-        	<artifactId>dinardap-correo</artifactId>
-        	<type>ejb</type>
-        	<scope>provided</scope>
-        </dependency-->
+		<dependency>
+			<groupId>ec.gob.dinardap.sftp</groupId>
+			<artifactId>dinardap-sftp</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
+		<!--dependency> <groupId>ec.gob.dinardap.correo</groupId> <artifactId>dinardap-correo</artifactId> 
+			<type>ejb</type> <scope>provided</scope> </dependency -->
 	</dependencies>
 
 	<build>
