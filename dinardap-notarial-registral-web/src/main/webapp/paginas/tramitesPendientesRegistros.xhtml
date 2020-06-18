@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+<!-- 
+		Replace path to template, title, header and body
+		with actual data.
+	 -->
+<ui:composition template="/template/general.xhtml">
+	<ui:define name="content">
+		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Trámites Pendientes Registrador</h1>
+		<h:form id="formInicio">			
+			<h:panelGrid columns="2">
+				<p:dataTable id="dtbPendientes" var="dtb"
+					value="#{tramitesPendientesRegistrosCtrl.listaTramitePendiente}"
+					rows="7" paginator="true" paginatorPosition="bottom"
+					selectionMode="single"
+					rowKey="#{dtb.codigo}"
+					selection="#{tramitesPendientesRegistrosCtrl.selectedTramite}"
+					lazy="true" 
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					emptyMessage="No existen registros"
+					filteredValue="#{tramitesPendientesRegistrosCtrl.filtro}">
+					<p:ajax event="rowSelect"
+						listener="#{tramitesPendientesRegistrosCtrl.filaSeleccionada}"
+						update=":formRegistrador" />
+					<p:column headerText="#{etiquetas['codigo.tramite']}" width="105"
+						filterBy="#{dtb.codigo}" sortBy="#{dtb.codigo}"
+						filterMatchMode="contains">
+						<h:outputText value="#{dtb.codigo}" />
+					</p:column>
+					<p:column headerText="#{etiquetas['nombre.institucion']}"
+						width="160">
+						<h:outputText value="#{dtb.institucion}"
+							styleClass="texto-justificado" />
+					</p:column>
+					<p:column headerText="#{etiquetas['registrado.por']}" width="100">
+						<h:outputText value="#{dtb.registradoPor}"
+							styleClass="texto-justificado" />
+					</p:column>
+					<p:column headerText="#{etiquetas['fecha.registro']}" width="100">
+						<h:outputText value="#{dtb.fechaRegistro}"
+							styleClass="texto-justificado">
+							<f:convertDateTime pattern="yyyy-MM-dd" />
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="formRegistrador">
+			<p:panel style="width: 100%"
+					header="#{etiquetas['tramite.seleccionado']}">
+				<h:panelGrid columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+					<p:outputLabel id="codigoTramite" for="codigo"
+						value="#{etiquetas['nombre.codigoValidacionTramite']}" />
+					<p:inputText id="codigo"
+						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.tramite.codigo}"
+						readonly="true">
+					</p:inputText>
+					<p:outputLabel for="identificacion"
+						value="#{etiquetas['identificacion']}" />
+					<p:inputText render="" id="identificacion"
+						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.tramite.identificacionRequirente}"
+						size="64" readonly="true">
+					</p:inputText>
+					<p:outputLabel for="requirente"
+						value="#{etiquetas['nombre.requirente']}" />
+					<p:inputText id="requirente"
+						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.tramite.nombreRequirente}"
+						size="64" readonly="true">
+					</p:inputText>
+					<p:outputLabel for="correo"
+						value="#{etiquetas['correo.electronico']}" />
+					<p:inputText id="correo"
+						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.tramite.correoRequirente}"
+						size="64" readonly="true">
+					</p:inputText>
+					<p:outputLabel for="btnDescargaActoNotarial"
+						value="#{etiquetas['acto.notarial']}" />
+					<h:commandLink id="btnDescargaActoNotarial" target="_blank"
+						value="Descargar" immediate="true"
+						action="#{tramitesPendientesRegistrosCtrl.descargarActoNotarial}">
+						<i class="fa fa-file-pdf-o fa-lg actoNotarial"></i>
+					</h:commandLink>										
+				</h:panelGrid>
+				</p:panel>
+				<p:panel 
+				header="#{etiquetas['seccion.registros']}"
+				style = "margin-bottom:20px;">
+				<h:panelGrid columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+						<h:outputText value="#{etiquetas['estado.tramite']}*" />
+					<p:selectOneMenu id="somEstadoTramite" disabled=""
+						value="#{tramitesPendientesRegistrosCtrl.estadoTramite}"
+						required="true"
+						requiredMessage="Estado : #{mensajes['requerido']}">
+						<p:ajax event="change"
+							listener="#{tramitesPendientesRegistrosCtrl.cambiarEstadoTramite}"
+							update="@form observacionInconsistente observacionCerrado fupDocumentoRegistral oplDocumento" />
+						<f:selectItem itemLabel="Seleccionar .." itemValue="#{null}" />
+						<f:selectItem itemLabel="INCONSISTENTE" itemValue="4" />
+						<f:selectItem itemLabel="CERRADO" itemValue="5" />
+					</p:selectOneMenu>
+					</h:panelGrid>
+				<h:panelGrid columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">	
+					<h:outputText rendered="#{!tramitesPendientesRegistrosCtrl.estadoInconsistente}"
+					value="#{etiquetas['observacion']}*" />
+					<p:inputTextarea id="observacionInconsistente"
+						rendered="#{!tramitesPendientesRegistrosCtrl.estadoInconsistente}"
+						disabled="" rows="4" cols="60" autoResize="true"
+						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.observacionRegistro}"
+						size="500" maxlength="512" required="true"
+						requiredMessage="Observación : #{mensajes['requerido']}" />					
+					</h:panelGrid>
+					<h:panelGrid columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
+					<h:outputText rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
+					value="#{etiquetas['observacion']}" />	
+					<p:inputTextarea id="observacionCerrado"
+						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
+						disabled="" rows="4" cols="60" autoResize="true"
+						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.observacionRegistro}"
+						size="500" maxlength="512" />
+					</h:panelGrid>
+					<h:panelGrid columns="2"
+					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">		
+					<h:outputText
+						id = "oplDocumento"
+						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"						
+						value="#{etiquetas['documento.registral']}*" />
+					<p:fileUpload id="fupDocumentoRegistral"						
+						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
+						style="width:40%" label="#{etiquetas['seleccionar']}"						
+						fileUploadListener="#{tramitesPendientesRegistrosCtrl.subirArchivo}"
+						sizeLimit="6000000" process="@this" allowTypes="/(\.|\/)(pdf)$/"
+						mode="advanced" auto="true"  required="true" update="" />		
+					
+					</h:panelGrid>
+				
+				
+				</p:panel>
+				<h:panelGrid colSpans="12"
+					style="width: 100%; margin: 4px 5px; text-align: center;">
+					<p:commandButton value="#{etiquetas['guardar']}"
+						id="guardarBtn" style="margin-right:20px;" icon="ui-icon-disk"
+						update="@form formInicio:dtbPendientes formRegistrador "
+						action="#{tramitesPendientesRegistrosCtrl.guardarTramite}" />
+				</h:panelGrid>
+				
+			
+
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

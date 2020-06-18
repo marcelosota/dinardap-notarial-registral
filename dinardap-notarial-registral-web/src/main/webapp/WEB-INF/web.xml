@@ -21,7 +21,8 @@
         <description>Dirección de call back que a la que se deberá redirigir el sistema SAU</description>	
         <param-name>redirect.uri</param-name>
         <!--<param-value>http://url.servidor.pruebas/contextRoot.del.sistema/inicio.html</param-value>  Pruebas -->
-        <param-value>http://url.servidor.desarrollo/contextRoot.del.sistema/inicio.html</param-value> <!-- Desarrollo -->
+       <!--  <param-value>http://url.servidor.desarrollo/contextRoot.del.sistema/inicio.html</param-value>-->
+   		<param-value>http://localhost:8080/notarial/inicio.html</param-value>
     </context-param>
     <context-param>	
         <description>URL que permite conectar con la pantalla de autenticación en SAU</description>

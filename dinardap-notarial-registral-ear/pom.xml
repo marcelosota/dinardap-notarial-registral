@@ -49,16 +49,6 @@
             <version>1.5-SNAPSHOT</version>
             <type>ejb</type>            
         </dependency>        
-        <!--<dependency>
-            <groupId>ec.gob.dinardap.correo</groupId>
-            <artifactId>dinardap-correo</artifactId>
-            <type>ejb</type>
-        </dependency>
-        <dependency>
-            <groupId>ec.gob.dinardap.geografico</groupId>
-            <artifactId>dinardap-geografico-ejb</artifactId>
-            <type>ejb</type>
-        </dependency>-->
     </dependencies>
 
     <build>
@@ -134,3 +124,4 @@
         </plugins>
     </build>
 </project>
+

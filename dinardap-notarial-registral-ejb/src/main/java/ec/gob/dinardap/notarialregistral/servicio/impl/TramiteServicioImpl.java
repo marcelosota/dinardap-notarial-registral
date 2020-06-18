@@ -1,21 +1,30 @@
 package ec.gob.dinardap.notarialregistral.servicio.impl;
 
-import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
-import ec.gob.dinardap.correo.util.MailMessage;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
 
+import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
+import ec.gob.dinardap.correo.servicio.MailServicio;
+import ec.gob.dinardap.correo.util.MailMessage;
+import ec.gob.dinardap.notarialregistral.constante.ParametroEnum;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
+import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
-import ec.gob.dinardap.notarialregistral.util.Credenciales;
 import ec.gob.dinardap.notarialregistral.util.GeneradorCodigo;
 import ec.gob.dinardap.persistence.constante.CriteriaTypeEnum;
 import ec.gob.dinardap.persistence.dao.GenericDao;
 import ec.gob.dinardap.persistence.servicio.impl.GenericServiceImpl;
 import ec.gob.dinardap.persistence.util.Criteria;
-import java.util.ArrayList;
-import java.util.List;
+import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
 
 @Stateless(name = "TramiteServicio")
 public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> implements TramiteServicio {
@@ -23,8 +32,14 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     @EJB
     private TramiteDao tramiteDao;
 
+    //@EJB
+    //private ClienteQueueMailServicio clienteQueueMailServicio;
+    
     @EJB
-    private ClienteQueueMailServicio clienteQueueMailServicio;
+    private ParametroServicio parametroServicio;
+    
+    @EJB
+    private MailServicio mailServicio;
 
     @Override
     public GenericDao<Tramite, Long> getDao() {
@@ -65,12 +80,21 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
             asunto.append("Notificación SANYR");
         }
 //        asunto.append("Confirmación de solicitud para categorizar a la empresa: ");
-        mailMessage = new Credenciales().credencialesCorreo();
+        //mailMessage = new Credenciales().credencialesCorreo();
+        mailMessage = credencialesCorreo();
         mailMessage.setTo(to);
         mailMessage.setSubject(asunto.toString());
         mailMessage.setText(html.toString());
-        //mailServicio.sender(mailMessage);
-        clienteQueueMailServicio.encolarMail(mailMessage);
+        try {
+			mailServicio.sendMail(mailMessage);
+		} catch (AuthenticationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        //clienteQueueMailServicio.encolarMail(mailMessage);
     }
 
     @Override
@@ -129,5 +153,33 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
             }
         }
         return tramiteList;
+    }
+
+	@Override
+	public boolean guardarRegistro(TramiteRegistradorDto tramiteDto) {
+		try {
+			if (tramiteDto.getTramite() != null) {
+				tramiteDto.getTramite().setFechaCierre(new Timestamp(new Date().getTime()));
+				tramiteDto.getTramite().setFechaDescarga(tramiteDto.getFechaDescarga());
+				tramiteDto.getTramite().setCerradoPor(tramiteDto.getCerradoPor());
+				tramiteDto.getTramite().setObservacion(tramiteDto.getObservacionRegistro());
+				tramiteDto.getTramite().setEstado(tramiteDto.getEstado());
+				update(tramiteDto.getTramite());
+
+			}
+			return true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}	
+	
+	private MailMessage credencialesCorreo() {
+        MailMessage credenciales = new MailMessage();
+        credenciales.setFrom(parametroServicio.findByPk(ParametroEnum.MAIL_SANYR.name()).getValor());
+        credenciales.setUsername(parametroServicio.findByPk(ParametroEnum.MAIL_USERNAME_SANYR.name()).getValor());
+        credenciales.setPassword(parametroServicio.findByPk(ParametroEnum.MAIL_CONTRASENA_SANYR.name()).getValor());
+        return credenciales;
     }
 }

@@ -19,5 +19,19 @@ public class LogDescargaServicioImpl extends GenericServiceImpl<LogDescarga, Int
 	public GenericDao<LogDescarga, Integer> getDao() {
 		return logDescargaDao;
 	}
+	public boolean guardarLogDescarga(LogDescarga logDescarga) {
+		try {
+
+			if (logDescarga != null) {
+				create(logDescarga);
+
+			}
+			return true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 }
