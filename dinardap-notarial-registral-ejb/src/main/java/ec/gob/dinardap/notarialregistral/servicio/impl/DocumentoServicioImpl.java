@@ -3,7 +3,6 @@ package ec.gob.dinardap.notarialregistral.servicio.impl;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,25 +11,22 @@ import javax.ejb.Stateless;
 
 import org.apache.commons.io.FilenameUtils;
 
-import ec.gob.dinardap.notarialregistral.dto.DocumentoDto;
-
 import ec.gob.dinardap.notarialregistral.constante.ParametroEnum;
 import ec.gob.dinardap.notarialregistral.dao.DocumentoDao;
+import ec.gob.dinardap.notarialregistral.dto.DocumentoDto;
 import ec.gob.dinardap.notarialregistral.dto.SftpDto;
 import ec.gob.dinardap.notarialregistral.modelo.Documento;
 import ec.gob.dinardap.notarialregistral.servicio.DocumentoServicio;
-import ec.gob.dinardap.notarialregistral.util.FechaHoraSistema;
 import ec.gob.dinardap.notarialregistral.util.GeneradorCodigo;
 import ec.gob.dinardap.persistence.constante.CriteriaTypeEnum;
 import ec.gob.dinardap.persistence.dao.GenericDao;
 import ec.gob.dinardap.persistence.servicio.impl.GenericServiceImpl;
 import ec.gob.dinardap.persistence.util.Criteria;
 import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
-import ec.gob.dinardap.util.constante.EstadoEnum;
-import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
 import ec.gob.dinardap.sftp.exception.FtpException;
 import ec.gob.dinardap.sftp.util.CredencialesSFTP;
 import ec.gob.dinardap.sftp.util.GestionSFTP;
+import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Stateless(name = "DocumentoServicio")
 public class DocumentoServicioImpl extends GenericServiceImpl<Documento, Long> implements DocumentoServicio {
@@ -48,9 +44,9 @@ public class DocumentoServicioImpl extends GenericServiceImpl<Documento, Long> i
 
 	@Override
 	public void crearDocumento(Documento documento, SftpDto sftpDto) {
-//        sftpDto.setCredencialesSFTP(setCredencialesSftp(sftpDto.getCredencialesSFTP()));
+        sftpDto.setCredencialesSFTP(setCredencialesSftp(sftpDto.getCredencialesSFTP()));
 		this.create(documento);
-//        guardarArchivo(sftpDto);
+        guardarArchivo(sftpDto);
 	}
 
 	@Override
@@ -134,7 +130,7 @@ public class DocumentoServicioImpl extends GenericServiceImpl<Documento, Long> i
 		CredencialesSFTP credenciales = getCredenciales();
 		String nombre = "";
 		String codigo = "";
-
+		String origen = parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
 		codigo = GeneradorCodigo.generarCodigo(documentoDto.getDocumento().getTramite().getInstitucion().getInstitucionId());
 		nombre = codigo.concat(".").concat(FilenameUtils.getExtension(documentoDto.getDocumento().getNombreCarga()));
 		System.out.println("nombre"+nombre);
@@ -142,8 +138,9 @@ public class DocumentoServicioImpl extends GenericServiceImpl<Documento, Long> i
 		credenciales.setDirDestino(documentoDto.getDocumento().getRuta().concat(nombre));
 		try {
 			GestionSFTP.subirArchivo(documentoDto.getContenido(), credenciales);
+			
 			documentoDto.getDocumento().setFechaCarga(new Timestamp(new Date().getTime()));
-			documentoDto.getDocumento().setRuta(credenciales.getDirDestino());
+			documentoDto.getDocumento().setRuta(origen.concat(credenciales.getDirDestino()));
 			create(documentoDto.getDocumento());
 			return true;
 		} catch (FtpException e) {

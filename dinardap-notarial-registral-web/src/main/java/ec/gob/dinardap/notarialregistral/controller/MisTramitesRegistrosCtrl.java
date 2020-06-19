@@ -61,17 +61,17 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 
 	@PostConstruct
 	protected void init() {
-		listaTramitesCerrados = new ArrayList<>();
+		listaTramitesCerrados = new ArrayList<TramiteRegistradorDto>();
 		tramiteDto = new TramiteRegistradorDto();
 		selectedTramite = new TramiteRegistradorDto();
 		tramiteDto.setTramite(new Tramite());
 		documentoDto = new DocumentoDto();
 		usuario = new Usuario();
-		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
+		//usuario = usuarioServicio.obtenerUsuarioPorIdentificacion(getLoggedUser());
+		usuario = usuarioServicio.findByPk(Integer.parseInt(getLoggedUser()));
 		//// modificar el canton del usuario logueado
 		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
-		//institucionId = Integer.parseInt(this.getSessionVariable("institucionId"));
-		institucionId = 6;
+		institucionId = Integer.parseInt(getSessionVariable("institucionId"));
 		cantonId = institucionServicio.findByPk(institucionId).getCanton().getCantonId();
 
 	}
@@ -173,7 +173,6 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 	////////// funciones
 	public void descargarActoNotarial() {
 		try {
-			FechaHoraSistema fecha = new FechaHoraSistema();
 			TipoArchivo tipoArchivo = new TipoArchivo();
 			Documento documento = new Documento();
 			documento = documentoServicio.buscarPorTramiteRegistros(getTramiteId(),
@@ -199,7 +198,6 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 
 	public void descargarDocumentoRegistral() {
 		try {
-			FechaHoraSistema fecha = new FechaHoraSistema();
 			TipoArchivo tipoArchivo = new TipoArchivo();
 			Documento documento = new Documento();
 			documento = documentoServicio.buscarPorTramiteRegistros(getTramiteId(),

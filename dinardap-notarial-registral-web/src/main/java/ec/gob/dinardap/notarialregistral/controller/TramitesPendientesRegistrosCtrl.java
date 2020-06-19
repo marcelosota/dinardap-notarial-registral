@@ -3,13 +3,10 @@ package ec.gob.dinardap.notarialregistral.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
@@ -19,7 +16,6 @@ import org.primefaces.event.SelectEvent;
 
 import ec.gob.dinardap.notarialregistral.constante.ContextoEnum;
 import ec.gob.dinardap.notarialregistral.constante.EstadoTramiteEnum;
-import ec.gob.dinardap.notarialregistral.constante.ParametroEnum;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.DocumentoDto;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
@@ -31,7 +27,6 @@ import ec.gob.dinardap.notarialregistral.servicio.LogDescargaServicio;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
 import ec.gob.dinardap.notarialregistral.util.FechaHoraSistema;
 import ec.gob.dinardap.seguridad.modelo.Usuario;
-import ec.gob.dinardap.seguridad.servicio.AsignacionInstitucionServicio;
 import ec.gob.dinardap.seguridad.servicio.InstitucionServicio;
 import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
 import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
@@ -83,9 +78,9 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		subirArchivoB = true;
 		estadoInconsistente = true;
 		usuario = new Usuario();
-		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
-		//institucionId = Integer.parseInt(this.getSessionVariable("institucionId"));
-		institucionId = 6;
+		//usuario = usuarioServicio.obtenerUsuarioPorIdentificacion(getLoggedUser());
+		usuario = usuarioServicio.findByPk(Integer.parseInt(getLoggedUser()));
+		institucionId = Integer.parseInt(getSessionVariable("institucionId"));
 		//// modificar el canton del usuario logueado
 
 	}
@@ -220,15 +215,14 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 			String anio = String.valueOf(c.get(Calendar.YEAR));
 			String mes = String.valueOf(mesActual);
 			String dia = String.valueOf(c.get(Calendar.DATE));
-			String origen = null;
+			//String origen = null;
 			System.out.println("tramiteobjeto" + tramiteDto.getTramite());
 
 			if (tramiteDto.getTramite() != null) {
 
-				origen = parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
-				String ruta = origen.concat(anio).concat("/").concat(mes).concat("/").concat(dia).concat("/")
-						.concat(String.valueOf(tramiteDto.getTramite().getInstitucion().getInstitucionId()))
-						.concat("/");
+				//origen = parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
+				String ruta = anio.concat("/").concat(mes).concat("/").concat(dia).concat("/")
+						.concat(getInstitucionId().toString()).concat("/");
 				System.out.println("subir" + ruta);
 
 				Tramite objTramite = tramiteServicio.findByPk(tramiteId);

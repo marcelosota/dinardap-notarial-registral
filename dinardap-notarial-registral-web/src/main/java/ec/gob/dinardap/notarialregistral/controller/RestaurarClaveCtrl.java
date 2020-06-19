@@ -1,8 +1,6 @@
 package ec.gob.dinardap.notarialregistral.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -12,10 +10,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
-import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
-import ec.gob.dinardap.correo.servicio.MailServicio;
-import ec.gob.dinardap.correo.util.MailMessage;
-import ec.gob.dinardap.notarialregistral.constante.ParametroEnum;
+import ec.gob.dinardap.notarialregistral.util.Email;
+//import ec.gob.dinardap.notarialregistral.util.Email;
 import ec.gob.dinardap.notarialregistral.util.GeneradorCodigo;
 import ec.gob.dinardap.seguridad.modelo.Usuario;
 import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
@@ -36,8 +32,8 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 	//@EJB
 	//private ClienteQueueMailServicio clienteQueueMailServicio;
 
-	@EJB
-	private MailServicio mailServicio;
+	//@EJB
+	//private MailServicio mailServicio;
 
 	@EJB
 	private ParametroServicio parametroServicio;
@@ -50,11 +46,12 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 		Usuario usuario = usuarioServicio.obtenerUsuarioPorIdentificacion(getNombreUsuario());
 		if (usuario != null) {
 			if (usuario.getCorreoElectronico().equals(getCorreoElectronico())) {
-				usuario.setContrasena(EncriptarCadenas.encriptarCadenaSha1(GeneradorCodigo.generarCodigo(12)));
+				String clave = GeneradorCodigo.generarCodigo(12);
+				usuario.setContrasena(EncriptarCadenas.encriptarCadenaSha1(clave));
 				usuario.setFechaModificacion(new Date());
 				System.out.println("Enviar Correo");
 				try {
-					MailMessage mailMessage = new MailMessage();
+					/*MailMessage mailMessage = new MailMessage();
 
 					StringBuilder html = new StringBuilder(200);
 					html.append("<br />Estimado/a: <br />");
@@ -77,9 +74,11 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 					mailMessage = credencialesCorreo();
 					mailMessage.setTo(to);
 					mailMessage.setSubject(asunto.toString());
-					mailMessage.setText(html.toString());
-					mailServicio.sendMail(mailMessage);
+					mailMessage.setText(html.toString());*/
+					//mailServicio.sendMail(mailMessage);
 					//clienteQueueMailServicio.encolarMail(mailMessage);
+					Email email = new Email();
+					email.sendMail(usuario.getCorreoElectronico(), "Prueba", clave);
 
 					usuarioServicio.update(usuario);
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -99,13 +98,13 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 		}
 	}
 
-	private MailMessage credencialesCorreo() {
+	/*private MailMessage credencialesCorreo() {
 		MailMessage credenciales = new MailMessage();
 		credenciales.setFrom(parametroServicio.findByPk(ParametroEnum.MAIL_SANYR.name()).getValor());
 		credenciales.setUsername(parametroServicio.findByPk(ParametroEnum.MAIL_USERNAME_SANYR.name()).getValor());
 		credenciales.setPassword(parametroServicio.findByPk(ParametroEnum.MAIL_CONTRASENA_SANYR.name()).getValor());
 		return credenciales;
-	}
+	}*/
 
 	// Getters & Setters
 	public String getNombreUsuario() {

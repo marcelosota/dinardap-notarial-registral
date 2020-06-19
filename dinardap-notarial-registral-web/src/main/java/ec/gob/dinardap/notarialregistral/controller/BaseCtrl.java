@@ -162,7 +162,7 @@ public class BaseCtrl implements Serializable {
 
     protected static String getLoggedUser() {
         Map<String, Object> sesion = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        return sesion.get("usuario").toString();
+        return sesion.get("usuarioId").toString();
     }
 
     /**
