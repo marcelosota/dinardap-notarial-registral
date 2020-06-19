@@ -7,8 +7,10 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
+import ec.gob.dinardap.notarialregistral.constante.ContextoEnum;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
+import ec.gob.dinardap.notarialregistral.modelo.Documento;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.util.FechaHoraSistema;
 import ec.gob.dinardap.persistence.dao.ejb.GenericDaoEjb;
@@ -141,5 +143,5 @@ public class TramiteDaoEjb extends GenericDaoEjb<Tramite, Long> implements Trami
 		}
 		return misTramites;
 	}
-
+	
 }

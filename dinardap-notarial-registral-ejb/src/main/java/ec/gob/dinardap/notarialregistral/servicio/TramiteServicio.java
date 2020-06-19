@@ -14,6 +14,8 @@ public interface TramiteServicio extends GenericService<Tramite, Long> {
 
     public void crearTramite(Tramite tramite);
 
+    public void actuliazarEstadoTramite(Tramite tramite);
+
     public Tramite getTramiteByCodigoValidacionTramite(String codigoValidacionTramite);
 
     public Boolean existenciaTramiteAsociado(Long tramiteId);

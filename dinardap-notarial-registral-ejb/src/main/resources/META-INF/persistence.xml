@@ -6,10 +6,6 @@
 	<persistence-unit name="notarial-registral-pu">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>java:jboss/datasources/dinardapDS</jta-data-source>
-		<class>ec.gob.dinardap.notarialregistral.Documento</class>
-		<class>ec.gob.dinardap.notarialregistral.LogDescarga</class>
-		<class>ec.gob.dinardap.notarialregistral.TipoTramite</class>
-		<class>ec.gob.dinardap.notarialregistral.Tramite</class>	
 		<class>ec.gob.dinardap.seguridad.modelo.Asignacion</class>
 		<class>ec.gob.dinardap.seguridad.modelo.AsignacionInstitucion</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Campo</class>

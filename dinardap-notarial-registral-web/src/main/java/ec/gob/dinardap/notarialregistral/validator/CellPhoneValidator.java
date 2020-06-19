@@ -36,7 +36,7 @@ public class CellPhoneValidator implements Validator<Object>, ClientValidator {
         if (!pattern.matcher(value.toString()).matches()) {
             throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Celular: Error de Validación: " + value + ", no es un número de celular válido.",
-                    "Is not a valid email"));
+                    "Número telefónico no valido"));
         }
     }
 

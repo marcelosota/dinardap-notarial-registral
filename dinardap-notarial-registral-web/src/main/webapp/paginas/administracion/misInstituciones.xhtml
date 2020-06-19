@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/general.xhtml">
+	<ui:define name="content">
+		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Mis Instituciones</h1>
+		<h:form id="formInicio">
+			<p:dataTable id="dtbMisInstituciones"
+				value="#{misInstitucionesCtrl.listaInstituciones}"
+				filteredValue="#{misInstitucionesCtrl.filtro}" var="inst" paginator="true"
+				rows="8" paginatorPosition="bottom">
+				<p:column headerText="" 
+					sortBy="#{inst.institucionId}"
+					filterBy="#{inst.institucionId}" 
+					filterMatchMode="contains" 
+					width="10%"
+					visible="false">
+					<h:outputText value="#{inst.institucionId}" />
+				</p:column>
+				<p:column headerText="#{etiquetas['ruc']}" 
+					sortBy="#{inst.ruc}"
+					filterBy="#{inst.ruc}" 
+					filterMatchMode="contains" 
+					width="18%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{inst.ruc}" style="font-size: 8pt;"/>
+				</p:column>
+				<p:column headerText="#{etiquetas['nombre.institucion']}" 
+					sortBy="#{inst.nombre}"
+					filterBy="#{inst.nombre}" 
+					filterMatchMode="contains" 
+					width="40%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{inst.nombre}" style="font-size: 8pt;"/>
+				</p:column>
+				<p:column headerText="#{etiquetas['siglas']}" 
+					sortBy="#{inst.siglas}"
+					filterBy="#{inst.siglas}" 
+					filterMatchMode="contains" 
+					width="15%">
+					<h:outputText value="#{inst.siglas}" style="font-size: 8pt;"/>
+				</p:column>
+				<p:column headerText="#{etiquetas['tipo.institucion']}" 
+					sortBy="#{inst.tipoInstitucion.descripcion}"
+					filterBy="#{inst.tipoInstitucion.descripcion}" 
+					filterMatchMode="contains" 
+					width="15%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{inst.tipoInstitucion.descripcion}" style="font-size: 8pt;"/>
+				</p:column>
+				<p:column headerText="#{etiquetas['provincia']}" 
+					sortBy="#{inst.canton.provincia.nombre}"
+					filterBy="#{inst.canton.provincia.nombre}" 
+					filterMatchMode="contains" 
+					width="18%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{inst.canton.provincia.nombre}" style="font-size: 8pt;"/>
+				</p:column>
+				<p:column headerText="#{etiquetas['canton']}" 
+					sortBy="#{inst.canton.nombre}"
+					filterBy="#{inst.canton.nombre}" 
+					filterMatchMode="contains" 
+					width="18%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{inst.canton.nombre}" style="font-size: 8pt;"/>
+				</p:column>
+				<p:column headerText="#{etiquetas['codigo.sau']}" 
+					sortBy="#{inst.codigoIs}"
+					filterBy="#{inst.codigoIs}" 
+					filterMatchMode="contains" 
+					width="12%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{inst.codigoIs}" style="font-size: 8pt;"/>
+				</p:column>
+				<p:column headerText="#{etiquetas['estado']}" 
+					sortBy="#{inst.estado}"
+					filterBy="#{inst.estado}" 
+					filterMatchMode="contains" 
+					width="10%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{inst.estado}" style="font-size: 8pt;"/>
+				</p:column>
+				<p:column headerText="#{etiquetas['acciones']}"
+					width="10%">
+					<p:commandButton id="btnVer"
+						action="#{misInstitucionesCtrl.verInstitucion}"
+						icon="fa fa-fw fa-eye" immediate="true" process="@this"
+						partialSubmit="true">
+						<f:setPropertyActionListener value="#{inst.institucionId}" target="#{misInstitucionesCtrl.institucionId}" />
+					</p:commandButton>
+					<p:tooltip for="btnVer" value="#{etiquetas['ver.institucion']}" />
+					</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

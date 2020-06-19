@@ -63,7 +63,7 @@
 		<dependency>
 			<groupId>net.bootsfaces</groupId>
 			<artifactId>bootsfaces</artifactId>
-			<version>1.4.1</version>
+			<version>1.4.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.primefaces</groupId>
@@ -94,21 +94,27 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-
-        <!-- EJB's -->
-		<dependency>
-			<groupId>ec.gob.dinardap.seguridad</groupId>
-			<artifactId>dinardap-seguridad-ejb</artifactId>
-			<version>2.0-SNAPSHOT</version>
-			<scope>provided</scope>
-			<type>ejb</type>
-		</dependency>
-		<dependency>
-			<groupId>ec.gob.dinardap.autorizacion</groupId>
-			<artifactId>dinardap-autorizacion</artifactId>
-			<version>2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
+<!-- EJB's -->        
+        <dependency>
+            <groupId>ec.gob.dinardap.seguridad</groupId>
+            <artifactId>dinardap-seguridad-ejb</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ec.gob.dinardap.autorizacion</groupId>
+            <artifactId>dinardap-autorizacion</artifactId>
+            <version>2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ec.gob.dinardap.geografico</groupId>
+            <artifactId>dinardap-geografico-ejb</artifactId>
+            <version>1.5-SNAPSHOT</version>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>ec.gob.dinardap.clientesw</groupId>
             <artifactId>clienteInteroperador-V2</artifactId>
             <version>1.0</version>
@@ -118,15 +124,8 @@
             <groupId>ec.gob.dinardap.notarialregistral</groupId>
             <artifactId>dinardap-notarial-registral-ejb</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-        	<groupId>ec.gob.dinardap.geografico</groupId>
-        	<artifactId>dinardap-geografico-ejb</artifactId>
-        	<version>1.5-SNAPSHOT</version>
-        	<type>ejb</type>
-        	<scope>provided</scope>
-        </dependency>
-	</dependencies>
+        </dependency>        
+    </dependencies>
 
     <build>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven 

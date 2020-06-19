@@ -70,15 +70,14 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
 		//// modificar el canton del usuario logueado
 		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
-		//institucionId = Integer.parseInt(this.getSessionVariable("institucionId"));
-		institucionId = 6;
+		institucionId = Integer.parseInt(getSessionVariable("institucionId"));
 		cantonId = institucionServicio.findByPk(institucionId).getCanton().getCantonId();
 
 	}
 
 	public List<TramiteRegistradorDto> getListaTramitesCerrados() {
 		listaTramitesCerrados = tramiteDao.misTramites(ContextoEnum.NOTARIAL.getContexto(),
-				ContextoEnum.REGISTRAL.getContexto(), EstadoTramiteEnum.CERRADO.getEstado(), cantonId);
+		ContextoEnum.REGISTRAL.getContexto(), EstadoTramiteEnum.CERRADO.getEstado(), cantonId);		
 		if (!listaTramitesCerrados.isEmpty()) {
 			if (filtro == null)
 				filtro = listaTramitesCerrados;

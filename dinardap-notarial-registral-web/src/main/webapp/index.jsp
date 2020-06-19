@@ -1,5 +1,4 @@
 <%
-		
-	session.invalidate();
-	response.sendRedirect("home.jsf");
+    session.invalidate();
+    response.sendRedirect("home.jsf");
 %>

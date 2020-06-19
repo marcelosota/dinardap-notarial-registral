@@ -36,20 +36,28 @@
 					width="25%">
 					<h:outputText value="#{usu.nombre}" />
 				</p:column>
-				<p:column headerText="#{etiquetas['registro.mercantil']}" 
-					sortBy="#{usu.registroMercantil.nombre}"
-					filterBy="#{usu.registroMercantil.nombre}" 
+				<p:column headerText="#{etiquetas['cargo']}" 
+					sortBy="#{usu.cargo}"
+					filterBy="#{usu.cargo}" 
+					filterMatchMode="contains" 
+					width="10%">
+					<h:outputText value="#{usu.cargo}" />
+				</p:column>
+				<p:column headerText="#{etiquetas['correo.electronico']}" 
+					sortBy="#{usu.correoElectronico}"
+					filterBy="#{usu.correoElectronico}" 
 					filterMatchMode="contains" 
 					width="35%"
 					style="font-size: 10pt;">
-					<h:outputText value="#{usu.registroMercantil.nombre}" />
+					<h:outputText value="#{usu.correoElectronico}" />
 				</p:column>
-				<p:column headerText="#{etiquetas['perfil']}" 
-					sortBy="#{usu.perfil}"
-					filterBy="#{usu.perfil}" 
+				<p:column headerText="#{etiquetas['telefono']}" 
+					sortBy="#{usu.telefono}"
+					filterBy="#{usu.telefono}" 
 					filterMatchMode="contains" 
-					width="10%">
-					<h:outputText value="#{usu.perfil.nombre}" />
+					width="35%"
+					style="font-size: 10pt;">
+					<h:outputText value="#{usu.telefono}" />
 				</p:column>
 				<p:column headerText="#{etiquetas['estado']}" 
 					sortBy="#{usu.estado}"

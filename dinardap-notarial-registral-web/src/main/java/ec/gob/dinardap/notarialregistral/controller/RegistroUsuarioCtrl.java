@@ -106,7 +106,7 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 		getUsuarioDto().setContrasena(EncriptarCadenas.encriptarCadenaSha1(getUsuarioDto().getContrasena()));
 		usuarioDto = usuarioServicio.crearUsuario(getUsuarioDto());
 		if(isAsignarEntidad() && usuarioDto.getUsuarioId() != null) {
-			asignacionInstitucionServicio.asiganrUsuarioInstitucion(usuarioDto.getUsuarioId(), usuarioDto.getInstitucionId());
+			asignacionInstitucionServicio.asignarUsuarioInstitucion(usuarioDto.getUsuarioId(), usuarioDto.getInstitucionId());
 		}
 		if(usuarioDto.getUsuarioId() != null) {	
 			addInfoMessage(getBundleMensaje("registro.guardado", null), null);
@@ -145,10 +145,6 @@ public class RegistroUsuarioCtrl extends BaseCtrl {
 						getUsuarioDto().getCantonId(), 
 						EstadoEnum.ACTIVO.getEstado()));
 		}
-	}
-	
-	public void habilitarPanel() {
-		System.out.println(isAsignarEntidad());
 	}
 	
 	public void limpiarCampos() {
