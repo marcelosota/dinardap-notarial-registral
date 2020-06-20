@@ -396,15 +396,15 @@ table.pf, .pf table {
 	margin-bottom: 0px;
 }
 
-.ui-widget-header {
-	border: 1px solid #3465a4;
-	background: #888a85;
-	color: #ffffff;
-	font-weight: bold;
-}
 .actoNotarial {
 	color: rgb(179, 20, 20);
 }
 .documentoRegistral {
 	color: rgb(149, 85, 29);
+}
+.ui-widget-header {
+	border: 1px solid #3465a4;
+	background: #3465a4;
+	 color:#ffffff;
+	font-weight: bold;
 }
