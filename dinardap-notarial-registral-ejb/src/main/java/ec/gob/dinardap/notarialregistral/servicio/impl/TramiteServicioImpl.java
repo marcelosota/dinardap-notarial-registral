@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.mail.AuthenticationFailedException;
-import javax.mail.MessagingException;
 
 import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
 import ec.gob.dinardap.correo.servicio.MailServicio;
@@ -59,15 +57,15 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
         String parametroAmbiente = "DESARROLLO";
         MailMessage mailMessage = new MailMessage();
 
-        StringBuilder html = new StringBuilder(200);
-        html.append("<br />Estimado/a: <br />");
-        html.append("<br /><br />Le informamos que se ha cargado el Acto Notarial para su Trámite con Código de Validación de Trámite Único: ");
-        html.append(tramite.getCodigo());
-        html.append("<br/>");
-        html.append("<br/>Atentamente,<br/>");
-        html.append("<br/><FONT COLOR=\"#0000ff\" FACE=\"Arial Narrow, sans-serif\"><B> ");
-        html.append("<br/>");
-        html.append("SANYR");
+        StringBuilder html = new StringBuilder("<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
+        html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
+        html.append("Estimad@ " + tramite.getNombreRequirente() + ", <br /><br />");
+        html.append("Le informamos que se ha cargado satisfactoriamente el Acto Notarial.<br />");
+        html.append("CVTU: " + tramite.getCodigo() + "<br/ ><br />");        
+        html.append("Favor ingresar a la plataforma GOB EC para continuar con el proceso.<br/>");
+        html.append("Gracias por usar nuestros servicios.<br /><br />");
+        html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
+        html.append("Dirección Nacional de Registros de Datos Públicos");
         html.append("</B></FONT>");
 
         List<String> to = new ArrayList<String>();
@@ -84,15 +82,7 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
         mailMessage.setTo(to);
         mailMessage.setSubject(asunto.toString());
         mailMessage.setText(html.toString());
-        try {
-			mailServicio.sendMail(mailMessage);
-		} catch (AuthenticationFailedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        
         clienteQueueMailServicio.encolarMail(mailMessage);
         
     }

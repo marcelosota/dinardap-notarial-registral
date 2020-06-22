@@ -58,17 +58,17 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 				try {
 					MailMessage mailMessage = new MailMessage();
 
-					StringBuilder html = new StringBuilder(200);
-					html.append("<br />Estimado/a: ").append(usuario.getNombre()).append("<br />");
-					html.append("<br /><br />Su nueva contraseña temporal es: ");
-					html.append(clave);
-					html.append("<br/>");
-					html.append("<br/>Favor actualizarla una vez autenticado en el sistema<br/>");
-					html.append("<br/>Atentamente,<br/>");
-					html.append("<br/><FONT COLOR=\"#0000ff\" FACE=\"Arial Narrow, sans-serif\"><B> ");
-					html.append("<br/>");
-					html.append("SANYR");
-					html.append("</B></FONT>");
+					StringBuilder html = new StringBuilder("<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
+                    html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
+                    html.append("Estimad@ " + usuario.getNombre() + ", <br /><br />");
+                    html.append("Se ha restablecido sus credenciales con éxito.<br/><br />");
+                    html.append("Usario: " + usuario.getCedula() + "<br/ ><br />");
+                    html.append("Contraseña: " + clave + "<br/ ><br /><br/>");
+                    html.append("Nota: Favor actualizar su contraseña una vez que haya ingresado en el sistema SANYR.<br/>");
+                    html.append("Gracias por usar nuestros servicios.<br /><br />");
+                    html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
+                    html.append("Dirección Nacional de Registros de Datos Públicos");
+                    html.append("</B></FONT>");
 
 					List<String> to = new ArrayList<String>();
 					StringBuilder asunto = new StringBuilder(200);

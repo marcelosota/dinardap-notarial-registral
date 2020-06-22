@@ -16,7 +16,6 @@ import org.primefaces.PrimeFaces;
 
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
-import ec.gob.dinardap.notarialregistral.constante.EstadoTipoTramiteEnum;
 import ec.gob.dinardap.notarialregistral.constante.EstadoTramiteEnum;
 import ec.gob.dinardap.notarialregistral.constante.InteroperabilidadEnum;
 import ec.gob.dinardap.notarialregistral.constante.TipoIdentificacionEnum;
@@ -75,8 +74,8 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
             tipoIdentificacion = TipoIdentificacionEnum.getTipoIdentificacionList().get(0);
         }
 
-        tipoTramiteList = new ArrayList<TipoTramite>();
-        tipoTramiteList = tipoTramiteServicio.getTipoTramiteEstado(EstadoTipoTramiteEnum.ACTIVO.getEstado());
+        //tipoTramiteList = new ArrayList<TipoTramite>();
+        //tipoTramiteList = tipoTramiteServicio.getTipoTramiteEstado(EstadoTipoTramiteEnum.ACTIVO.getEstado());
 
         tramite = new Tramite();
 

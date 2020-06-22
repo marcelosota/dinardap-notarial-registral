@@ -130,7 +130,7 @@ public class DocumentoServicioImpl extends GenericServiceImpl<Documento, Long> i
 		CredencialesSFTP credenciales = getCredenciales();
 		String nombre = "";
 		String codigo = "";
-		String origen = parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
+		//String origen = parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
 		codigo = GeneradorCodigo.generarCodigo(documentoDto.getDocumento().getTramite().getInstitucion().getInstitucionId());
 		nombre = codigo.concat(".").concat(FilenameUtils.getExtension(documentoDto.getDocumento().getNombreCarga()));
 		System.out.println("nombre"+nombre);
@@ -140,7 +140,8 @@ public class DocumentoServicioImpl extends GenericServiceImpl<Documento, Long> i
 			GestionSFTP.subirArchivo(documentoDto.getContenido(), credenciales);
 			
 			documentoDto.getDocumento().setFechaCarga(new Timestamp(new Date().getTime()));
-			documentoDto.getDocumento().setRuta(origen.concat(credenciales.getDirDestino()));
+			//documentoDto.getDocumento().setRuta(origen.concat(credenciales.getDirDestino()));
+			documentoDto.getDocumento().setRuta(credenciales.getDirDestino());
 			create(documentoDto.getDocumento());
 			return true;
 		} catch (FtpException e) {
