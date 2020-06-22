@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/template/general.xhtml">
+		<ui:define name="content">
+			<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Cambiar Contraseña</h1>
+			<h:form id="formInicio">
+				<br/> <br/>
+				<div align="center">
+				<b:panel style="max-width:40pc;vertical-align:middle;width:40pc;border-color:#023767;border-style:ridge;">
+					<h:panelGrid columns="2" id="logueo" style="width:50%;"
+								columnClasses="form-label-derecha, form-input-izquierda">
+						<p:outputLabel for="txtCedula" value="#{etiquetas['cedula']}: *"/>
+						<p:inputText id="txtCedula" value="#{cambiarContrasenaCtrl.cedula}"/>
+						
+						<p:outputLabel for="txtContrasenaActual" value="*#{etiquetas['actual.contrasena']}: *"/>
+						<p:password id="txtContrasenaActual" value="#{cambiarContrasenaCtrl.contrasena}"/>
+						
+						<p:outputLabel for="txtNuevaContrasena" value="#{etiquetas['nueva.contrasena']}:"/>
+						<p:password id="txtNuevaContrasena" 
+							value="#{cambiarContrasenaCtrl.nuevaContrasena}" 
+							match="txtRepetirContrasena"
+							feedback="true"
+							required="true" 
+							label="#{etiquetas['nueva.contrasena']}"/>
+							<!-- requiredMessage="#{etiquetas['nueva.contrasena']} #{mensajes['requerido']}"/-->
+						
+						<p:outputLabel for="txtRepetirContrasena" value="#{etiquetas['repetir.contrasena']}:"/>
+						<p:password id="txtRepetirContrasena" 
+							value="#{cambiarContrasenaCtrl.nuevaContrasena}"
+							feedback="true"
+							required="true" 
+							label="#{etiquetas['repetir.contrasena']}" />
+							<!-- requiredMessage="#{etiquetas['repetir.contrasena']} #{mensajes['requerido']}"/-->
+					</h:panelGrid> 
+					<p:commandButton value="#{etiquetas['cambiar.contrasena']}"
+						actionListener="#{cambiarContrasenaCtrl.modificarContrasena}"
+						update="txtCedula txtContrasenaActual txtNuevaContrasena txtRepetirContrasena msgMensajes"
+						process="@form"/>
+					<p:spacer width="20px;" />
+					<p:commandButton value="#{etiquetas['regresar']}"
+						actionListener="#{cambiarContrasenaCtrl.regresar}" 
+						process="@this"/>
+				</b:panel>
+				</div>
+				
+			</h:form>
+	
+		</ui:define>
+	</ui:composition>
+	 
+	
+</html>

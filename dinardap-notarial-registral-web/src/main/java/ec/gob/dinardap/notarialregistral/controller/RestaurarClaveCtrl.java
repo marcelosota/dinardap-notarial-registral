@@ -11,6 +11,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import ec.gob.dinardap.autorizacion.constante.SemillaEnum;
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
 import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
 import ec.gob.dinardap.correo.servicio.MailServicio;
@@ -51,7 +52,7 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 		if (usuario != null) {
 			if (usuario.getCorreoElectronico().equals(getCorreoElectronico())) {
 				String clave = GeneradorCodigo.generarAleatorio(12);
-				usuario.setContrasena(EncriptarCadenas.encriptarCadenaSha1(clave));
+				usuario.setContrasena(EncriptarCadenas.encriptarCadenaSha1(SemillaEnum.SEMILLA_SEGURIDAD.getSemilla().concat(clave)));
 				usuario.setFechaModificacion(new Date());
 				System.out.println("Enviar Correo");
 				try {

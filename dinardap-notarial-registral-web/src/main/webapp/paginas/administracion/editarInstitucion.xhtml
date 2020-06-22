@@ -35,7 +35,7 @@
 					<p:outputLabel value="#{etiquetas['tipo.institucion']}*:" />
 					<b:selectOneMenu id="cmbTipoInstitucion"
 						value="#{editarInstitucionCtrl.institucionDto.tipoInstitucionId}"
-						editable="true" effect="fold" required="true"
+						required="true"
 						requiredMessage="#{etiquetas['tipo.institucion']} #{mensajes['requerido']}">
 						<f:selectItem itemLabel="#{etiquetas['seleccionar']}"
 							noSelectionOption="true" itemValue="-1" />
@@ -55,8 +55,8 @@
 						value="#{editarInstitucionCtrl.institucionDto.provinciaId}"
 						ajax="true"
 						onchange="ajax:editarInstitucionCtrl.cantonPorProvincia"
-						update="cmbCanton" process="@this" editable="true" effect="fade"
-						filter="true" filterMatchMode="contains" required="true"
+						update="cmbCanton" process="@this" 
+						required="true"
 						requiredMessage="#{etiquetas['provincia']} #{mensajes['requerido']}"
 						style="font-size:x-small; width: 100%;">
 						<f:selectItem itemLabel="#{etiquetas['seleccionar']}"
@@ -68,8 +68,7 @@
 					<p:outputLabel value="#{etiquetas['canton']}*:" />
 					<b:selectOneMenu id="cmbCanton"
 						value="#{editarInstitucionCtrl.institucionDto.cantonId}"
-						editable="true" filter="true" filterMatchMode="startsWith"
-						effect="fold" disabled="#{editarInstitucionCtrl.flagCanton}"
+						disabled="#{editarInstitucionCtrl.flagCanton}"
 						required="true"
 						requiredMessage="#{etiquetas['canton']} #{mensajes['requerido']}"
 						style="font-size:x-small; width:100%">
@@ -117,8 +116,7 @@
 							value="#{etiquetas['nombre.institucion.rectora']}*:" />
 						<b:selectOneMenu id="cmbInstitucionRectora"
 							value="#{editarInstitucionCtrl.institucionDto.adscrita}"
-							editable="true" filter="true" filterMatchMode="contains"
-							effect="fold" disabled="#{editarInstitucionCtrl.flagRectora}"
+							disabled="#{editarInstitucionCtrl.flagRectora}"
 							required="true"
 							required-message="#{etiquetas['nombre.institucion.rectora']} #{mensajes['requerido']}"
 							styleClass="form-combo-centrado">
