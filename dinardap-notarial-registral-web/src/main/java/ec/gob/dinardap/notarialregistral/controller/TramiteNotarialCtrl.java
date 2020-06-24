@@ -1,20 +1,25 @@
 package ec.gob.dinardap.notarialregistral.controller;
 
-import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
-import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+
+import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
+import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
 import ec.gob.dinardap.notarialregistral.constante.EstadoTipoTramiteEnum;
 import ec.gob.dinardap.notarialregistral.constante.EstadoTramiteEnum;
-import ec.gob.dinardap.notarialregistral.constante.TipoIdentificacionEnum;
 import ec.gob.dinardap.notarialregistral.constante.InteroperabilidadEnum;
+import ec.gob.dinardap.notarialregistral.constante.TipoIdentificacionEnum;
 import ec.gob.dinardap.notarialregistral.modelo.TipoTramite;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.TipoTramiteServicio;
@@ -22,14 +27,9 @@ import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
 import ec.gob.dinardap.seguridad.servicio.InstitucionServicio;
 import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
 
-import java.util.Date;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import org.primefaces.PrimeFaces;
-
 @Named(value = "tramiteNotarialCtrl")
 @ViewScoped
-public class tramiteNotarialCtrl extends BaseCtrl implements Serializable {
+public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
     private static final long serialVersionUID = 4955068063614741302L;
     //Declaración de variables
@@ -46,7 +46,6 @@ public class tramiteNotarialCtrl extends BaseCtrl implements Serializable {
     private Tramite tramiteGenerado;
     private Integer institucionId;
     private Integer usuarioId;
-
     //Listas    
     private List<TipoTramite> tipoTramiteList;
     private List<String> tipoIdentificacionList;
@@ -65,11 +64,9 @@ public class tramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
     @PostConstruct
     protected void init() {
-//      institucionId = Integer.parseInt(this.getSessionVariable("institucionId")); //con Login
-        institucionId = 1;  //Sin Login        
-//      usuarioId = Integer.parseInt(this.getSessionVariable("usuarioId")); //con Login
-        usuarioId = 1;  //Sin Login        
-
+    	institucionId = Integer.parseInt(BaseCtrl.getSessionVariable("institucionId")); //con Login
+    	usuarioId = Integer.parseInt(BaseCtrl.getSessionVariable("usuarioId")); // con Login
+    	
         tipoIdentificacionList = new ArrayList<String>();
         tipoIdentificacionList = TipoIdentificacionEnum.getTipoIdentificacionList();
         tipoIdentificacion = "";
@@ -92,8 +89,7 @@ public class tramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
     @SuppressWarnings("unused")
 	public void blurIdentificacionCedula() {
-//        String nombreAux = getNombreCiudadano(tramite.getIdentificacionRequirente());
-        String nombreAux = "Christian Gaona";
+        String nombreAux = getNombreCiudadano(tramite.getIdentificacionRequirente());
         if (nombreAux != null) {
             tramite.setNombreRequirente(nombreAux);
         } else {
@@ -117,7 +113,7 @@ public class tramiteNotarialCtrl extends BaseCtrl implements Serializable {
         
         tramite.setInstitucion(institucionServicio.findByPk(institucionId));
         tramite.setFechaRegistro(new Date());
-        tramite.setRegistradoPor(usuariosServicio.findByPk(1));
+        tramite.setRegistradoPor(usuariosServicio.findByPk(getUsuarioId()));
         tramite.setEstado(EstadoTramiteEnum.GENERADO.getEstado());
         if (tramiteOrigen) {
             Tramite tramiteOriginal = tramiteServicio.getTramiteByCodigoValidacionTramite(codigoTramiteInicial);
@@ -267,5 +263,13 @@ public class tramiteNotarialCtrl extends BaseCtrl implements Serializable {
     public void setCodigoTramiteInicial(String codigoTramiteInicial) {
         this.codigoTramiteInicial = codigoTramiteInicial;
     }
+
+	public Integer getUsuarioId() {
+		return usuarioId;
+	}
+
+	public void setUsuarioId(Integer usuarioId) {
+		this.usuarioId = usuarioId;
+	}
 
 }

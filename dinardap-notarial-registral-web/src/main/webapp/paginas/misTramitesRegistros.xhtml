@@ -19,12 +19,11 @@
 					value="#{misTramitesRegistrosCtrl.listaTramitesCerrados}"
 					rows="7" paginator="true" paginatorPosition="bottom"
 					selectionMode="single"
-					rowKey="#{dtb.codigo}"
+					rowKey="#{dtb.tramiteId}"
 					selection="#{misTramitesRegistrosCtrl.selectedTramite}"
-					lazy="true" 
+					reflow="true"
 					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-					emptyMessage="No existen registros"
-					filteredValue="#{misTramitesRegistrosCtrl.filtro}">
+					emptyMessage="No existen registros">
 					<p:column headerText="#{etiquetas['nombre.codigoCVTU']}" width="20%"
 						filterBy="#{dtb.codigo}" sortBy="#{dtb.codigo}"
 						filterMatchMode="contains">

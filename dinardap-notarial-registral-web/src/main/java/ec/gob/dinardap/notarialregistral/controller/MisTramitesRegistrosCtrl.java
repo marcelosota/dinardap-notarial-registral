@@ -46,8 +46,7 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 	@EJB
 	private ParametroServicio parametroServicio;
 
-	private List<TramiteRegistradorDto> listaTramitesCerrados;
-	private List<TramiteRegistradorDto> filtro;
+	private List<TramiteRegistradorDto> listaTramitesCerrados;	
 	private TramiteRegistradorDto selectedTramite;
 	private TramiteRegistradorDto tramiteDto;
 	private Long tramiteId;
@@ -61,13 +60,14 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 
 	@PostConstruct
 	protected void init() {
-		listaTramitesCerrados = new ArrayList<>();
+		listaTramitesCerrados = new ArrayList<TramiteRegistradorDto>();
 		tramiteDto = new TramiteRegistradorDto();
 		selectedTramite = new TramiteRegistradorDto();
 		tramiteDto.setTramite(new Tramite());
 		documentoDto = new DocumentoDto();
 		usuario = new Usuario();
-		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
+		//usuario = usuarioServicio.obtenerUsuarioPorIdentificacion(getLoggedUser());
+		usuario = usuarioServicio.findByPk(Integer.parseInt(getLoggedUser()));
 		//// modificar el canton del usuario logueado
 		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
 		institucionId = Integer.parseInt(getSessionVariable("institucionId"));
@@ -77,25 +77,14 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 
 	public List<TramiteRegistradorDto> getListaTramitesCerrados() {
 		listaTramitesCerrados = tramiteDao.misTramites(ContextoEnum.NOTARIAL.getContexto(),
-		ContextoEnum.REGISTRAL.getContexto(), EstadoTramiteEnum.CERRADO.getEstado(), cantonId);		
-		if (!listaTramitesCerrados.isEmpty()) {
-			if (filtro == null)
-				filtro = listaTramitesCerrados;
-		}
+		ContextoEnum.REGISTRAL.getContexto(), EstadoTramiteEnum.CERRADO.getEstado(), cantonId);	
+		
 		return listaTramitesCerrados;
 	}
 
 	public void setListaTramitesCerrados(List<TramiteRegistradorDto> listaTramitesCerrados) {
 		this.listaTramitesCerrados = listaTramitesCerrados;
-	}
-
-	public List<TramiteRegistradorDto> getFiltro() {
-		return filtro;
-	}
-
-	public void setFiltro(List<TramiteRegistradorDto> filtro) {
-		this.filtro = filtro;
-	}
+	}	
 
 	public TramiteRegistradorDto getSelectedTramite() {
 		return selectedTramite;
@@ -172,7 +161,6 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 	////////// funciones
 	public void descargarActoNotarial() {
 		try {
-			FechaHoraSistema fecha = new FechaHoraSistema();
 			TipoArchivo tipoArchivo = new TipoArchivo();
 			Documento documento = new Documento();
 			documento = documentoServicio.buscarPorTramiteRegistros(getTramiteId(),
@@ -198,7 +186,6 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 
 	public void descargarDocumentoRegistral() {
 		try {
-			FechaHoraSistema fecha = new FechaHoraSistema();
 			TipoArchivo tipoArchivo = new TipoArchivo();
 			Documento documento = new Documento();
 			documento = documentoServicio.buscarPorTramiteRegistros(getTramiteId(),

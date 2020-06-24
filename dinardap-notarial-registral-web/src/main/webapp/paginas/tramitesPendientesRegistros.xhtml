@@ -18,12 +18,10 @@
 					value="#{tramitesPendientesRegistrosCtrl.listaTramitePendiente}"
 					rows="7" paginator="true" paginatorPosition="bottom"
 					selectionMode="single"
-					rowKey="#{dtb.codigo}"
-					selection="#{tramitesPendientesRegistrosCtrl.selectedTramite}"
-					lazy="true" 
+					rowKey="#{dtb.tramiteId}"
+					selection="#{tramitesPendientesRegistrosCtrl.selectedTramite}"					 
 					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-					emptyMessage="No existen registros"
-					filteredValue="#{tramitesPendientesRegistrosCtrl.filtro}">
+					emptyMessage="No existen registros">
 					<p:ajax event="rowSelect"
 						listener="#{tramitesPendientesRegistrosCtrl.filaSeleccionada}"
 						update=":formRegistrador" />

@@ -8,12 +8,8 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.mail.AuthenticationFailedException;
-import javax.mail.MessagingException;
 
-import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
-import ec.gob.dinardap.correo.servicio.MailServicio;
-import ec.gob.dinardap.correo.util.MailMessage;
+//import ec.gob.dinardap.correo.util.MailMessage;
 import ec.gob.dinardap.notarialregistral.constante.ParametroEnum;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
@@ -38,8 +34,8 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     @EJB
     private ParametroServicio parametroServicio;
     
-    @EJB
-    private MailServicio mailServicio;
+    //@EJB
+    //private MailServicio mailServicio;
 
     @Override
     public GenericDao<Tramite, Long> getDao() {
@@ -53,10 +49,10 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     }
 
     @Override
-    public void actuliazarEstadoTramite(Tramite tramite) {
+    public void actualizarEstadoTramite(Tramite tramite) {
         this.update(tramite);
 
-        String parametroAmbiente = "DESARROLLO";
+       /* String parametroAmbiente = "DESARROLLO";
         MailMessage mailMessage = new MailMessage();
 
         StringBuilder html = new StringBuilder(200);
@@ -84,8 +80,8 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
         mailMessage = credencialesCorreo();
         mailMessage.setTo(to);
         mailMessage.setSubject(asunto.toString());
-        mailMessage.setText(html.toString());
-        try {
+        mailMessage.setText(html.toString());*/
+        /*try {
 			mailServicio.sendMail(mailMessage);
 		} catch (AuthenticationFailedException e) {
 			// TODO Auto-generated catch block
@@ -93,8 +89,9 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
         //clienteQueueMailServicio.encolarMail(mailMessage);
+        
     }
 
     @Override
@@ -175,11 +172,11 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 		}
 	}	
 	
-	private MailMessage credencialesCorreo() {
+	/*private MailMessage credencialesCorreo() {
         MailMessage credenciales = new MailMessage();
         credenciales.setFrom(parametroServicio.findByPk(ParametroEnum.MAIL_SANYR.name()).getValor());
         credenciales.setUsername(parametroServicio.findByPk(ParametroEnum.MAIL_USERNAME_SANYR.name()).getValor());
         credenciales.setPassword(parametroServicio.findByPk(ParametroEnum.MAIL_CONTRASENA_SANYR.name()).getValor());
         return credenciales;
-    }
+    }*/
 }
