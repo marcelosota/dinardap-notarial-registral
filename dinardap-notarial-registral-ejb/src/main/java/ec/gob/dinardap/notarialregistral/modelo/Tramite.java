@@ -48,6 +48,8 @@ public class Tramite implements Serializable {
 
 	@Column(name="correo_requirente")
 	private String correoRequirente;
+	
+	private String descripcion;
 
 	private Short estado;
 
@@ -154,6 +156,14 @@ public class Tramite implements Serializable {
 
 	public void setCorreoRequirente(String correoRequirente) {
 		this.correoRequirente = correoRequirente;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
 	public Short getEstado() {
