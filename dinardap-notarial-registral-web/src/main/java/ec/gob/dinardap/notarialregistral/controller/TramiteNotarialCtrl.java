@@ -88,8 +88,8 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
     @SuppressWarnings("unused")
 	public void blurIdentificacionCedula() {
-//        String nombreAux = getNombreCiudadano(tramite.getIdentificacionRequirente());
-        String nombreAux = "Chris";
+        String nombreAux = getNombreCiudadano(tramite.getIdentificacionRequirente());
+        //String nombreAux = "Chris";
         if (nombreAux != null) {
             tramite.setNombreRequirente(nombreAux);
         } else {
