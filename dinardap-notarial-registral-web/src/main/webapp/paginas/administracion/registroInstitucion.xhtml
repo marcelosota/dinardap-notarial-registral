@@ -1,133 +1,130 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
-<!-- 
-		Replace path to template, title, header and body
-		with actual data.
-	 -->
-<ui:composition template="/template/general.xhtml">
-	<ui:define name="content">
-		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Institución</h1>
-		<h:form id="formInicio">
-			<p:panel style="width:100%;">
-				<h:panelGrid columns="2" style="width:90%;"
-					columnClasses="form-label-derecha, form-input-izquierda">
-					<p:outputLabel value="#{etiquetas['ruc']}*:" />
-					<p:inputText id="txtRuc"
-						value="#{registroInstitucionCtrl.institucionDto.ruc}"
-						maxlength="13" required="true"
-						requiredMessage="#{etiquetas['ruc']} #{mensajes['requerido']}">
-						<f:validateRegex pattern="[0-9]+" />
-						<p:ajax event="blur"
-							listener="#{registroInstitucionCtrl.buscarInstitucion}"
-							update="txtInstitucion btnGuardar" />
-					</p:inputText>
-					<p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
-					<p:inputText id="txtInstitucion"
-						value="#{registroInstitucionCtrl.institucionDto.nombre}"
-						disabled="true" size="100" required="true"
-						requiredMessage="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}" />
-					<p:outputLabel value="#{etiquetas['siglas']}*:" />
-					<p:inputText id="txtSiglas"
-						value="#{registroInstitucionCtrl.institucionDto.siglas}"
-						maxlength="16" size="32" required="true"
-						requiredMessage="#{etiquetas['siglas']} #{mensajes['requerido']}" />
-					<p:outputLabel value="#{etiquetas['tipo.institucion']}*:" />
-					<b:selectOneMenu id="cmbTipoInstitucion"
-						value="#{registroInstitucionCtrl.institucionDto.tipoInstitucionId}"
-						editable="true" effect="fold" required="true"
-						requiredMessage="#{etiquetas['tipo.institucion']} #{mensajes['requerido']}">
-						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1" />
-						<f:selectItems	value="#{registroInstitucionCtrl.listaTipoInstitucion}" var="tipo" 
-							itemLabel="#{tipo.descripcion}" itemValue="#{tipo.tipoInstitucionId}" />
-					</b:selectOneMenu>
-					<p:outputLabel value="#{etiquetas['codigo.sau']}:" />
-					<p:inputText id="txtCodigoSau"
-						value="#{registroInstitucionCtrl.institucionDto.codigoIs}"
-						maxlength="8" size="16">
-						<f:validateRegex pattern="[0-9]+" />
-					</p:inputText>
-					<p:outputLabel value="#{etiquetas['provincia']}*:" />
-					<b:selectOneMenu id="cmbProvincia"
-						value="#{registroInstitucionCtrl.institucionDto.provinciaId}"
-						editable="true" effect="fade" filter="true"
-						filterMatchMode="contains" required="true"
-						requiredMessage="#{etiquetas['provincia']} #{mensajes['requerido']}"
-						ajax="true" onchange="ajax:registroInstitucionCtrl.cantonPorProvincia"
-						process="@this" update="cmbCanton"
-						style="font-size:x-small; width: 100%;">
-						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1" />
-						<f:selectItems value="#{registroInstitucionCtrl.provincia}"
-							var="pro" itemLabel="#{pro.nombre}"
-							itemValue="#{pro.provinciaId}" />
-					</b:selectOneMenu>
-					<p:outputLabel value="#{etiquetas['canton']}*:" />
-					<b:selectOneMenu id="cmbCanton"
-						value="#{registroInstitucionCtrl.institucionDto.cantonId}"
-						editable="true" filter="true" filterMatchMode="startsWith"
-						effect="fold" disabled="#{registroInstitucionCtrl.flagCanton}"
-						required="true"
-						requiredMessage="#{etiquetas['canton']} #{mensajes['requerido']}"
-						style="font-size:x-small; width:100%">
-						<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" />
-						<f:selectItems value="#{registroInstitucionCtrl.canton}" var="can"
-							itemLabel="#{can.nombre}" itemValue="#{can.cantonId}" />
-					</b:selectOneMenu>
-					<p:outputLabel value="#{etiquetas['institucion.adscrita']}*:" />
-					<b:switch id="sbbAdscrita" value="#{registroInstitucionCtrl.flagAdscrita}" 
-						onText="Si" offText="No" onColor="success" offColor="info" 
-						process="@this" update="pnlSalida" ajax="true" />
-				</h:panelGrid>
-			</p:panel>
-			<p:outputPanel id="pnlSalida">
-				<p:panel id="pnlRectora" style="width:100%;"
-					rendered="#{registroInstitucionCtrl.flagAdscrita}">
-					<h:panelGrid columns="2" style="width:90%;"
-						columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda">
-						<p:outputLabel value="#{etiquetas['tipo.rectora']}*:" />
-						<b:selectOneMenu id="cmbTipoInstitucionRectora"
-							value="#{registroInstitucionCtrl.tipoInstitucionRectora}"
-							editable="true" effect="fold" required="true"
-							requiredMessage="#{etiquetas['tipo.rectora']} #{mensajes['requerido']}"
-							ajax="true" update="cmbInstitucionRectora"
-							onchange="#{registroInstitucionCtrl.buscarInstitucionPorTipo}" process="@this">
-							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1" />
-							<f:selectItems value="#{registroInstitucionCtrl.listaTipoInstitucion}" var="tipo" 
-								itemLabel="#{tipo.descripcion}" itemValue="#{tipo.tipoInstitucionId}" />
-						</b:selectOneMenu>
-						<p:outputLabel
-							value="#{etiquetas['nombre.institucion.rectora']}*:" />
-						<b:selectOneMenu id="cmbInstitucionRectora"
-							value="#{registroInstitucionCtrl.institucionDto.adscrita}"
-							editable="true" filter="true" filterMatchMode="contains"
-							effect="fold" disabled="#{registroInstitucionCtrl.flagRectora}"
-							required="true"
-							required-message="#{etiquetas['nombre.institucion.rectora']} #{mensajes['requerido']}"
-							styleClass="form-combo-centrado">
-							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
-							<f:selectItems value="#{registroInstitucionCtrl.listaInstitucionesRectoras}" var="inst" 
-								itemLabel="#{inst.nombre} - #{inst.siglas}" itemValue="#{inst.institucionId}" />
-						</b:selectOneMenu>
-					</h:panelGrid>
-				</p:panel>
-			</p:outputPanel>
-			<p:commandButton id="btnGuardar" value="#{etiquetas['guardar']}"
-				disabled="#{registroInstitucionCtrl.flagGuardar}"
-				actionListener="#{registroInstitucionCtrl.guardarInstitucion}"
-				update="txtRuc txtInstitucion txtSiglas cmbTipoInstitucion txtCodigoSau cmbProvincia cmbCanton sbbAdscrita
-                    	pnlSalida pnlRectora cmbTipoInstitucionRectora cmbInstitucionRectora btnGuardar msgMensajes" />
-			<p:spacer width="10px" />
-			<p:commandButton value="#{etiquetas['cancelar']}"
-				actionListener="#{registroInstitucionCtrl.limpiarCampos}"
-				update="txtRuc txtInstitucion txtSiglas cmbTipoInstitucion txtCodigoSau cmbProvincia cmbCanton sbbAdscrita
-                    	pnlSalida pnlRectora cmbTipoInstitucionRectora cmbInstitucionRectora btnGuardar msgMensajes"
-				process="@this" />
-		</h:form>
-	</ui:define>
-</ui:composition>
+    <!-- 
+                    Replace path to template, title, header and body
+                    with actual data.
+    -->
+    <ui:composition template="/template/general.xhtml">
+        <ui:define name="content">
+            <h1 class="h-wai">#{etiquetas['nombre.sistema']} - Institución</h1>
+            <h:form id="formInicio">
+                <p:panel style="width:100%;">
+                    <h:panelGrid columns="2" style="width:90%;"
+                                 columnClasses="form-label-derecha, form-input-izquierda">
+                        <p:outputLabel value="#{etiquetas['ruc']}*:" />
+                        <p:inputText id="txtRuc"
+                                     value="#{registroInstitucionCtrl.institucionDto.ruc}"
+                                     maxlength="13" required="true"
+                                     requiredMessage="#{etiquetas['ruc']} #{mensajes['requerido']}">
+                            <f:validateRegex pattern="[0-9]+" />
+                            <p:ajax event="blur"
+                                    listener="#{registroInstitucionCtrl.buscarInstitucion}"
+                                    update="txtInstitucion btnGuardar" />
+                        </p:inputText>
+                        <p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
+                        <p:inputText id="txtInstitucion"
+                                     value="#{registroInstitucionCtrl.institucionDto.nombre}"
+                                     disabled="true" size="100" required="true"
+                                     requiredMessage="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}" />
+                        <p:outputLabel value="#{etiquetas['siglas']}*:" />
+                        <p:inputText id="txtSiglas"
+                                     value="#{registroInstitucionCtrl.institucionDto.siglas}"
+                                     maxlength="16" size="32" required="true"
+                                     requiredMessage="#{etiquetas['siglas']} #{mensajes['requerido']}" />
+                        <p:outputLabel value="#{etiquetas['tipo.institucion']}*:" />
+                        <b:selectOneMenu id="cmbTipoInstitucion"
+                                         value="#{registroInstitucionCtrl.institucionDto.tipoInstitucionId}"
+                                         required="true"
+                                         requiredMessage="#{etiquetas['tipo.institucion']} #{mensajes['requerido']}">
+                            <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1" />
+                            <f:selectItems	value="#{registroInstitucionCtrl.listaTipoInstitucion}" var="tipo" 
+                                           itemLabel="#{tipo.descripcion}" itemValue="#{tipo.tipoInstitucionId}" />
+                        </b:selectOneMenu>
+                        <p:outputLabel value="#{etiquetas['codigo.sau']}:" />
+                        <p:inputText id="txtCodigoSau"
+                                     value="#{registroInstitucionCtrl.institucionDto.codigoIs}"
+                                     maxlength="8" size="16">
+                            <f:validateRegex pattern="[0-9]+" />
+                        </p:inputText>
+                        <p:outputLabel value="#{etiquetas['provincia']}*:" />
+                        <b:selectOneMenu id="cmbProvincia"
+                                         value="#{registroInstitucionCtrl.institucionDto.provinciaId}"
+                                         required="true"
+                                         requiredMessage="#{etiquetas['provincia']} #{mensajes['requerido']}"
+                                         ajax="true" onchange="ajax:registroInstitucionCtrl.cantonPorProvincia"
+                                         process="@this" update="cmbCanton"
+                                         style="font-size:x-small; width: 100%;">
+                            <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1" />
+                            <f:selectItems value="#{registroInstitucionCtrl.provincia}"
+                                           var="pro" itemLabel="#{pro.nombre}"
+                                           itemValue="#{pro.provinciaId}" />
+                        </b:selectOneMenu>
+                        <p:outputLabel value="#{etiquetas['canton']}*:" />
+                        <b:selectOneMenu id="cmbCanton"
+                                         value="#{registroInstitucionCtrl.institucionDto.cantonId}"
+                                         disabled="#{registroInstitucionCtrl.flagCanton}"
+                                         required="true"
+                                         requiredMessage="#{etiquetas['canton']} #{mensajes['requerido']}"
+                                         style="font-size:x-small; width:100%">
+                            <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" />
+                            <f:selectItems value="#{registroInstitucionCtrl.canton}" var="can"
+                                           itemLabel="#{can.nombre}" itemValue="#{can.cantonId}" />
+                        </b:selectOneMenu>
+                        <p:outputLabel value="#{etiquetas['institucion.adscrita']}*:" />
+                        <b:switch id="sbbAdscrita" value="#{registroInstitucionCtrl.flagAdscrita}" 
+                                  onText="Si" offText="No" onColor="success" offColor="info" 
+                                  process="@this" update="pnlSalida" ajax="true" />
+                    </h:panelGrid>
+                </p:panel>
+                <p:outputPanel id="pnlSalida">
+                    <p:panel id="pnlRectora" style="width:100%;"
+                             rendered="#{registroInstitucionCtrl.flagAdscrita}">
+                        <h:panelGrid columns="2" style="width:90%;"
+                                     columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda">
+                            <p:outputLabel value="#{etiquetas['tipo.rectora']}*:" />
+                            <b:selectOneMenu id="cmbTipoInstitucionRectora"
+                                             value="#{registroInstitucionCtrl.tipoInstitucionRectora}"
+                                             required="true"
+                                             requiredMessage="#{etiquetas['tipo.rectora']} #{mensajes['requerido']}"
+                                             ajax="true" update="cmbInstitucionRectora"
+                                             onchange="#{registroInstitucionCtrl.buscarInstitucionPorTipo}" process="@this">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1" />
+                                <f:selectItems value="#{registroInstitucionCtrl.listaTipoInstitucion}" var="tipo" 
+                                               itemLabel="#{tipo.descripcion}" itemValue="#{tipo.tipoInstitucionId}" />
+                            </b:selectOneMenu>
+                            <p:outputLabel
+                                value="#{etiquetas['nombre.institucion.rectora']}*:" />
+                            <b:selectOneMenu id="cmbInstitucionRectora"
+                                             value="#{registroInstitucionCtrl.institucionDto.adscrita}"
+                                             disabled="#{registroInstitucionCtrl.flagRectora}"
+                                             required="true"
+                                             required-message="#{etiquetas['nombre.institucion.rectora']} #{mensajes['requerido']}"
+                                             styleClass="form-combo-centrado">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{registroInstitucionCtrl.listaInstitucionesRectoras}" var="inst" 
+                                               itemLabel="#{inst.nombre} - #{inst.siglas}" itemValue="#{inst.institucionId}" />
+                            </b:selectOneMenu>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:outputPanel>
+                <p:commandButton id="btnGuardar" value="#{etiquetas['guardar']}"
+                                 disabled="#{registroInstitucionCtrl.flagGuardar}"
+                                 actionListener="#{registroInstitucionCtrl.guardarInstitucion}"
+                                 update="txtRuc txtInstitucion txtSiglas cmbTipoInstitucion txtCodigoSau cmbProvincia cmbCanton sbbAdscrita
+                                 pnlSalida pnlRectora cmbTipoInstitucionRectora cmbInstitucionRectora btnGuardar msgMensajes" />
+                <p:spacer width="10px" />
+                <p:commandButton value="#{etiquetas['cancelar']}"
+                                 actionListener="#{registroInstitucionCtrl.limpiarCampos}"
+                                 update="txtRuc txtInstitucion txtSiglas cmbTipoInstitucion txtCodigoSau cmbProvincia cmbCanton sbbAdscrita
+                                 pnlSalida pnlRectora cmbTipoInstitucionRectora cmbInstitucionRectora btnGuardar msgMensajes"
+                                 process="@this" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
 
 </html>
