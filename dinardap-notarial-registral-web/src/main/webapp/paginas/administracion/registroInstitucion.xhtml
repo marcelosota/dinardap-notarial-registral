@@ -94,7 +94,7 @@
 							editable="true" effect="fold" required="true"
 							requiredMessage="#{etiquetas['tipo.rectora']} #{mensajes['requerido']}"
 							ajax="true" update="cmbInstitucionRectora"
-							onchange="#{registroInstitucionCtrl.buscarInstitucionPorTipo}" process="@this">
+							onchange="ajax:registroInstitucionCtrl.buscarInstitucionPorTipo" process="@this">
 							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1" />
 							<f:selectItems value="#{registroInstitucionCtrl.listaTipoInstitucion}" var="tipo" 
 								itemLabel="#{tipo.descripcion}" itemValue="#{tipo.tipoInstitucionId}" />

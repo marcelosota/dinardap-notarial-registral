@@ -10,6 +10,7 @@ import javax.inject.Named;
 
 import ec.gob.dinardap.seguridad.modelo.Usuario;
 import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
+import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Named(value="misUsuariosCtrl")
 @SessionScoped
@@ -34,6 +35,14 @@ public class MisUsuariosCtrl extends BaseCtrl {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void refrescarDtb() {
+		listaUsuario = usuarioServicio.findAll();
+	}
+	
+	public String obtenerEstado(Short estado) {
+		return EstadoEnum.obtenerEstadoPorCodigo(estado).name();
 	}
 	
 	public List<Usuario> getListaUsuario() {

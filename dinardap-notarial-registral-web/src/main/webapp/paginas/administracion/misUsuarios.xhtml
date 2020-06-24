@@ -10,6 +10,9 @@
 	<ui:define name="content">
 		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Mis Usuarios</h1>
 		<h:form id="formInicio">
+			<p:remoteCommand name ="actualizarTabla" action="#{misUsuariosCtrl.refrescarDtb}" update=":formInicio:dtbMisUsuarios" />
+			<f:event type="preRenderView" listener="#{misUsuariosCtrl.refrescarDtb}" />
+
 			<p:dataTable id="dtbMisUsuarios"
 				value="#{misUsuariosCtrl.listaUsuario}"
 				filteredValue="#{misUsuariosCtrl.filtro}" var="usu" paginator="true"
@@ -65,7 +68,7 @@
 					filterMatchMode="contains" 
 					width="10%"
 					style="font-size: 10pt;">
-					<h:outputText value="#{usu.estado}" />
+					<h:outputText value="#{misUsuariosCtrl.obtenerEstado(usu.estado)}" />
 				</p:column>
 				<p:column headerText="#{etiquetas['acciones']}"
 					width="10%">
