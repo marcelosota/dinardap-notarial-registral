@@ -18,7 +18,7 @@
                       blockScroll="true"
                       resizable="false">
                 <h:form id="formGeneracionTramiteDlg">
-                    <b:panel style="width: 100%;" title="Trámite Generado">                        
+                    <b:panel style="width: 100%;" title="Trámite Generado">
 
                         <p:panelGrid id="tramiteGenerado" style="width: 100%">
                             <f:facet name="header">
@@ -50,6 +50,13 @@
                                     </h:outputText>
                                 </p:column>
                             </p:row>
+
+<!--                            <p:row>
+                                <p:column><h:outputText value="#{etiquetas['nombre.descripcionActoNotarial']}" /></p:column>
+                                <p:column>
+                                    <h:outputText value="#{tramiteNotarialCtrl.tramiteGenerado.descripcion}"/>
+                                </p:column>
+                            </p:row>-->
 
                             <p:row>
                                 <p:column colspan="2" style="text-align: center">
@@ -163,24 +170,32 @@
                             <f:validator validatorId="emailValidator"></f:validator>
                         </p:inputText>
 
-                        <p:outputLabel value="#{etiquetas['nombre.actualizacionTramite']}" />
-                        <p:selectBooleanCheckbox id="checkRestablecerClave" 
-                                                 value="#{tramiteNotarialCtrl.tramiteOrigen}">
-                            <p:ajax update="auxLblTramiteInicial, auxTramiteInicial" listener="#{tramiteNotarialCtrl.onCheckTramiteOrigen}"/>
-                        </p:selectBooleanCheckbox>
+                        <p:outputLabel value="#{etiquetas['nombre.descripcionActoNotarial']}" />
+                        <p:inputTextarea
+                            id="descripcion"
+                            value="#{tramiteNotarialCtrl.tramite.descripcion}"
+                            rows="2"
+                            required="true"
+                            style="width: 90%"
+                            counter="display"
+                            maxlength="256"
+                            counterTemplate="{0} caracteres restantes."/>
+                        <br />
+                        <h:outputText id="display" />
 
-                        <h:panelGroup id="auxLblTramiteInicial">
-                            <p:outputLabel for="tramiteInicial" value="#{etiquetas['nombre.codigoValidacionTramite']}"
-                                           rendered="#{tramiteNotarialCtrl.tramiteOrigen}"/>
-                        </h:panelGroup>
-                        <h:panelGroup id="auxTramiteInicial">
-                            <p:inputText id="tramiteInicial" 
-                                         value="#{tramiteNotarialCtrl.codigoTramiteInicial}" 
-                                         maxlength="20" 
-                                         style="width: 90%" 
-                                         rendered="#{tramiteNotarialCtrl.tramiteOrigen}"
-                                         required="true"/>
-                        </h:panelGroup>
+
+                        <!--                        <h:panelGroup id="auxLblTramiteInicial">
+                                                    <p:outputLabel for="tramiteInicial" value="#{etiquetas['nombre.codigoValidacionTramite']}"
+                                                                   rendered="#{tramiteNotarialCtrl.tramiteOrigen}"/>
+                                                </h:panelGroup>
+                                                <h:panelGroup id="auxTramiteInicial">
+                                                    <p:inputText id="tramiteInicial" 
+                                                                 value="#{tramiteNotarialCtrl.codigoTramiteInicial}" 
+                                                                 maxlength="20" 
+                                                                 style="width: 90%" 
+                                                                 rendered="#{tramiteNotarialCtrl.tramiteOrigen}"
+                                                                 required="true"/>
+                                                </h:panelGroup>-->
 
 
                     </b:panelGrid>

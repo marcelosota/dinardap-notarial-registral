@@ -89,6 +89,7 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     @SuppressWarnings("unused")
 	public void blurIdentificacionCedula() {
         String nombreAux = getNombreCiudadano(tramite.getIdentificacionRequirente());
+        //String nombreAux = "Chris";
         if (nombreAux != null) {
             tramite.setNombreRequirente(nombreAux);
         } else {
@@ -108,7 +109,7 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     }
 
     public void crearTramite() {
-        tramiteGenerado = new Tramite();
+        tramiteGenerado = new Tramite();        
         
         tramite.setInstitucion(institucionServicio.findByPk(institucionId));
         tramite.setFechaRegistro(new Date());

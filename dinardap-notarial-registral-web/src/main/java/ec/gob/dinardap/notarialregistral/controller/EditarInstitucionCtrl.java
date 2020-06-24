@@ -72,6 +72,7 @@ public class EditarInstitucionCtrl extends BaseCtrl {
 		institucionDto.setProvinciaId(institucion.getCanton().getProvincia().getProvinciaId());
 		institucionDto.setCantonId(institucion.getCanton().getCantonId());
 		institucionDto.setCodigoIs(institucion.getCodigoIs());
+		institucionDto.setFechaRegistro(institucion.getFechaRegistro());
 		institucionDto.setEstado(institucion.getEstado());
 		cantonPorProvincia();
 		if(institucion.getInstitucion() != null) {

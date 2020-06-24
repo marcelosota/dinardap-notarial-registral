@@ -60,7 +60,7 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 
 					StringBuilder html = new StringBuilder("<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
                     html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
-                    html.append("Estimad@ " + usuario.getNombre() + ", <br /><br />");
+                    html.append("Estimado(a) " + usuario.getNombre() + ", <br /><br />");
                     html.append("Se ha restablecido sus credenciales con éxito.<br/><br />");
                     html.append("Usario: " + usuario.getCedula() + "<br/ ><br />");
                     html.append("Contraseña: " + clave + "<br/ ><br /><br/>");

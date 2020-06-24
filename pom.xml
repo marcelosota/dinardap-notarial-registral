@@ -15,10 +15,10 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <nemonico-sistema>dinardap-notarial-registral</nemonico-sistema>        
-        <wildfly.user>Administrator</wildfly.user>
-        <wildfly.password>@dmin00_Wildfly</wildfly.password>
-        <wildfly.host>localhost</wildfly.host>
-        <wildfly.port>9990</wildfly.port>
+        <wildfly.user>admin</wildfly.user>
+        <wildfly.password>dINARDAP.2019</wildfly.password>
+        <wildfly.host>127.0.0.1</wildfly.host>
+        <wildfly.port>9990</wildfly.port> 
     </properties>
     
     <dependencyManagement>

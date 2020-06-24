@@ -11,147 +11,133 @@
         <ui:define name="content">
             <h1 class="h-wai">#{etiquetas['nombre.sistema']} - Registrar Usuario</h1>
             <h:form id="formInicio">
-            	<p:panel style="width:100%;">
-	                <h:panelGrid columns="2" id="logueo" style="width:90%;"
-						columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda"> 
-						<p:outputLabel value="#{etiquetas['tipo.identificacion']}*:" />
-						<p:selectOneRadio id="rbtTipoIdentificacion"
-							value="#{registroUsuarioCtrl.tipoIdentificacion}"
-							required="true"
-							requiredMessage="#{etiquetas['tipo.identificacion']} #{mensajes['requerido']}">
-							<p:ajax event="change" update="txtNombre" listener="#{registroUsuarioCtrl.seleccionarTipoIdentificacion}"/>
-							<f:selectItem itemLabel="#{etiquetas['cedula']}" itemValue="1" />
-							<f:selectItem itemLabel="#{etiquetas['pasaporte']}" itemValue="2" />
-						</p:selectOneRadio>
-	                    <p:outputLabel value="#{etiquetas['documento.identificacion']}*:" />
-	                    <p:inputText id="txtCedula"
-	                                 value="#{registroUsuarioCtrl.usuarioDto.cedula}"
-	                                 maxlength="10"
-	                                 required="true"
-	                                 requiredMessage="#{etiquetas['documento.identificacion']} #{mensajes['requerido']}">
-	                        <f:validateRegex pattern="[0-9]+" />
-	                        <p:ajax event="blur" listener="#{registroUsuarioCtrl.buscarUsuario}" update="txtNombre"/>
-	                    </p:inputText>
-	                    <p:outputLabel value="#{etiquetas['nombre']}*:" />
-	                    <p:inputText id="txtNombre" 
-							value="#{registroUsuarioCtrl.usuarioDto.nombre}"
-	                        disabled="#{registroUsuarioCtrl.flagNombre}"
-	                        required="true"
-	                        requiredMessage="#{etiquetas['nombre']} #{mensajes['requerido']}"
-	                        size="40" />
-						<p:outputLabel value="#{etiquetas['cargo']}:" />
-						<p:inputText id="txtCargo"
-							value="#{registroUsuarioCtrl.usuarioDto.cargo}"
-							size="40"
-							maxlength="32" />
-						<p:outputLabel value="#{etiquetas['correo.electronico']}*:" />
-						<p:inputText id="txtCorreo"
-							value="#{registroUsuarioCtrl.usuarioDto.correoElectronico}"
-							size="40"
-							maxlength="256"
-							required="true"
-							requiredMessage="#{etiquetas['correo.electronico']} #{mensaje['requerido']}" >
-							<f:validator validatorId="emailValidator" />
-						</p:inputText>
-	                    <p:outputLabel value="#{etiquetas['telefono']}*:" />
-						<p:inputText id="txtTelefono"
-							value="#{registroUsuarioCtrl.usuarioDto.telefono}"
-							size="10"
-							maxlength="10"
-							required="true"
-							requiredMessage="#{etiquetas['telefono']} #{mensaje['requerido']}">
-							<p:keyFilter regEx="/[\d]/" />
-							<f:validator validatorId="cellPhoneValidator" />
-						</p:inputText>
-	                    <p:outputLabel value="#{etiquetas['contrasena']}*:" />
-	                    <p:password id="txtContrasena" 
-	                        value="#{registroUsuarioCtrl.usuarioDto.contrasena}" 
-	                        required="true"
-	                        requiredMessage="#{etiquetas['contrasena']} #{mensajes['requerido']}"
-	                        size="40" />
-	                    <p:outputLabel value="#{etiquetas['asignar.institucion']}:" />
-	                    <b:switch id="sbbEntidad" value="#{registroUsuarioCtrl.asignarEntidad}" 
-							onText="Si" offText="No" onColor="success" offColor="info" 
-							process="@this" update="pnlSalida" ajax="true" />
-	                </h:panelGrid>
+                <p:panel style="width:100%;">
+                    <h:panelGrid columns="2" id="logueo" style="width:90%;"
+                                 columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda"> 
+                        <p:outputLabel value="#{etiquetas['tipo.identificacion']}*:" />
+                        <p:selectOneRadio id="rbtTipoIdentificacion"
+                                          value="#{registroUsuarioCtrl.tipoIdentificacion}"
+                                          required="true"
+                                          requiredMessage="#{etiquetas['tipo.identificacion']} #{mensajes['requerido']}">
+                            <p:ajax event="change" update="txtNombre" listener="#{registroUsuarioCtrl.seleccionarTipoIdentificacion}"/>
+                            <f:selectItem itemLabel="#{etiquetas['cedula']}" itemValue="1" />
+                            <f:selectItem itemLabel="#{etiquetas['pasaporte']}" itemValue="2" />
+                        </p:selectOneRadio>
+                        <p:outputLabel value="#{etiquetas['documento.identificacion']}*:" />
+                        <p:inputText id="txtCedula"
+                                     value="#{registroUsuarioCtrl.usuarioDto.cedula}"
+                                     maxlength="10"
+                                     required="true"
+                                     requiredMessage="#{etiquetas['documento.identificacion']} #{mensajes['requerido']}">
+                            <f:validateRegex pattern="[0-9]+" />
+                            <p:ajax event="blur" listener="#{registroUsuarioCtrl.buscarUsuario}" update="txtNombre"/>
+                        </p:inputText>
+                        <p:outputLabel value="#{etiquetas['nombre']}*:" />
+                        <p:inputText id="txtNombre" 
+                                     value="#{registroUsuarioCtrl.usuarioDto.nombre}"
+                                     disabled="#{registroUsuarioCtrl.flagNombre}"
+                                     required="true"
+                                     requiredMessage="#{etiquetas['nombre']} #{mensajes['requerido']}"
+                                     size="40" />
+                        <p:outputLabel value="#{etiquetas['cargo']}:" />
+                        <p:inputText id="txtCargo"
+                                     value="#{registroUsuarioCtrl.usuarioDto.cargo}"
+                                     size="40"
+                                     maxlength="32" />
+                        <p:outputLabel value="#{etiquetas['correo.electronico']}*:" />
+                        <p:inputText id="txtCorreo"
+                                     value="#{registroUsuarioCtrl.usuarioDto.correoElectronico}"
+                                     size="40"
+                                     maxlength="256"
+                                     required="true"
+                                     requiredMessage="#{etiquetas['correo.electronico']} #{mensaje['requerido']}" >
+                            <f:validator validatorId="emailValidator" />
+                        </p:inputText>
+                        <p:outputLabel value="#{etiquetas['telefono']}*:" />
+                        <p:inputText id="txtTelefono"
+                                     value="#{registroUsuarioCtrl.usuarioDto.telefono}"
+                                     size="10"
+                                     maxlength="10"
+                                     required="true"
+                                     requiredMessage="#{etiquetas['telefono']} #{mensaje['requerido']}">
+                            <p:keyFilter regEx="/[\d]/" />
+                            <f:validator validatorId="cellPhoneValidator" />
+                        </p:inputText>
+                        <p:outputLabel value="#{etiquetas['contrasena']}*:" />
+                        <p:password id="txtContrasena" 
+                                    value="#{registroUsuarioCtrl.usuarioDto.contrasena}" 
+                                    required="true"
+                                    requiredMessage="#{etiquetas['contrasena']} #{mensajes['requerido']}"
+                                    size="40" />
+                        <p:outputLabel value="#{etiquetas['asignar.institucion']}:" />
+                        <b:switch id="sbbEntidad" value="#{registroUsuarioCtrl.asignarEntidad}" 
+                                  onText="Si" offText="No" onColor="success" offColor="info" 
+                                  process="@this" update="pnlSalida" ajax="true" />
+                    </h:panelGrid>
                 </p:panel>
                 <p:outputPanel id="pnlSalida">
-	                <p:panel id="pnlEntidad" style="width:100%;" rendered="#{registroUsuarioCtrl.asignarEntidad}">
-		                <h:panelGrid columns="2" style="width:90%;"
-	                             columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda">
-		                	<p:outputLabel value="#{etiquetas['provincia']}*:" />
-		                	<b:selectOneMenu id="cmbProvincia" 
-								value="#{registroUsuarioCtrl.usuarioDto.provinciaId}"
-								editable="true"
-								effect="fade"
-								filter="true" 
-								filterMatchMode="contains"
-								style="font-size:x-small; width: 100%;"
-								ajax="true" process="@this"
-								onchange="ajax:registroUsuarioCtrl.cantonPorProvincia"
-								update="cmbCanton cmbTipoInstitucion cmbEntidades">
-								<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1"/>
-								<f:selectItems value="#{registroUsuarioCtrl.provincia}" var="pro"
-									itemLabel="#{pro.nombre}" itemValue="#{pro.provinciaId}"/>
-							</b:selectOneMenu>
-							<p:outputLabel value="#{etiquetas['canton']}*:" />
-							<b:selectOneMenu id="cmbCanton" 
-								value="#{registroUsuarioCtrl.usuarioDto.cantonId}"
-								editable="true"
-								filter="true" 
-								filterMatchMode="startsWith"
-								effect="fold" 
-								disabled="#{registroUsuarioCtrl.flagCanton}"
-								style="font-size:x-small; width:100%"
-								ajax="true" onchange="ajax:registroUsuarioCtrl.cantonSeleccionado" 
-								update="cmbTipoInstitucion cmbEntidades">
-								<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true"/>
-								<f:selectItems value="#{registroUsuarioCtrl.canton}" var="can"
-									itemLabel="#{can.nombre}" itemValue="#{can.cantonId}" />
-							</b:selectOneMenu>
-							<p:outputLabel value="#{etiquetas['tipo.institucion']}*:" />
-							<b:selectOneMenu id="cmbTipoInstitucion" 
-								value="#{registroUsuarioCtrl.usuarioDto.tipoInstitucionId}"
-								editable="true"
-								effect="fold"  
-								disabled="#{registroUsuarioCtrl.flagTipoEntidad}"
-								style="font-size:x-small; width:100%"
-								ajax="true" update="cmbEntidades" 
-								onchange="ajax:registroUsuarioCtrl.buscarInstitucion" 
-								process="@this cmbCanton">
-								<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1"/>
-								<f:selectItems value="#{registroUsuarioCtrl.listaTipoInstitucion}" var="tipo"
-									itemLabel="#{tipo.descripcion}" itemValue="#{tipo.tipoInstitucionId}" />
-							</b:selectOneMenu>
-		                    <p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
-		                    <b:selectOneMenu id="cmbEntidades" 
-								value="#{registroUsuarioCtrl.usuarioDto.institucionId}"
-								editable="true"
-								filter="true" 
-								filterMatchMode="contains"
-								effect="fold" 
-								disabled="#{registroUsuarioCtrl.flagEntidad}"
-		                        required="true"                                        
-                                        requiredMessage="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}"
-		                        styleClass="form-combo-centrado">
-		                        <f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
-		                        <f:selectItems value="#{registroUsuarioCtrl.listaInstituciones}" var="inst" 
-		                        	itemLabel="#{inst.nombre} - #{inst.siglas}" itemValue="#{inst.institucionId}"/>
-		                    </b:selectOneMenu>
-		                </h:panelGrid>
-	                </p:panel>
+                    <p:panel id="pnlEntidad" style="width:100%;" rendered="#{registroUsuarioCtrl.asignarEntidad}">
+                        <h:panelGrid columns="2" style="width:90%;"
+                                     columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda">
+                            <p:outputLabel value="#{etiquetas['provincia']}*:" />
+                            <b:selectOneMenu id="cmbProvincia" 
+                                             value="#{registroUsuarioCtrl.usuarioDto.provinciaId}"
+                                             style="font-size:x-small; width: 100%;"
+                                             ajax="true" process="@this"
+                                             onchange="ajax:registroUsuarioCtrl.cantonPorProvincia"
+                                             update="cmbCanton cmbTipoInstitucion cmbEntidades">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1"/>
+                                <f:selectItems value="#{registroUsuarioCtrl.provincia}" var="pro"
+                                               itemLabel="#{pro.nombre}" itemValue="#{pro.provinciaId}"/>
+                            </b:selectOneMenu>
+                            <p:outputLabel value="#{etiquetas['canton']}*:" />
+                            <b:selectOneMenu id="cmbCanton" 
+                                             value="#{registroUsuarioCtrl.usuarioDto.cantonId}"
+                                             disabled="#{registroUsuarioCtrl.flagCanton}"
+                                             style="font-size:x-small; width:100%"
+                                             ajax="true" onchange="ajax:registroUsuarioCtrl.cantonSeleccionado" 
+                                             update="cmbTipoInstitucion cmbEntidades">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true"/>
+                                <f:selectItems value="#{registroUsuarioCtrl.canton}" var="can"
+                                               itemLabel="#{can.nombre}" itemValue="#{can.cantonId}" />
+                            </b:selectOneMenu>
+                            <p:outputLabel value="#{etiquetas['tipo.institucion']}*:" />
+                            <b:selectOneMenu id="cmbTipoInstitucion" 
+                                             value="#{registroUsuarioCtrl.usuarioDto.tipoInstitucionId}"
+                                             disabled="#{registroUsuarioCtrl.flagTipoEntidad}"
+                                             style="font-size:x-small; width:100%"
+                                             ajax="true" update="cmbEntidades" 
+                                             onchange="ajax:registroUsuarioCtrl.buscarInstitucion" 
+                                             process="@this cmbCanton">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1"/>
+                                <f:selectItems value="#{registroUsuarioCtrl.listaTipoInstitucion}" var="tipo"
+                                               itemLabel="#{tipo.descripcion}" itemValue="#{tipo.tipoInstitucionId}" />
+                            </b:selectOneMenu>
+                            <p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
+                            <b:selectOneMenu id="cmbEntidades" 
+                                             value="#{registroUsuarioCtrl.usuarioDto.institucionId}"
+                                             disabled="#{registroUsuarioCtrl.flagEntidad}"
+                                             required="true"                                        
+                                             requiredMessage="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}"
+                                             styleClass="form-combo-centrado">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{registroUsuarioCtrl.listaInstituciones}" var="inst" 
+                                               itemLabel="#{inst.nombre} - #{inst.siglas}" itemValue="#{inst.institucionId}"/>
+                            </b:selectOneMenu>
+                        </h:panelGrid>
+                    </p:panel>
                 </p:outputPanel>
                 <p:commandButton id="btnGuardar"
-                	value="#{etiquetas['guardar']}"
-                    actionListener="#{registroUsuarioCtrl.guardarUsuario}"
-                    update="rbtTipoIdentificacion txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena sbbEntidad
-                    	pnlSalida pnlEntidad cmbProvincia cmbCanton cmbTipoInstitucion cmbEntidades msgMensajes"/>
+                                 value="#{etiquetas['guardar']}"
+                                 actionListener="#{registroUsuarioCtrl.guardarUsuario}"
+                                 update="rbtTipoIdentificacion txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena sbbEntidad
+                                 pnlSalida pnlEntidad cmbProvincia cmbCanton cmbTipoInstitucion cmbEntidades msgMensajes"/>
                 <p:spacer width="10px" />
                 <p:commandButton value="#{etiquetas['cancelar']}"
-                    actionListener="#{registroUsuarioCtrl.limpiarCampos}"
-                    update="rbtTipoIdentificacion txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena sbbEntidad
-                    	pnlSalida pnlEntidad cmbProvincia cmbCanton cmbTipoInstitucion cmbEntidades msgMensajes"
-                    process="@this" />
+                                 actionListener="#{registroUsuarioCtrl.limpiarCampos}"
+                                 update="rbtTipoIdentificacion txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena sbbEntidad
+                                 pnlSalida pnlEntidad cmbProvincia cmbCanton cmbTipoInstitucion cmbEntidades msgMensajes"
+                                 process="@this" />
             </h:form>
         </ui:define>
     </ui:composition>

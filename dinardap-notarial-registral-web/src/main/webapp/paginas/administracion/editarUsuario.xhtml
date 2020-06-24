@@ -1,240 +1,226 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
-<ui:composition template="/template/general.xhtml">
-	<ui:define name="content">
-		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Editar Usuario</h1>
-		<h:form id="formInicio">
-			<p:panel>
-				<h:panelGrid columns="2" id="logueo" style="width:50%;"
-					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
-						form-label-derecha ui-grid-col-1, form-input-izquierda">
-					<p:outputLabel value="#{etiquetas['documento.identificacion']}*:" />
-					<p:inputText id="txtCedula"
-						value="#{editarUsuarioCtrl.usuarioDto.cedula}" maxlength="10"
-						disabled="true" required="true"
-						requiredMessage="#{etiquetas['documento.identificacion']} #{mensajes['requerido']}">
-					</p:inputText>
-					<p:outputLabel value="#{etiquetas['nombre']}*:" />
-					<p:inputText id="txtNombre"
-						value="#{editarUsuarioCtrl.usuarioDto.nombre}"
-						disabled="true" required="true"
-						requiredMessage="#{etiquetas['nombre']} #{mensajes['requerido']}"
-						size="40" />
-					<p:outputLabel value="#{etiquetas['cargo']}:" />
-					<p:inputText id="txtCargo"
-						value="#{editarUsuarioCtrl.usuarioDto.cargo}" size="40"
-						maxlength="32" />
-					<p:outputLabel value="#{etiquetas['correo.electronico']}*:" />
-					<p:inputText id="txtCorreo"
-						value="#{editarUsuarioCtrl.usuarioDto.correoElectronico}"
-						size="40" maxlength="256" required="true"
-						requiredMessage="#{etiquetas['correo.electronico']} #{mensaje['requerido']}">
-						<f:validator validatorId="emailValidator" />
-					</p:inputText>
-					<p:outputLabel value="#{etiquetas['telefono']}*:" />
-					<p:inputText id="txtTelefono"
-						value="#{editarUsuarioCtrl.usuarioDto.telefono}" size="10"
-						maxlength="10" required="true"
-						requiredMessage="#{etiquetas['telefono']} #{mensaje['requerido']}">
-						<p:keyFilter regEx="/[\d]/" />
-						<f:validator validatorId="cellPhoneValidator" />
-					</p:inputText>
-					<p:outputLabel value="#{etiquetas['contrasena']}*:" />
-					<p:password id="txtContrasena"
-						value="#{editarUsuarioCtrl.usuarioDto.contrasena}"
-						size="40" />
-					<p:outputLabel value="#{etiquetas['estado']}:" />
-					<b:selectOneMenu id="cmbEstado"
-						value="#{editarUsuarioCtrl.usuarioDto.estado}" required="true"
-						required-message="#{etiquetas['estado']} #{mensajes['requerido']}"
-						styleClass="form-combo-centrado" process="@this">
-						<f:selectItem itemLabel="#{etiquetas['seleccionar']}"
-							itemValue="-1" noSelectionOption="true" />
-						<f:selectItems value="#{editarUsuarioCtrl.estado}" />
-					</b:selectOneMenu>
-					<p:outputLabel value="#{etiquetas['asignar.institucion']}:" />
-					<b:switch id="sbbEntidad" value="#{editarUsuarioCtrl.asignarEntidad}" 
-						onText="Si" offText="No" onColor="success" offColor="info" 
-						process="@this" update="@this pnlSalida" 
-						ajax="true" onchange="ajax:editarUsuarioCtrl.habilitarAsignacion"/>
-				</h:panelGrid>
-			</p:panel>
-			
-			<p:outputPanel id="pnlSalida">
-				<p:panel id="pnlEntidad" style="width:100%;" rendered="#{editarUsuarioCtrl.asignarEntidad}">
-					<h:panelGrid columns="2" style="width:90%;"
-		            	columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda">
-						<p:outputLabel value="#{etiquetas['provincia']}*:" />
-			            <b:selectOneMenu id="cmbProvincia" 
-							value="#{editarUsuarioCtrl.usuarioDto.provinciaId}"
-							editable="true"
-							effect="fade"
-							filter="true" 
-							filterMatchMode="contains"
-							style="font-size:x-small; width: 100%;"
-							ajax="true" process="@this"
-							onchange="ajax:editarUsuarioCtrl.cantonPorProvincia"
-							update="cmbCanton cmbTipoInstitucion cmbEntidades">
-							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1"/>
-							<f:selectItems value="#{editarUsuarioCtrl.provincia}" var="pro"
-								itemLabel="#{pro.nombre}" itemValue="#{pro.provinciaId}"/>
-						</b:selectOneMenu>
-						<p:outputLabel value="#{etiquetas['canton']}*:" />
-						<b:selectOneMenu id="cmbCanton" 
-							value="#{editarUsuarioCtrl.usuarioDto.cantonId}"
-							editable="true"
-							filter="true" 
-							filterMatchMode="startsWith"
-							effect="fold" 
-							disabled="#{editarUsuarioCtrl.flagCanton}"
-							style="font-size:x-small; width:100%"
-							ajax="true" onchange="ajax:editarUsuarioCtrl.cantonSeleccionado" 
-							update="cmbTipoInstitucion cmbEntidades">
-							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true"/>
-							<f:selectItems value="#{editarUsuarioCtrl.canton}" var="can"
-								itemLabel="#{can.nombre}" itemValue="#{can.cantonId}" />
-						</b:selectOneMenu>
-						<p:outputLabel value="#{etiquetas['tipo.institucion']}*:" />
-						<b:selectOneMenu id="cmbTipoInstitucion" 
-							value="#{editarUsuarioCtrl.usuarioDto.tipoInstitucionId}"
-							editable="true"
-							effect="fold"  
-							disabled="#{editarUsuarioCtrl.flagTipoEntidad}"
-							style="font-size:x-small; width:100%"
-							ajax="true" update="cmbEntidades" 
-							onchange="ajax:editarUsuarioCtrl.buscarInstitucion" 
-							process="@this cmbCanton">
-							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1"/>
-							<f:selectItems value="#{editarUsuarioCtrl.listaTipoInstitucion}" var="tipo"
-								itemLabel="#{tipo.descripcion}" itemValue="#{tipo.tipoInstitucionId}" />
-						</b:selectOneMenu>
-			            <p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
-			            <b:selectOneMenu id="cmbEntidades" 
-							value="#{editarUsuarioCtrl.usuarioDto.institucionId}"
-							editable="true"
-							filter="true" 
-							filterMatchMode="contains"
-							effect="fold" 
-							disabled="#{editarUsuarioCtrl.flagEntidad}"
-			            	required="true"
-							required-message="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}"
-							styleClass="form-combo-centrado">
-			               	<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
-			                <f:selectItems value="#{editarUsuarioCtrl.listaInstituciones}" var="inst" 
-			                	itemLabel="#{inst.nombre} - #{inst.siglas}" itemValue="#{inst.institucionId}"/>
-						</b:selectOneMenu>
-					</h:panelGrid>
-				</p:panel>
-			</p:outputPanel>
-			
-			<p:panel>
-				<p:dataTable id="dtbAsignacion"
-					value="#{editarUsuarioCtrl.listaAsignaciones}" var="asg">
-					<p:column headerText="" 
-						sortBy="#{asg.asignacionInstitucionId}"
-						filterBy="#{asg.asignacionInstitucionId}" 
-						filterMatchMode="contains" 
-						width="10%"
-						visible="false">
-						<h:outputText value="#{asg.asignacionInstitucionId}" style="font-size: 8pt;" />
-					</p:column>
-					<p:column headerText="#{etiquetas['ruc']}" 
-						sortBy="#{asg.ruc}"
-						filterBy="#{asg.ruc}" 
-						filterMatchMode="contains" 
-						width="15%"
-						style="font-size: 8pt;">
-						<h:outputText value="#{asg.ruc}" />
-					</p:column>
-					<p:column headerText="#{etiquetas['nombre.institucion']}" 
-						sortBy="#{asg.nombre}"
-						filterBy="#{asg.nombre}" 
-						filterMatchMode="contains" 
-						width="30%"
-						style="font-size: 8pt;">
-						<h:outputText value="#{asg.nombre}" />
-					</p:column>
-					<p:column headerText="#{etiquetas['siglas']}" 
-						sortBy="#{asg.siglas}"
-						filterBy="#{asg.siglas}" 
-						filterMatchMode="contains" 
-						width="15%"
-						style="font-size: 8pt;">
-						<h:outputText value="#{asg.siglas}" />
-					</p:column>
-					<p:column headerText="#{etiquetas['fecha.asignacion']}" 
-						sortBy="#{asg.fechaCreacion}"
-						filterBy="#{asg.fechaCreacion}" 
-						filterMatchMode="contains" 
-						width="15%"
-						style="font-size: 8pt;">
-						<h:outputText value="#{asg.fechaCreacion}">
-							<f:convertDateTime pattern="yyyy-MM-dd"/>
-						</h:outputText>
-					</p:column>
-					<p:outputLabel value="#{etiquetas['asignar.institucion']}:" />
-					<p:column headerText="#{etiquetas['activo']}" 
-						sortBy="#{asg.estado}"
-						filterBy="#{asg.estado}" 
-						filterMatchMode="contains" 
-						width="10%"
-						style="font-size: 8pt;">
-						<b:switch value="#{asg.estado}"
-							onText="SI" offText="NO" onColor="success" offColor="info" 
-							disabled="true" style="width:10px;" />
-					</p:column>
-					<p:column width="10%" style="text-align: center">
-						<p:commandButton update=":formInicio:pnlAsignacion" oncomplete="PF('dlgAsignacion').show()" 
-							icon="fa fa-fw fa-eye" title="#{etiquetas['ver.registro']}">
-							<f:setPropertyActionListener value="#{asg}" 
-								target="#{editarUsuarioCtrl.asgSeleccionada}" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</p:panel>
-			<br/>
-			<p:commandButton value="#{etiquetas['guardar']}"
-				actionListener="#{editarUsuarioCtrl.guardarUsuario}"
-				update="txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena cmbEstado pnlSalida" />
-			<p:spacer width="10px" />
-			<p:commandButton value="#{etiquetas['cancelar']}"
-				actionListener="#{editarUsuarioCtrl.regresar}"
-				update="txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena cmbEstado"
-				process="@this" />
-				
-			
-			<p:dialog header="#{etiquetas['usuario.institucion']}" widgetVar="dlgAsignacion" modal="true" 
-				showEffect="fade" hideEffect="fade" resizable="false">
-				<p:outputPanel id="pnlAsignacion">
-					<p:panelGrid  columns="2" rendered="#{not empty editarUsuarioCtrl.asgSeleccionada}" 
-						columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda">
-						<p:outputLabel value="#{etiquetas['ruc']}*:" />
-						<p:inputText id="txtDlgRuc"
-							value="#{editarUsuarioCtrl.asgSeleccionada.ruc}" 
-							readonly="true">
-						</p:inputText>
-						<p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
-						<p:inputText id="txtDlgNombre"
-							value="#{editarUsuarioCtrl.asgSeleccionada.nombre}"
-							size="100" 
-							readonly="true">
-						</p:inputText>
-						<p:outputLabel value="#{etiquetas['asignar.institucion']}*:" />
-						<b:switch id="swtDlgEstado" value="#{editarUsuarioCtrl.asgSeleccionada.estado}" 
-							onText="SI" offText="NO" onColor="success" offColor="info" ajax="true" process="@this"/>
-					</p:panelGrid>
-					<p:commandButton id="btnActualizar" value="#{etiquetas['guardar']}" 
-						actionListener="#{editarUsuarioCtrl.verificarAsignaciones}" process="@this"
-						update=":formInicio:dtbAsignacion" oncomplete="PF('dlgAsignacion').hide()">
-					</p:commandButton>
-				</p:outputPanel>
-			</p:dialog>
-		</h:form>
-	</ui:define>
-</ui:composition>
+    <ui:composition template="/template/general.xhtml">
+        <ui:define name="content">
+            <h1 class="h-wai">#{etiquetas['nombre.sistema']} - Editar Usuario</h1>
+            <h:form id="formInicio">
+                <p:panel>
+                    <h:panelGrid columns="2" id="logueo" style="width:50%;"
+                                 columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda, 
+                                 form-label-derecha ui-grid-col-1, form-input-izquierda">
+                        <p:outputLabel value="#{etiquetas['documento.identificacion']}*:" />
+                        <p:inputText id="txtCedula"
+                                     value="#{editarUsuarioCtrl.usuarioDto.cedula}" maxlength="10"
+                                     disabled="true" required="true"
+                                     requiredMessage="#{etiquetas['documento.identificacion']} #{mensajes['requerido']}">
+                        </p:inputText>
+                        <p:outputLabel value="#{etiquetas['nombre']}*:" />
+                        <p:inputText id="txtNombre"
+                                     value="#{editarUsuarioCtrl.usuarioDto.nombre}"
+                                     disabled="true" required="true"
+                                     requiredMessage="#{etiquetas['nombre']} #{mensajes['requerido']}"
+                                     size="40" />
+                        <p:outputLabel value="#{etiquetas['cargo']}:" />
+                        <p:inputText id="txtCargo"
+                                     value="#{editarUsuarioCtrl.usuarioDto.cargo}" size="40"
+                                     maxlength="32" />
+                        <p:outputLabel value="#{etiquetas['correo.electronico']}*:" />
+                        <p:inputText id="txtCorreo"
+                                     value="#{editarUsuarioCtrl.usuarioDto.correoElectronico}"
+                                     size="40" maxlength="256" required="true"
+                                     requiredMessage="#{etiquetas['correo.electronico']} #{mensaje['requerido']}">
+                            <f:validator validatorId="emailValidator" />
+                        </p:inputText>
+                        <p:outputLabel value="#{etiquetas['telefono']}*:" />
+                        <p:inputText id="txtTelefono"
+                                     value="#{editarUsuarioCtrl.usuarioDto.telefono}" size="10"
+                                     maxlength="10" required="true"
+                                     requiredMessage="#{etiquetas['telefono']} #{mensaje['requerido']}">
+                            <p:keyFilter regEx="/[\d]/" />
+                            <f:validator validatorId="cellPhoneValidator" />
+                        </p:inputText>
+                        <p:outputLabel value="#{etiquetas['contrasena']}*:" />
+                        <p:password id="txtContrasena"
+                                    value="#{editarUsuarioCtrl.usuarioDto.contrasena}"
+                                    size="40" />
+                        <p:outputLabel value="#{etiquetas['estado']}:" />
+                        <b:selectOneMenu id="cmbEstado"
+                                         value="#{editarUsuarioCtrl.usuarioDto.estado}" required="true"
+                                         required-message="#{etiquetas['estado']} #{mensajes['requerido']}"
+                                         styleClass="form-combo-centrado" process="@this">
+                            <f:selectItem itemLabel="#{etiquetas['seleccionar']}"
+                                          itemValue="-1" noSelectionOption="true" />
+                            <f:selectItems value="#{editarUsuarioCtrl.estado}" />
+                        </b:selectOneMenu>
+                        <p:outputLabel value="#{etiquetas['asignar.institucion']}:" />
+                        <b:switch id="sbbEntidad" value="#{editarUsuarioCtrl.asignarEntidad}" 
+                                  onText="Si" offText="No" onColor="success" offColor="info" 
+                                  process="@this" update="@this pnlSalida" 
+                                  ajax="true" onchange="ajax:editarUsuarioCtrl.habilitarAsignacion"/>
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:outputPanel id="pnlSalida">
+                    <p:panel id="pnlEntidad" style="width:100%;" rendered="#{editarUsuarioCtrl.asignarEntidad}">
+                        <h:panelGrid columns="2" style="width:90%;"
+                                     columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda">
+                            <p:outputLabel value="#{etiquetas['provincia']}*:" />
+                            <b:selectOneMenu id="cmbProvincia" 
+                                             value="#{editarUsuarioCtrl.usuarioDto.provinciaId}"
+                                             style="font-size:x-small; width: 100%;"
+                                             ajax="true" process="@this"
+                                             onchange="ajax:editarUsuarioCtrl.cantonPorProvincia"
+                                             update="cmbCanton cmbTipoInstitucion cmbEntidades">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1"/>
+                                <f:selectItems value="#{editarUsuarioCtrl.provincia}" var="pro"
+                                               itemLabel="#{pro.nombre}" itemValue="#{pro.provinciaId}"/>
+                            </b:selectOneMenu>
+                            <p:outputLabel value="#{etiquetas['canton']}*:" />
+                            <b:selectOneMenu id="cmbCanton" 
+                                             value="#{editarUsuarioCtrl.usuarioDto.cantonId}"
+                                             disabled="#{editarUsuarioCtrl.flagCanton}"
+                                             style="font-size:x-small; width:100%"
+                                             ajax="true" onchange="ajax:editarUsuarioCtrl.cantonSeleccionado" 
+                                             update="cmbTipoInstitucion cmbEntidades">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true"/>
+                                <f:selectItems value="#{editarUsuarioCtrl.canton}" var="can"
+                                               itemLabel="#{can.nombre}" itemValue="#{can.cantonId}" />
+                            </b:selectOneMenu>
+                            <p:outputLabel value="#{etiquetas['tipo.institucion']}*:" />
+                            <b:selectOneMenu id="cmbTipoInstitucion" 
+                                             value="#{editarUsuarioCtrl.usuarioDto.tipoInstitucionId}"
+                                             disabled="#{editarUsuarioCtrl.flagTipoEntidad}"
+                                             style="font-size:x-small; width:100%"
+                                             ajax="true" update="cmbEntidades" 
+                                             onchange="ajax:editarUsuarioCtrl.buscarInstitucion" 
+                                             process="@this cmbCanton">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1"/>
+                                <f:selectItems value="#{editarUsuarioCtrl.listaTipoInstitucion}" var="tipo"
+                                               itemLabel="#{tipo.descripcion}" itemValue="#{tipo.tipoInstitucionId}" />
+                            </b:selectOneMenu>
+                            <p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
+                            <b:selectOneMenu id="cmbEntidades" 
+                                             value="#{editarUsuarioCtrl.usuarioDto.institucionId}"
+                                             disabled="#{editarUsuarioCtrl.flagEntidad}"
+                                             required="true"
+                                             required-message="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}"
+                                             styleClass="form-combo-centrado">
+                                <f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{editarUsuarioCtrl.listaInstituciones}" var="inst" 
+                                               itemLabel="#{inst.nombre} - #{inst.siglas}" itemValue="#{inst.institucionId}"/>
+                            </b:selectOneMenu>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:panel>
+                    <p:dataTable id="dtbAsignacion"
+                                 value="#{editarUsuarioCtrl.listaAsignaciones}" var="asg">
+                        <p:column headerText="" 
+                                  sortBy="#{asg.asignacionInstitucionId}"
+                                  filterBy="#{asg.asignacionInstitucionId}" 
+                                  filterMatchMode="contains" 
+                                  width="10%"
+                                  visible="false">
+                            <h:outputText value="#{asg.asignacionInstitucionId}" style="font-size: 8pt;" />
+                        </p:column>
+                        <p:column headerText="#{etiquetas['ruc']}" 
+                                  sortBy="#{asg.ruc}"
+                                  filterBy="#{asg.ruc}" 
+                                  filterMatchMode="contains" 
+                                  width="15%"
+                                  style="font-size: 8pt;">
+                            <h:outputText value="#{asg.ruc}" />
+                        </p:column>
+                        <p:column headerText="#{etiquetas['nombre.institucion']}" 
+                                  sortBy="#{asg.nombre}"
+                                  filterBy="#{asg.nombre}" 
+                                  filterMatchMode="contains" 
+                                  width="30%"
+                                  style="font-size: 8pt;">
+                            <h:outputText value="#{asg.nombre}" />
+                        </p:column>
+                        <p:column headerText="#{etiquetas['siglas']}" 
+                                  sortBy="#{asg.siglas}"
+                                  filterBy="#{asg.siglas}" 
+                                  filterMatchMode="contains" 
+                                  width="15%"
+                                  style="font-size: 8pt;">
+                            <h:outputText value="#{asg.siglas}" />
+                        </p:column>
+                        <p:column headerText="#{etiquetas['fecha.asignacion']}" 
+                                  sortBy="#{asg.fechaCreacion}"
+                                  filterBy="#{asg.fechaCreacion}" 
+                                  filterMatchMode="contains" 
+                                  width="15%"
+                                  style="font-size: 8pt;">
+                            <h:outputText value="#{asg.fechaCreacion}">
+                                <f:convertDateTime pattern="yyyy-MM-dd"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:outputLabel value="#{etiquetas['asignar.institucion']}:" />
+                        <p:column headerText="#{etiquetas['activo']}" 
+                                  sortBy="#{asg.estado}"
+                                  filterBy="#{asg.estado}" 
+                                  filterMatchMode="contains" 
+                                  width="10%"
+                                  style="font-size: 8pt;">
+                            <b:switch value="#{asg.estado}"
+                                      onText="SI" offText="NO" onColor="success" offColor="info" 
+                                      disabled="true" style="width:10px;" />
+                        </p:column>
+                        <p:column width="10%" style="text-align: center">
+                            <p:commandButton update=":formInicio:pnlAsignacion" oncomplete="PF('dlgAsignacion').show()" 
+                                             icon="fa fa-fw fa-eye" title="#{etiquetas['ver.registro']}">
+                                <f:setPropertyActionListener value="#{asg}" 
+                                                             target="#{editarUsuarioCtrl.asgSeleccionada}" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <br/>
+                <p:commandButton value="#{etiquetas['guardar']}"
+                                 actionListener="#{editarUsuarioCtrl.guardarUsuario}"
+                                 update="txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena cmbEstado pnlSalida" />
+                <p:spacer width="10px" />
+                <p:commandButton value="#{etiquetas['cancelar']}"
+                                 actionListener="#{editarUsuarioCtrl.regresar}"
+                                 update="txtCedula txtNombre txtCargo txtCorreo txtTelefono txtContrasena cmbEstado"
+                                 process="@this" />
+
+
+                <p:dialog header="#{etiquetas['usuario.institucion']}" widgetVar="dlgAsignacion" modal="true" 
+                          showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="pnlAsignacion">
+                        <p:panelGrid  columns="2" rendered="#{not empty editarUsuarioCtrl.asgSeleccionada}" 
+                                      columnClasses="form-label-derecha ui-grid-col-2, form-input-izquierda">
+                            <p:outputLabel value="#{etiquetas['ruc']}*:" />
+                            <p:inputText id="txtDlgRuc"
+                                         value="#{editarUsuarioCtrl.asgSeleccionada.ruc}" 
+                                         readonly="true">
+                            </p:inputText>
+                            <p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
+                            <p:inputText id="txtDlgNombre"
+                                         value="#{editarUsuarioCtrl.asgSeleccionada.nombre}"
+                                         size="100" 
+                                         readonly="true">
+                            </p:inputText>
+                            <p:outputLabel value="#{etiquetas['asignar.institucion']}*:" />
+                            <b:switch id="swtDlgEstado" value="#{editarUsuarioCtrl.asgSeleccionada.estado}" 
+                                      onText="SI" offText="NO" onColor="success" offColor="info" ajax="true" process="@this"/>
+                        </p:panelGrid>
+                        <p:commandButton id="btnActualizar" value="#{etiquetas['guardar']}" 
+                                         actionListener="#{editarUsuarioCtrl.verificarAsignaciones}" process="@this"
+                                         update=":formInicio:dtbAsignacion" oncomplete="PF('dlgAsignacion').hide()">
+                        </p:commandButton>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
 </html>

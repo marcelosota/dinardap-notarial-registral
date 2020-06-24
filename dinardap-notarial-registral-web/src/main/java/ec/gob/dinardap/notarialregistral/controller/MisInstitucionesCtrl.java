@@ -1,7 +1,6 @@
 package ec.gob.dinardap.notarialregistral.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -11,6 +10,7 @@ import javax.inject.Named;
 
 import ec.gob.dinardap.seguridad.modelo.Institucion;
 import ec.gob.dinardap.seguridad.servicio.InstitucionServicio;
+import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Named("misInstitucionesCtrl")
 @SessionScoped
@@ -36,13 +36,21 @@ public class MisInstitucionesCtrl extends BaseCtrl {
 			e.printStackTrace();
 		}
 	}
-
-	public List<Institucion> getListaInstituciones() {
-		listaInstituciones = new ArrayList<Institucion>();
+	
+	public void refrescarDtb() {
 		listaInstituciones = institucionServicio.findAll();
-		return listaInstituciones;
+	}
+	
+	public String obtenerEstado(Short estado) {
+		return EstadoEnum.obtenerEstadoPorCodigo(estado).name();
 	}
 
+	public List<Institucion> getListaInstituciones() {
+		if(listaInstituciones == null)
+			listaInstituciones = institucionServicio.findAll();
+		return listaInstituciones;
+	}
+	
 	public void setListaInstituciones(List<Institucion> listaInstituciones) {
 		this.listaInstituciones = listaInstituciones;
 	}
