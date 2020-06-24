@@ -11,5 +11,5 @@ import ec.gob.dinardap.persistence.dao.GenericDao;
 public interface TramiteDao extends GenericDao<Tramite, Long> {
 	
 	public List<TramiteRegistradorDto> tramitesPendientes(Short estadoTramite, Integer canton);
-	public List<TramiteRegistradorDto> misTramites(Short contextoNotarial, Short contextoRegistral, Short estadoTramite, Integer canton);	
+	public List<TramiteRegistradorDto> misTramites(Short contextoNotarial, Short contextoRegistral, Short estadoTramite, Integer usuarioId);	
 }

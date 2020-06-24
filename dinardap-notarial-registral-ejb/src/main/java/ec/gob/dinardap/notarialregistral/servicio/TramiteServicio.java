@@ -21,5 +21,9 @@ public interface TramiteServicio extends GenericService<Tramite, Long> {
     public Boolean existenciaTramiteAsociado(Long tramiteId);
 
     public List<Tramite> getTramiteList(Integer institucionId, Short estado);
+    
+    public Tramite tramiteCargadosByCodigoValidacionTramite(String codigoValidacionTramite);
+    
+    public void emailRegistros(TramiteRegistradorDto tramiteDto,String mensaje);
 
 }
