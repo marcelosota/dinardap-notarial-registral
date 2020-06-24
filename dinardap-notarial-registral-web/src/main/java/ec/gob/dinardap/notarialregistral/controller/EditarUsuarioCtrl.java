@@ -13,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import ec.gob.dinardap.autorizacion.constante.SemillaEnum;
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
 import ec.gob.dinardap.geografico.modelo.Canton;
 import ec.gob.dinardap.geografico.modelo.Provincia;
@@ -101,7 +102,7 @@ public class EditarUsuarioCtrl extends BaseCtrl {
 			addErrorMessage(null, getBundleMensaje("usuario.institucion.existente", null), null);
 		}else {
 			if(getUsuarioDto().getContrasena() != null && !getUsuarioDto().getContrasena().trim().equals(""))
-				getUsuarioDto().setContrasena(EncriptarCadenas.encriptarCadenaSha1(getUsuarioDto().getContrasena()));
+				getUsuarioDto().setContrasena(EncriptarCadenas.encriptarCadenaSha1(SemillaEnum.SEMILLA_SEGURIDAD.getSemilla().concat(getUsuarioDto().getContrasena())));
 			else
 				getUsuarioDto().setContrasena(getUsuario().getContrasena());
 			usuarioServicio.modificarUsuario(getUsuarioDto());

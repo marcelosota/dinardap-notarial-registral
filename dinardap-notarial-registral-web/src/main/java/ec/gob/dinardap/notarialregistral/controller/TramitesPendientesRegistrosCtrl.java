@@ -16,6 +16,7 @@ import org.primefaces.event.SelectEvent;
 
 import ec.gob.dinardap.notarialregistral.constante.ContextoEnum;
 import ec.gob.dinardap.notarialregistral.constante.EstadoTramiteEnum;
+import ec.gob.dinardap.notarialregistral.constante.ParametroEnum;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.DocumentoDto;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
@@ -205,13 +206,13 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 			String anio = String.valueOf(c.get(Calendar.YEAR));
 			String mes = String.valueOf(mesActual);
 			String dia = String.valueOf(c.get(Calendar.DATE));
-			//String origen = null;
+			String origen = null;
 			System.out.println("tramiteobjeto" + tramiteDto.getTramite());
 
 			if (tramiteDto.getTramite() != null) {
 
-				//origen = parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
-				String ruta = anio.concat("/").concat(mes).concat("/").concat(dia).concat("/")
+				origen = parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
+				String ruta = origen.concat(anio).concat("/").concat(mes).concat("/").concat(dia).concat("/")
 						.concat(getInstitucionId().toString()).concat("/");
 				System.out.println("subir" + ruta);
 

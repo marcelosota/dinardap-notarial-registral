@@ -399,24 +399,16 @@ table.pf,
 .form-group {
     margin-bottom:0px;
 }
-/*
-.ui-widget-header {
-	border: 1px solid #3465a4;
-	background: #3465a4;
-	 color:#ffffff;
-	font-weight: bold;
-}
-*/
-.ui-widget-header{
-border:1px solid #d49768;
-background:#3465a4;
-color:#ffffff;
-font-weight:bold;
-}
-/* colores*/
+
 .actoNotarial {
 	color: rgb(179, 20, 20);
 }
 .documentoRegistral {
 	color: rgb(149, 85, 29);
+}
+.ui-widget-header {
+	border: 1px solid #3465a4;
+	background: #3465a4;
+	 color:#ffffff;
+	font-weight: bold;
 }

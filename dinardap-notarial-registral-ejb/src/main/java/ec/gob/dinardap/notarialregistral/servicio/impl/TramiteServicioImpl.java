@@ -9,7 +9,9 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-//import ec.gob.dinardap.correo.util.MailMessage;
+import ec.gob.dinardap.correo.mdb.cliente.ClienteQueueMailServicio;
+import ec.gob.dinardap.correo.servicio.MailServicio;
+import ec.gob.dinardap.correo.util.MailMessage;
 import ec.gob.dinardap.notarialregistral.constante.ParametroEnum;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
@@ -28,14 +30,14 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     @EJB
     private TramiteDao tramiteDao;
 
-    //@EJB
-    //private ClienteQueueMailServicio clienteQueueMailServicio;
+    @EJB
+    private ClienteQueueMailServicio clienteQueueMailServicio;
     
     @EJB
     private ParametroServicio parametroServicio;
     
-    //@EJB
-    //private MailServicio mailServicio;
+    @EJB
+    private MailServicio mailServicio;
 
     @Override
     public GenericDao<Tramite, Long> getDao() {
@@ -52,18 +54,18 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
     public void actualizarEstadoTramite(Tramite tramite) {
         this.update(tramite);
 
-       /* String parametroAmbiente = "DESARROLLO";
+        String parametroAmbiente = "DESARROLLO";
         MailMessage mailMessage = new MailMessage();
 
-        StringBuilder html = new StringBuilder(200);
-        html.append("<br />Estimado/a: <br />");
-        html.append("<br /><br />Le informamos que se ha cargado el Acto Notarial para su Trámite con Código de Validación de Trámite Único: ");
-        html.append(tramite.getCodigo());
-        html.append("<br/>");
-        html.append("<br/>Atentamente,<br/>");
-        html.append("<br/><FONT COLOR=\"#0000ff\" FACE=\"Arial Narrow, sans-serif\"><B> ");
-        html.append("<br/>");
-        html.append("SANYR");
+        StringBuilder html = new StringBuilder("<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
+        html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
+        html.append("Estimad@ " + tramite.getNombreRequirente() + ", <br /><br />");
+        html.append("Le informamos que se ha cargado satisfactoriamente el Acto Notarial.<br />");
+        html.append("CVTU: " + tramite.getCodigo() + "<br/ ><br />");        
+        html.append("Favor ingresar a la plataforma GOB EC para continuar con el proceso.<br/>");
+        html.append("Gracias por usar nuestros servicios.<br /><br />");
+        html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
+        html.append("Dirección Nacional de Registros de Datos Públicos");
         html.append("</B></FONT>");
 
         List<String> to = new ArrayList<String>();
@@ -75,22 +77,13 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
             to.add(tramite.getCorreoRequirente());
             asunto.append("Notificación SANYR");
         }
-//        asunto.append("Confirmación de solicitud para categorizar a la empresa: ");
-        //mailMessage = new Credenciales().credencialesCorreo();
+        asunto.append("Confirmación de solicitud para categorizar a la empresa: ");
         mailMessage = credencialesCorreo();
         mailMessage.setTo(to);
         mailMessage.setSubject(asunto.toString());
-        mailMessage.setText(html.toString());*/
-        /*try {
-			mailServicio.sendMail(mailMessage);
-		} catch (AuthenticationFailedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-        //clienteQueueMailServicio.encolarMail(mailMessage);
+        mailMessage.setText(html.toString());
+        
+        clienteQueueMailServicio.encolarMail(mailMessage);
         
     }
 
@@ -172,11 +165,11 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 		}
 	}	
 	
-	/*private MailMessage credencialesCorreo() {
+	private MailMessage credencialesCorreo() {
         MailMessage credenciales = new MailMessage();
         credenciales.setFrom(parametroServicio.findByPk(ParametroEnum.MAIL_SANYR.name()).getValor());
         credenciales.setUsername(parametroServicio.findByPk(ParametroEnum.MAIL_USERNAME_SANYR.name()).getValor());
         credenciales.setPassword(parametroServicio.findByPk(ParametroEnum.MAIL_CONTRASENA_SANYR.name()).getValor());
         return credenciales;
-    }*/
+    }
 }

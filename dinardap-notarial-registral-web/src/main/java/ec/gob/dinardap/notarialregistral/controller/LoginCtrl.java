@@ -9,6 +9,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import ec.gob.dinardap.autorizacion.constante.SemillaEnum;
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
 import ec.gob.dinardap.seguridad.dto.ValidacionDto;
 import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
@@ -32,10 +33,6 @@ public class LoginCtrl extends BaseCtrl {
     private String nombreUsuario;
     private String contrasena;
 
-    private Integer institucionId;
-    private Integer usuarioId;
-    private String perfiles;
-
     private ValidacionDto validacionDto;
 
     @PostConstruct
@@ -45,7 +42,7 @@ public class LoginCtrl extends BaseCtrl {
     public void validarUsuario() {
         validacionDto = new ValidacionDto();
         validacionDto = usuarioServicio.validarUsuario(getNombreUsuario(),
-                EncriptarCadenas.encriptarCadenaSha1(getContrasena()),
+                EncriptarCadenas.encriptarCadenaSha1(SemillaEnum.SEMILLA_SEGURIDAD.getSemilla().concat(getContrasena())),
                 Integer.parseInt(getIdentificacionSistema()));
         if (validacionDto != null) {
             setSessionVariable("perfil", validacionDto.getPerfil());

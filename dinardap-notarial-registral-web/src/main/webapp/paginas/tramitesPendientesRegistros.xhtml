@@ -18,8 +18,8 @@
 					value="#{tramitesPendientesRegistrosCtrl.listaTramitePendiente}"
 					rows="7" paginator="true" paginatorPosition="bottom"
 					selectionMode="single"
-					rowKey="#{dtb.tramiteId}"
-					selection="#{tramitesPendientesRegistrosCtrl.selectedTramite}"					 
+					rowKey="#{dtb.codigo}"
+					selection="#{tramitesPendientesRegistrosCtrl.selectedTramite}"
 					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
 					emptyMessage="No existen registros">
 					<p:ajax event="rowSelect"
