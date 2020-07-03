@@ -38,4 +38,12 @@
             </ui:insert>
         </div>
     </div>
+    <p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<div align="center">
+				<p:graphicImage value="/resource/images/procesando.gif" width="64" />
+			</div>
+		</p:dialog>
 </html>

@@ -43,6 +43,10 @@
                             </p:row>
 
                             <p:row>
+                                <p:column><h:outputText value="#{etiquetas['continua.tramite']}" /></p:column>
+                                <p:column><h:outputText value="#{tramiteNotarialCtrl.tramiteGenerado.continuaTramite.nombre}" /></p:column>
+                            </p:row>
+                            <p:row>
                                 <p:column><h:outputText value="#{etiquetas['nombre.fechaRegistro']}" /></p:column>
                                 <p:column>
                                     <h:outputText value="#{tramiteNotarialCtrl.tramiteGenerado.fechaRegistro}">
@@ -180,6 +184,7 @@
                             counter="display"
                             maxlength="256"
                             counterTemplate="{0} caracteres restantes."/>
+                    
                         <br />
                         <h:outputText id="display" />
 
@@ -199,6 +204,49 @@
 
 
                     </b:panelGrid>
+                </b:panel>    
+                <b:panel style="width: 75%" title="#{etiquetas['continua.tramite']}">
+					<b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
+                       	<p:outputLabel value="#{etiquetas['provincia']}*:" />
+						<b:selectOneMenu id="cmbProvincia"
+							value="#{tramiteNotarialCtrl.provinciaId}"
+							required="true"
+							requiredMessage="#{etiquetas['provincia']} #{mensajes['requerido']}"
+							ajax="true" onchange="ajax:tramiteNotarialCtrl.cantonPorProvincia"
+							process="@this" update="cmbCanton"
+							style="font-size:x-small; width: 100%;">
+							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" itemValue="-1" />
+							<f:selectItems value="#{tramiteNotarialCtrl.provincia}" var="pro" 
+								itemLabel="#{pro.nombre}" itemValue="#{pro.provinciaId}" />
+						</b:selectOneMenu>
+						<p:outputLabel value="#{etiquetas['canton']}*:" />
+						<b:selectOneMenu id="cmbCanton"
+							value="#{tramiteNotarialCtrl.cantonId}"
+							disabled="#{tramiteNotarialCtrl.flagCanton}"
+							required="true"
+							requiredMessage="#{etiquetas['canton']} #{mensajes['requerido']}"
+							ajax="true" onchange="ajax:tramiteNotarialCtrl.institucionProvinciaCanton"
+							process="@this" update="cmbInstitucion"
+							style="font-size:x-small; width:100%">
+							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" noSelectionOption="true" />
+							<f:selectItems value="#{tramiteNotarialCtrl.canton}" var="can"
+								itemLabel="#{can.nombre}" itemValue="#{can.cantonId}" />
+						</b:selectOneMenu>
+						<p:outputLabel value="#{etiquetas['nombre.institucion']}*:" />
+						<b:selectOneMenu id="cmbInstitucion"
+							value="#{tramiteNotarialCtrl.continuaTramiteId}"
+							disabled="#{tramiteNotarialCtrl.flagInstitucion}"
+							required="true"
+							required-message="#{etiquetas['nombre.institucion']} #{mensajes['requerido']}"
+							styleClass="form-combo-centrado">
+							<f:selectItem itemLabel="#{etiquetas['seleccionar']}" itemValue="-1" noSelectionOption="true" />
+							<f:selectItems value="#{tramiteNotarialCtrl.listaInstituciones}" var="inst" 
+								itemLabel="#{inst.nombre} - #{inst.siglas}" itemValue="#{inst.institucionId}" />
+						</b:selectOneMenu>
+                    </b:panelGrid>
+				</b:panel>
+                <br/>
+				<b:panel style="width: 75%">
                     <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">
                         <p:commandButton value="#{etiquetas['crearTramite']}" id="crearTramiteBtn" 
                                          style="margin-right:20px;" icon="fa fa-fw fa-check-square-o"

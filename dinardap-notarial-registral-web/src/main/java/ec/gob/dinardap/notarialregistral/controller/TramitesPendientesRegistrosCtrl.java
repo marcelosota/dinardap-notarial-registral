@@ -1,9 +1,7 @@
 package ec.gob.dinardap.notarialregistral.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -12,7 +10,6 @@ import javax.inject.Named;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.SelectEvent;
 
 import ec.gob.dinardap.notarialregistral.constante.ContextoEnum;
 import ec.gob.dinardap.notarialregistral.constante.EstadoTramiteEnum;
@@ -48,64 +45,37 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	UsuarioServicio usuarioServicio;
 	@EJB
 	LogDescargaServicio logDescargaServicio;
-    @EJB
-    InstitucionServicio institucionServicio;
-	
+	@EJB
+	InstitucionServicio institucionServicio;
+
 	@EJB
 	private ParametroServicio parametroServicio;
 
-	private List<TramiteRegistradorDto> listaTramitePendiente;
-	private List<TramiteRegistradorDto> filtro;
 	private TramiteRegistradorDto selectedTramite;
 	private TramiteRegistradorDto tramiteDto;
-	private Long tramiteId;
 	private Integer institucionId;
 	private DocumentoDto documentoDto;
 	private Boolean subirArchivoB;
 	private Short estadoTramite;
 	private Boolean estadoInconsistente;
 	private Usuario usuario;
-	
-	
+	private String ctvu;
 
 	@PostConstruct
 	protected void init() {
-		listaTramitePendiente = new ArrayList<>();
+		
 		tramiteDto = new TramiteRegistradorDto();
 		selectedTramite = new TramiteRegistradorDto();
 		tramiteDto.setTramite(new Tramite());
-		tramiteId = 0L;
 		documentoDto = new DocumentoDto();
 		subirArchivoB = true;
 		estadoInconsistente = true;
 		usuario = new Usuario();
-		//usuario = usuarioServicio.obtenerUsuarioPorIdentificacion(getLoggedUser());
+		// usuario = usuarioServicio.obtenerUsuarioPorIdentificacion(getLoggedUser());
 		usuario = usuarioServicio.findByPk(Integer.parseInt(getLoggedUser()));
 		institucionId = Integer.parseInt(getSessionVariable("institucionId"));
 		//// modificar el canton del usuario logueado
 
-	}
-
-	public List<TramiteRegistradorDto> getListaTramitePendiente() {		
-		Integer cantonId = institucionServicio.findByPk(institucionId).getCanton().getCantonId();	
-				
-		listaTramitePendiente = tramiteDao.tramitesPendientes(EstadoTramiteEnum.CARGADO.getEstado(), cantonId);
-		
-		if (filtro == null)
-			filtro = listaTramitePendiente;
-		return listaTramitePendiente;
-	}
-
-	public void setListaTramitePendiente(List<TramiteRegistradorDto> listaTramitePendiente) {
-		this.listaTramitePendiente = listaTramitePendiente;
-	}
-
-	public List<TramiteRegistradorDto> getFiltro() {
-		return filtro;
-	}
-
-	public void setFiltro(List<TramiteRegistradorDto> filtro) {
-		this.filtro = filtro;
 	}
 
 	public TramiteRegistradorDto getSelectedTramite() {
@@ -115,24 +85,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 	public void setSelectedTramite(TramiteRegistradorDto selectedTramite) {
 		this.selectedTramite = selectedTramite;
-	}
-
-	public TramiteRegistradorDto getTramiteDto() {
-		tramiteDto.setTramite(tramiteServicio.findByPk(tramiteId));
-		return tramiteDto;
-	}
-
-	public void setTramiteDto(TramiteRegistradorDto tramiteDto) {
-		this.tramiteDto = tramiteDto;
-	}
-
-	public Long getTramiteId() {
-		return tramiteId;
-	}
-
-	public void setTramiteId(Long tramiteId) {
-		this.tramiteId = tramiteId;
-	}
+	}	
 
 	public Integer getInstitucionId() {
 		return institucionId;
@@ -174,9 +127,46 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		this.estadoInconsistente = estadoInconsistente;
 	}
 
+	public String getCtvu() {
+		return ctvu;
+	}
+
+	public void setCtvu(String ctvu) {
+		this.ctvu = ctvu;
+	}
+
+	public TramiteRegistradorDto getTramiteDto() {
+		return tramiteDto;
+	}
+
+	public void setTramiteDto(TramiteRegistradorDto tramiteDto) {
+		this.tramiteDto = tramiteDto;
+	}
+
 	//////////////////// funciones
-	public void filaSeleccionada(SelectEvent event) {
-		tramiteId = Long.parseLong(((TramiteRegistradorDto) event.getObject()).getTramiteId().toString());
+	public void consultarPorCvtu() {
+		tramiteDto.setTramite(new Tramite());
+		try {
+			if (getCtvu() != null) {
+
+				tramiteDto.setTramite(tramiteServicio.tramiteCargadosByCodigoValidacionTramite(ctvu));
+
+				if (tramiteDto.getTramite() == null) {
+					String mensaje = getBundleMensaje("error.codigo.registro", null);
+					addErrorMessage(null, mensaje, null);
+				}
+
+			} else {
+
+				String mensaje = getBundleMensaje("requerido", null);
+				addErrorMessage(null, "Código de Validación de Trámite Único" + mensaje, null);
+			}
+		} catch (Exception e) {
+			System.out.println("ERROR: " + e.getMessage());
+			String mensaje = getBundleMensaje("error.codigo.registro", null);
+			addErrorMessage(null, mensaje, null);
+
+		}
 
 	}
 
@@ -226,7 +216,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 						.concat(getInstitucionId().toString()).concat("/");
 				System.out.println("subir" + ruta);
 
-				Tramite objTramite = tramiteServicio.findByPk(tramiteId);
+				Tramite objTramite = tramiteServicio.findByPk(tramiteDto.getTramite().getTramiteId());
 				documentoDto.setDocumento(new Documento());
 				documentoDto.getDocumento().setTramite(objTramite);
 				documentoDto.getDocumento().setRuta(ruta);
@@ -279,63 +269,81 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		}
 
 	}
-	public void limpiar()
-	{
-		
-		listaTramitePendiente = new ArrayList<>();
+
+	public void limpiar() {
+
 		tramiteDto = new TramiteRegistradorDto();
 		selectedTramite = new TramiteRegistradorDto();
-		tramiteDto.setTramite(new Tramite());
-		tramiteId = 0L;
-		documentoDto = new DocumentoDto();		
+		tramiteDto.setTramite(new Tramite());		
+		documentoDto = new DocumentoDto();
+		documentoDto.setDocumento(new Documento());
 		estadoInconsistente = true;
+		setCtvu(null);
+	}
+
+	public Boolean verificarEstadoTramite() {
+		Tramite tramite = new Tramite();
+		tramite = tramiteServicio.tramiteCargadosByCodigoValidacionTramite(ctvu);
+		if (tramite != null)
+			return true;
+		else
+			return false;
+
 	}
 
 	public void guardarTramite() {
 		try {
 
-			if (tramiteId != 0L) {
+			if (getCtvu() != null) {
 				// si el estado es inconsistente no debe cargar el documento y si observar
 				if (estadoTramite == EstadoTramiteEnum.INCONSISTENTE.getEstado()) {
 					// tramiteDto.setCerradoPor(getLoggedUser());
-					tramiteDto.setCerradoPor(usuario);
-					tramiteDto.setEstado(EstadoTramiteEnum.INCONSISTENTE.getEstado());
-					if (tramiteServicio.guardarRegistro(tramiteDto) == true)
-					{
-						 limpiar();
-						addInfoMessage(getBundleMensaje("registro.guardado", null), null);
-					}
-					else
-						addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
+					if (verificarEstadoTramite() == true) {
+						tramiteDto.setCerradoPor(usuario);
+						tramiteDto.setEstado(EstadoTramiteEnum.INCONSISTENTE.getEstado());
+						if (tramiteServicio.guardarRegistro(tramiteDto) == true) {
+							String inconsistente = "Su trámite tiene una inconsistencia que ha sido observada por el registrador.";
+							tramiteServicio.emailRegistros(tramiteDto,inconsistente);
+							limpiar();
+							addInfoMessage(getBundleMensaje("registro.guardado", null), null);
+						} else
+							addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
+					} else
+						addErrorMessage(null, getBundleMensaje("error.tramite.cerrado", null), null);
 
 				}
 				if (estadoTramite == EstadoTramiteEnum.CERRADO.getEstado()) {
 					// tramiteDto.setCerradoPor(getLoggedUser());
-					tramiteDto.setCerradoPor(usuario);
-					tramiteDto.setEstado(EstadoTramiteEnum.CERRADO.getEstado());
+					if (verificarEstadoTramite() == true) {
+						tramiteDto.setCerradoPor(usuario);
+						tramiteDto.setEstado(EstadoTramiteEnum.CERRADO.getEstado());
 
-					if (documentoDto.getContenido() != null) {
-						if (documentoServicio.subirArchivos(documentoDto) == true) {
-							System.out.println("documento registral subido");
-							if (tramiteServicio.guardarRegistro(tramiteDto) == true)
-							{
-								limpiar();
-								addInfoMessage(getBundleMensaje("registro.guardado", null), null);
-							}	
-							else
-								addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
-						} else {
-							Object[] param = new Object[1];
-							param[0] = " documento registral";
-							addErrorMessage(null, getBundleMensaje("error.subir.archivo", param), null);
-						}
+						if (documentoDto.getContenido() != null) {
+							if (documentoServicio.subirArchivos(documentoDto) == true) {
+								System.out.println("documento registral subido");
+								if (tramiteServicio.guardarRegistro(tramiteDto) == true) {
+									String atendido = "Su trámite ha sido atendido por el registrador.";
+									tramiteServicio.emailRegistros(tramiteDto,atendido);
+									limpiar();
+									addInfoMessage(getBundleMensaje("registro.guardado", null), null);
+								} else
+									addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
+							} else {
+								Object[] param = new Object[1];
+								param[0] = " documento registral";
+								addErrorMessage(null, getBundleMensaje("error.subir.archivo", param), null);
+							}
 
+						} else
+							addErrorMessage(null, "Documento registral" + getBundleMensaje("requerido", null), null);
 					} else
-						addErrorMessage(null, "Documento registral" + getBundleMensaje("requerido", null), null);
+						addErrorMessage(null, getBundleMensaje("error.tramite.cerrado", null), null);
 
 				}
-			} else
-				addErrorMessage(null, "No ha seleccionado el trámite", null);
+			} else {
+				String mensaje = getBundleMensaje("requerido", null);
+				addErrorMessage(null, "Código de Validación de Trámite Único" + mensaje, null);
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -343,6 +351,25 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 		}
 
+	}
+
+	public void cancelar() {
+		limpiar();
+	}
+	
+	public void descargarRegistro() {
+		TipoArchivo tipoArchivo = new TipoArchivo();
+
+		if (documentoDto.getContenido() != null) {
+			// descarga de memoria
+			downloadFile(documentoDto.getContenido(),
+					tipoArchivo.obtenerTipoArchivo(documentoDto.getDocumento().getNombreCarga()),
+					documentoDto.getDocumento().getNombreCarga());
+
+		} else {
+
+			addErrorMessage(null, getBundleMensaje("error.archivo", null), null);
+		}
 	}
 
 }

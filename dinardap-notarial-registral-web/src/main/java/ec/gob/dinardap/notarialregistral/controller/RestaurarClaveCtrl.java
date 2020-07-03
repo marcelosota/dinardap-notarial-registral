@@ -51,13 +51,13 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 		Usuario usuario = usuarioServicio.obtenerUsuarioPorIdentificacion(getNombreUsuario());
 		if (usuario != null) {
 			if (usuario.getCorreoElectronico().equals(getCorreoElectronico())) {
+
 				String clave = GeneradorCodigo.generarAleatorio(12);
 				usuario.setContrasena(EncriptarCadenas.encriptarCadenaSha1(SemillaEnum.SEMILLA_SEGURIDAD.getSemilla().concat(clave)));
 				usuario.setFechaModificacion(new Date());
 				System.out.println("Enviar Correo");
 				try {
 					MailMessage mailMessage = new MailMessage();
-
 					StringBuilder html = new StringBuilder("<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
                     html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
                     html.append("Estimado(a) " + usuario.getNombre() + ", <br /><br />");
@@ -68,20 +68,18 @@ public class RestaurarClaveCtrl extends BaseCtrl {
                     html.append("Gracias por usar nuestros servicios.<br /><br />");
                     html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
                     html.append("Dirección Nacional de Registros de Datos Públicos");
-                    html.append("</B></FONT>");
-
-					List<String> to = new ArrayList<String>();
+                    html.append("</B></FONT>");List<String> to = new ArrayList<String>();
 					StringBuilder asunto = new StringBuilder(200);
 
 					to.add(usuario.getCorreoElectronico());
-					asunto.append("Notificación SANYR");
+					asunto.append("Notificación SANYR - Restaurar contraseña");
 
 					mailMessage = credencialesCorreo();
 					mailMessage.setTo(to);
 					mailMessage.setSubject(asunto.toString());
 					mailMessage.setText(html.toString());
 					clienteQueueMailServicio.encolarMail(mailMessage);
-
+					
 					usuarioServicio.update(usuario);
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Recuperación de Contraseña", getBundleMensaje("mensaje.restauracionClave", null)));
@@ -105,8 +103,10 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 		credenciales.setFrom(parametroServicio.findByPk(ParametroEnum.MAIL_SANYR.name()).getValor());
 		credenciales.setUsername(parametroServicio.findByPk(ParametroEnum.MAIL_USERNAME_SANYR.name()).getValor());
 		credenciales.setPassword(parametroServicio.findByPk(ParametroEnum.MAIL_CONTRASENA_SANYR.name()).getValor());
+		System.out.println(credenciales.getUsername());		
 		return credenciales;
 	}
+
 
 	// Getters & Setters
 	public String getNombreUsuario() {

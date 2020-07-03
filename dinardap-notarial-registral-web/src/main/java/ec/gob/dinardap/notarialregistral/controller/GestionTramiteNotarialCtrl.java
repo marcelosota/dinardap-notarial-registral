@@ -117,7 +117,7 @@ public class GestionTramiteNotarialCtrl extends BaseCtrl implements Serializable
 
         //documento.setRuta(parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor().concat(documento.getRuta()));
         documentoServicio.crearDocumento(documento, sftpDto);
-        tramiteServicio.actualizarEstadoTramite(tramiteSeleccionado);
+        tramiteServicio.actualizarEstadoTramite(tramiteSeleccionado, Integer.parseInt(getIdentificacionSistema()));
 
         tramiteList = new ArrayList<Tramite>();
         tramiteList = tramiteServicio.getTramiteList(institucionId, EstadoTramiteEnum.GENERADO.getEstado());

@@ -89,6 +89,11 @@ public class Tramite implements Serializable {
 	
 	//bi-directional many-to-one association to Documento
 	@ManyToOne
+	@JoinColumn(name="continua_tramite_id", referencedColumnName = "institucion_id")
+	private Institucion continuaTramite;
+	
+	//bi-directional many-to-one association to Documento
+	@ManyToOne
 	@JoinColumn(name="institucion_id", referencedColumnName = "institucion_id")
 	private Institucion institucion;
 	
@@ -148,6 +153,14 @@ public class Tramite implements Serializable {
 
 	public void setCondicionCiudadanoRequirente(String condicionCiudadanoRequirente) {
 		this.condicionCiudadanoRequirente = condicionCiudadanoRequirente;
+	}
+
+	public Institucion getContinuaTramite() {
+		return continuaTramite;
+	}
+
+	public void setContinuaTramite(Institucion continuaTramite) {
+		this.continuaTramite = continuaTramite;
 	}
 
 	public String getCorreoRequirente() {

@@ -6,8 +6,10 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
+import ec.gob.dinardap.notarialregistral.constante.ContextoEnum;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
+import ec.gob.dinardap.notarialregistral.modelo.Documento;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.util.FechaHoraSistema;
 import ec.gob.dinardap.persistence.dao.ejb.GenericDaoEjb;
@@ -69,7 +71,7 @@ public class TramiteDaoEjb extends GenericDaoEjb<Tramite, Long> implements Trami
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<TramiteRegistradorDto> misTramites(Short contextoNotarial, Short contextoRegistral, Short estadoTramite, Integer canton) {
+	public List<TramiteRegistradorDto> misTramites(Short contextoNotarial, Short contextoRegistral, Short estadoTramite, Integer usuarioId) {
 		
 		/*StringBuilder sql = new StringBuilder("select t.tramite_id, t.codigo, i.nombre as institucion, t.fecha_registro, t.fecha_cierre, ");
 		sql.append("t.observacion, doc1.ruta as notarial,	doc2.ruta as registral ");
@@ -100,7 +102,7 @@ public class TramiteDaoEjb extends GenericDaoEjb<Tramite, Long> implements Trami
 		sql.append(" LEFT OUTER JOIN ec_dinardap_notarial_registral.documento doc2 ON t.tramite_id = doc2.tramite_id");
 		sql.append(" and doc2.contexto_archivo = ").append(contextoRegistral).append(" and doc2.estado = ").append(EstadoEnum.ACTIVO.getEstado());  
 		sql.append(" where t.estado = ").append(estadoTramite); 
-		sql.append(" and i.canton_id = ").append(canton); 
+		sql.append(" and t.cerrado_por = ").append(usuarioId); 
 		sql.append(" order by fecha_registro asc");
 		Query query = em.createNativeQuery(sql.toString());
 		List<Object[]> lista = query.getResultList();
@@ -155,5 +157,5 @@ public class TramiteDaoEjb extends GenericDaoEjb<Tramite, Long> implements Trami
 		}
 		return misTramites;
 	}
-
+	
 }

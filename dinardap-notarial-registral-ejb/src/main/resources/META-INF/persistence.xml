@@ -5,13 +5,14 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="notarial-registral-pu">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jta-data-source>java:jboss/datasources/dinardapDS-pre</jta-data-source>
+		<jta-data-source>java:jboss/datasources/dinardapDS-P</jta-data-source>
 		<class>ec.gob.dinardap.seguridad.modelo.Asignacion</class>
 		<class>ec.gob.dinardap.seguridad.modelo.AsignacionInstitucion</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Campo</class>
 		<class>ec.gob.dinardap.seguridad.modelo.CampoPaquete</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Fuente</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Institucion</class>
+		<class>ec.gob.dinardap.seguridad.modelo.Notificacion</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Opcion</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Paquete</class>
 		<class>ec.gob.dinardap.seguridad.modelo.Parametro</class>

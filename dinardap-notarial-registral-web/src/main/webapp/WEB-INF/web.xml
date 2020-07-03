@@ -3,13 +3,13 @@
          xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
-    <display-name>notarial</display-name>
+    <display-name>/notarial</display-name>
 	
     <context-param>
         <description>Identificador del sistema</description>
         <param-name>sistema.identificacion</param-name>
         <!--<param-value>SAU sistemaId-pruebas</param-value> Pruebas -->
-        <param-value>6</param-value> <!-- Desarrollo --> 
+        <param-value>4</param-value> <!-- Desarrollo 6--> 
     </context-param>
     <context-param>
         <description>Secret key genereado al momento de aprobar la creación del aplicativo dentro del sistema SAU</description>
@@ -32,8 +32,8 @@
 	
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <!--param-value>Production</param-value -->
-        <param-value>Development</param-value>
+        <param-value>Production</param-value> 
+        <!--<param-value>Development</param-value> -->
     </context-param>
     <context-param>
         <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>

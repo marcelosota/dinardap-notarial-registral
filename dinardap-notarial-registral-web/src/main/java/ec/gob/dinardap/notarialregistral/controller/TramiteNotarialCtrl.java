@@ -14,6 +14,10 @@ import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
+import ec.gob.dinardap.geografico.modelo.Canton;
+import ec.gob.dinardap.geografico.modelo.Provincia;
+import ec.gob.dinardap.geografico.servicio.CantonServicio;
+import ec.gob.dinardap.geografico.servicio.ProvinciaServicio;
 import ec.gob.dinardap.interoperadorv2.cliente.servicio.ServicioDINARDAP;
 import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
 import ec.gob.dinardap.notarialregistral.constante.EstadoTramiteEnum;
@@ -23,8 +27,10 @@ import ec.gob.dinardap.notarialregistral.modelo.TipoTramite;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.TipoTramiteServicio;
 import ec.gob.dinardap.notarialregistral.servicio.TramiteServicio;
+import ec.gob.dinardap.seguridad.modelo.Institucion;
 import ec.gob.dinardap.seguridad.servicio.InstitucionServicio;
 import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
+import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Named(value = "tramiteNotarialCtrl")
 @ViewScoped
@@ -37,6 +43,8 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     private Boolean onPasaporte;
     private Boolean disableCampos;
     private Boolean tramiteOrigen;
+    private boolean flagCanton;
+	private boolean flagInstitucion;
 
     //Variables de negocio
     private String tipoIdentificacion;
@@ -45,9 +53,15 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     private Tramite tramiteGenerado;
     private Integer institucionId;
     private Integer usuarioId;
+    private Integer provinciaId;
+    private Integer cantonId;
+    private Integer continuaTramiteId;
     //Listas    
     private List<TipoTramite> tipoTramiteList;
     private List<String> tipoIdentificacionList;
+    private List<Institucion> listaInstituciones;
+	private List<Provincia> provincia;
+	private List<Canton> canton;
 
     @EJB
     private TipoTramiteServicio tipoTramiteServicio;
@@ -60,6 +74,13 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     
     @EJB
     private UsuarioServicio usuariosServicio;
+    
+    @EJB
+    private ProvinciaServicio provinciaServicio;
+    
+    @EJB
+    private CantonServicio cantonServicio;
+    
 
     @PostConstruct
     protected void init() {
@@ -83,6 +104,8 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
         onPasaporte = Boolean.FALSE;
         disableCampos = Boolean.TRUE;
         tramiteOrigen = Boolean.FALSE;
+        setFlagCanton(true);
+        setFlagInstitucion(true);
 
     }
 
@@ -112,6 +135,7 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
         tramiteGenerado = new Tramite();        
         
         tramite.setInstitucion(institucionServicio.findByPk(institucionId));
+        tramite.setContinuaTramite(institucionServicio.findByPk(getContinuaTramiteId()));
         tramite.setFechaRegistro(new Date());
         tramite.setRegistradoPor(usuariosServicio.findByPk(getUsuarioId()));
         tramite.setEstado(EstadoTramiteEnum.GENERADO.getEstado());
@@ -190,6 +214,27 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
             codigoTramiteInicial = null;
         }
     }
+    
+    public void cantonPorProvincia() {
+		if(canton != null && canton.size() > 0)
+			canton.clear();
+		if(getProvinciaId() != null) {
+			setCanton(cantonServicio.buscarCantonesPorProvincia(getProvinciaId()));
+			setFlagCanton(false);
+		}else {
+			setFlagCanton(true);
+		}
+			
+	}
+    public void institucionProvinciaCanton() {
+    	if(listaInstituciones != null && listaInstituciones.size() > 0)
+    		listaInstituciones.clear();
+    	if(getProvinciaId() != null && getCantonId() != null) {
+    		setListaInstituciones(institucionServicio.obtenerInstitucionPorCantonEstado(getCantonId(), EstadoEnum.ACTIVO.getEstado()));
+    		setFlagInstitucion(false);
+    	}else
+    		setFlagInstitucion(true);
+    }
 
     //Getters & Setters    
     public Tramite getTramite() {
@@ -216,7 +261,33 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
         this.tipoIdentificacionList = tipoIdentificacionList;
     }
 
-    public Boolean getOnCedula() {
+    public List<Institucion> getListaInstituciones() {
+		return listaInstituciones;
+	}
+
+	public void setListaInstituciones(List<Institucion> listaInstituciones) {
+		this.listaInstituciones = listaInstituciones;
+	}
+
+	public List<Provincia> getProvincia() {
+		provincia = new ArrayList<Provincia>();
+		provincia = provinciaServicio.obtenerProvincias();
+		return provincia;
+	}
+
+	public void setProvincia(List<Provincia> provincia) {
+		this.provincia = provincia;
+	}
+
+	public List<Canton> getCanton() {
+		return canton;
+	}
+
+	public void setCanton(List<Canton> canton) {
+		this.canton = canton;
+	}
+
+	public Boolean getOnCedula() {
         return onCedula;
     }
 
@@ -256,7 +327,23 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
         this.tramiteOrigen = tramiteOrigen;
     }
 
-    public String getCodigoTramiteInicial() {
+    public boolean isFlagCanton() {
+		return flagCanton;
+	}
+
+	public void setFlagCanton(boolean flagCanton) {
+		this.flagCanton = flagCanton;
+	}
+
+	public boolean isFlagInstitucion() {
+		return flagInstitucion;
+	}
+
+	public void setFlagInstitucion(boolean flagInstitucion) {
+		this.flagInstitucion = flagInstitucion;
+	}
+
+	public String getCodigoTramiteInicial() {
         return codigoTramiteInicial;
     }
 
@@ -270,6 +357,30 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
 	public void setUsuarioId(Integer usuarioId) {
 		this.usuarioId = usuarioId;
+	}
+
+	public Integer getProvinciaId() {
+		return provinciaId;
+	}
+
+	public void setProvinciaId(Integer provinciaId) {
+		this.provinciaId = provinciaId;
+	}
+
+	public Integer getCantonId() {
+		return cantonId;
+	}
+
+	public void setCantonId(Integer cantonId) {
+		this.cantonId = cantonId;
+	}
+
+	public Integer getContinuaTramiteId() {
+		return continuaTramiteId;
+	}
+
+	public void setContinuaTramiteId(Integer continuaTramiteId) {
+		this.continuaTramiteId = continuaTramiteId;
 	}
 
 }

@@ -46,8 +46,7 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 	@EJB
 	private ParametroServicio parametroServicio;
 
-	private List<TramiteRegistradorDto> listaTramitesCerrados;
-	private List<TramiteRegistradorDto> filtro;
+	private List<TramiteRegistradorDto> listaTramitesCerrados;	
 	private TramiteRegistradorDto selectedTramite;
 	private TramiteRegistradorDto tramiteDto;
 	private Long tramiteId;
@@ -70,7 +69,7 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 		//usuario = usuarioServicio.obtenerUsuarioPorIdentificacion(getLoggedUser());
 		usuario = usuarioServicio.findByPk(Integer.parseInt(getLoggedUser()));
 		//// modificar el canton del usuario logueado
-		usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
+		//usuario = usuarioServicio.obtenerUsuarioPorIdentificacion("1714284856");
 		institucionId = Integer.parseInt(getSessionVariable("institucionId"));
 		cantonId = institucionServicio.findByPk(institucionId).getCanton().getCantonId();
 
@@ -78,25 +77,14 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 
 	public List<TramiteRegistradorDto> getListaTramitesCerrados() {
 		listaTramitesCerrados = tramiteDao.misTramites(ContextoEnum.NOTARIAL.getContexto(),
-				ContextoEnum.REGISTRAL.getContexto(), EstadoTramiteEnum.CERRADO.getEstado(), cantonId);
-		if (!listaTramitesCerrados.isEmpty()) {
-			if (filtro == null)
-				filtro = listaTramitesCerrados;
-		}
+		ContextoEnum.REGISTRAL.getContexto(), EstadoTramiteEnum.CERRADO.getEstado(), usuario.getUsuarioId());	
+		
 		return listaTramitesCerrados;
 	}
 
 	public void setListaTramitesCerrados(List<TramiteRegistradorDto> listaTramitesCerrados) {
 		this.listaTramitesCerrados = listaTramitesCerrados;
-	}
-
-	public List<TramiteRegistradorDto> getFiltro() {
-		return filtro;
-	}
-
-	public void setFiltro(List<TramiteRegistradorDto> filtro) {
-		this.filtro = filtro;
-	}
+	}	
 
 	public TramiteRegistradorDto getSelectedTramite() {
 		return selectedTramite;
