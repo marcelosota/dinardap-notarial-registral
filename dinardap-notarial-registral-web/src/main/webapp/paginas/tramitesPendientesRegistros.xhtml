@@ -14,8 +14,7 @@
 		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Trámites
 			Pendientes Registrador</h1>
 		<h:form id="formRegistrador">
-			<p:panel style="width: 95%"
-				header="#{etiquetas['detalle.tramite']}">
+			<p:panel style="width: 95%" header="#{etiquetas['detalle.tramite']}">
 				<h:panelGrid columns="3" style="width: 50%"
 					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda,form-input-izquierda">
 					<p:outputLabel id="codigoTramite" for="codigo"
@@ -23,11 +22,11 @@
 					<p:inputText id="codigo"
 						value="#{tramitesPendientesRegistrosCtrl.ctvu}" required="true"
 						required-message="#{etiquetas['cvtu']}-#{mensajes['requerido']}" />
-				<p:commandButton value="#{etiquetas['buscar']}" update="@form"
-					actionListener="#{tramitesPendientesRegistrosCtrl.consultarPorCvtu}"
-					icon="ui-icon-search" process="@this, codigo" />
+					<p:commandButton value="#{etiquetas['buscar']}" update="@form"
+						actionListener="#{tramitesPendientesRegistrosCtrl.consultarPorCvtu}"
+						icon="ui-icon-search" process="@this, codigo" />
 				</h:panelGrid>
-				<p:separator />		
+				<p:separator />
 				<h:panelGrid columns="2"
 					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
 					<p:outputLabel for="identificacion"
@@ -58,7 +57,7 @@
 				</h:panelGrid>
 			</p:panel>
 			<p:panel header="#{etiquetas['seccion.registros']}"
-				style="margin-bottom:95px;">
+				style="margin-bottom:20px;width: 95%">
 				<h:panelGrid columns="2"
 					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
 					<h:outputText value="#{etiquetas['estado.tramite']}*" />
@@ -72,7 +71,7 @@
 						<f:selectItem itemLabel="Seleccionar .." itemValue="#{null}" />
 						<f:selectItem itemLabel="INCONSISTENTE" itemValue="4" />
 						<f:selectItem itemLabel="ATENDIDO" itemValue="5" />
-					</p:selectOneMenu>				
+					</p:selectOneMenu>
 					<h:outputText
 						rendered="#{!tramitesPendientesRegistrosCtrl.estadoInconsistente}"
 						value="#{etiquetas['observacion']}*" />
@@ -81,7 +80,7 @@
 						disabled="" rows="4" cols="60" autoResize="true"
 						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.observacionRegistro}"
 						size="500" maxlength="512" required="true"
-						requiredMessage="Observación : #{mensajes['requerido']}" />				
+						requiredMessage="Observación : #{mensajes['requerido']}" />
 					<h:outputText
 						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
 						value="#{etiquetas['observacion']}" />
@@ -89,7 +88,7 @@
 						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
 						disabled="" rows="4" cols="60" autoResize="true"
 						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.observacionRegistro}"
-						size="500" maxlength="512" />				
+						size="500" maxlength="512" />
 					<h:outputText id="oplDocumento"
 						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
 						value="#{etiquetas['cargar.documento.registral']}*" />
@@ -99,22 +98,30 @@
 						fileUploadListener="#{tramitesPendientesRegistrosCtrl.subirArchivo}"
 						sizeLimit="6000000" process="@this" allowTypes="/(\.|\/)(pdf)$/"
 						mode="advanced" auto="true" required="true" update="" />
-
+					<h:outputText id="oplRegistral"
+						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
+						value="#{etiquetas['visualizar.documento.registral']}*" />
+					<h:commandLink id="btnDescargaRegistral" target="_blank"
+						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
+						value="Descargar" immediate="true"
+						action="#{tramitesPendientesRegistrosCtrl.descargarRegistro()}">
+						<i class="fa fa-file-pdf-o fa-lg documentoRegistral"></i>
+					</h:commandLink>
+				</h:panelGrid>
+				<br></br>
+				<br></br>
+				<h:panelGrid columns="2" style="text-align: center; width:100%;">
+					<p:commandButton value="#{etiquetas['guardar']}" id="guardarBtn"
+						style="margin-right:20px;" icon="ui-icon-disk"
+						update="@form formRegistrador "
+						action="#{tramitesPendientesRegistrosCtrl.guardarTramite}" />
+					<p:commandButton value="#{etiquetas['cancelar']}" id="cancelarBtn"
+						style="margin-right:20px;" icon="fa fa-fw fa-ban" update="@form"
+						action="#{tramitesPendientesRegistrosCtrl.cancelar}" />
 				</h:panelGrid>
 
-
 			</p:panel>
-			<h:panelGrid columns="2"
-				style="width: 50%; margin: 4px 5px; text-align: center;">
-				<p:commandButton value="#{etiquetas['guardar']}" id="guardarBtn"
-					style="margin-right:20px;" icon="ui-icon-disk"
-					update="@form formRegistrador "
-					action="#{tramitesPendientesRegistrosCtrl.guardarTramite}" />
-					<p:commandButton value="#{etiquetas['cancelar']}" id="cancelarBtn"
-					style="margin-right:20px;" icon="fa fa-fw fa-ban"
-					update="@form"
-					action="#{tramitesPendientesRegistrosCtrl.cancelar}" />
-			</h:panelGrid>
+
 
 
 

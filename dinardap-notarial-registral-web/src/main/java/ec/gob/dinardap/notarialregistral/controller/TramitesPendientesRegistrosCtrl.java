@@ -88,7 +88,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 	public void setSelectedTramite(TramiteRegistradorDto selectedTramite) {
 		this.selectedTramite = selectedTramite;
-	}	
+	}
 
 	public Integer getInstitucionId() {
 		return institucionId;
@@ -277,7 +277,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 		tramiteDto = new TramiteRegistradorDto();
 		selectedTramite = new TramiteRegistradorDto();
-		tramiteDto.setTramite(new Tramite());		
+		tramiteDto.setTramite(new Tramite());
 		documentoDto = new DocumentoDto();
 		documentoDto.setDocumento(new Documento());
 		estadoInconsistente = true;
@@ -306,7 +306,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 						tramiteDto.setEstado(EstadoTramiteEnum.INCONSISTENTE.getEstado());
 						if (tramiteServicio.guardarRegistro(tramiteDto) == true) {
 							String inconsistente = "Su trámite tiene una inconsistencia que ha sido observada por el registrador.";
-							tramiteServicio.emailRegistros(tramiteDto,inconsistente);
+							tramiteServicio.emailRegistros(tramiteDto, inconsistente);
 							limpiar();
 							addInfoMessage(getBundleMensaje("registro.guardado", null), null);
 						} else
@@ -326,7 +326,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 								System.out.println("documento registral subido");
 								if (tramiteServicio.guardarRegistro(tramiteDto) == true) {
 									String atendido = "Su trámite ha sido atendido por el registrador.";
-									tramiteServicio.emailRegistros(tramiteDto,atendido);
+									tramiteServicio.emailRegistros(tramiteDto, atendido);
 									limpiar();
 									addInfoMessage(getBundleMensaje("registro.guardado", null), null);
 								} else
@@ -358,6 +358,22 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 	public void cancelar() {
 		limpiar();
+	}
+
+	public void descargarRegistro() {
+		TipoArchivo tipoArchivo = new TipoArchivo();
+
+		if (documentoDto.getContenido() != null) {
+			// descarga de memoria
+			downloadFile(documentoDto.getContenido(),
+					tipoArchivo.obtenerTipoArchivo(documentoDto.getDocumento().getNombreCarga()),
+					documentoDto.getDocumento().getNombreCarga());
+
+		} else {
+
+			addErrorMessage(null, getBundleMensaje("error.archivo", null), null);
+		}
+
 	}
 
 }
