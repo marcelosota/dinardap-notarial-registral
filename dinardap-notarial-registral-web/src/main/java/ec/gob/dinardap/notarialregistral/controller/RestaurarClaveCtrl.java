@@ -60,7 +60,7 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 					MailMessage mailMessage = new MailMessage();
 					StringBuilder html = new StringBuilder("<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
                     html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
-                    html.append("Estimad@ " + usuario.getNombre() + ", <br /><br />");
+                    html.append("Estimado(a) " + usuario.getNombre() + ", <br /><br />");
                     html.append("Se ha restablecido sus credenciales con éxito.<br/><br />");
                     html.append("Usario: " + usuario.getCedula() + "<br/ ><br />");
                     html.append("Contraseña: " + clave + "<br/ ><br /><br/>");
@@ -72,7 +72,7 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 					StringBuilder asunto = new StringBuilder(200);
 
 					to.add(usuario.getCorreoElectronico());
-					asunto.append("Notificación SANYR");
+					asunto.append("Notificación SANYR - Restaurar contraseña");
 
 					mailMessage = credencialesCorreo();
 					mailMessage.setTo(to);

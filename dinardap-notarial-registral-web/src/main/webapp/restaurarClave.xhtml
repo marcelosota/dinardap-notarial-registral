@@ -16,7 +16,8 @@
                                     id="usuario"
                                     value="#{restaurarClaveCtrl.nombreUsuario}"
                                     placeholder="#{etiquetas['nombre.usuario']}" 
-                                    required="true">
+                                    required="true"
+                                    requiredMessage="#{etiquetas['nombre.usuario']} #{mensajes['requerido']}">
                                     <f:facet name="prepend">
                                         <b:icon name="user" />
                                     </f:facet>
@@ -30,7 +31,8 @@
                                     id="correoElectronico"
                                     value="#{restaurarClaveCtrl.correoElectronico}"
                                     placeholder="#{etiquetas['nombre.correoElectronico']}" 
-                                    required="true">
+                                    required="true"
+                                    requiredMessage="#{etiquetas['nombre.correoElectronico']} #{mensajes['requerido']}">
                                     <f:facet name="prepend">
                                         <b:icon name="envelope" />
                                     </f:facet>

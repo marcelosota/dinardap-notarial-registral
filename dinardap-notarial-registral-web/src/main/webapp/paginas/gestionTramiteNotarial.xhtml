@@ -24,6 +24,13 @@
                                      tableStyle="width:auto">
                             <p:ajax event="rowSelect" listener="#{gestionTramiteNotarialCtrl.onSelectTramite}" update="formTramiteSeleccionado"/>
 
+                            <p:column headerText="#{etiquetas['nombre.descripcionActoNotarial']}" 
+                                      sortBy="#{tramite.descripcion}" 
+                                      filterBy="#{tramite.descripcion}" filterMatchMode="contains" 
+                                      width="20%" style="text-align: center">
+                                <h:outputText value="#{tramite.descripcion}" />
+                            </p:column>
+
                             <p:column headerText="#{etiquetas['nombre.codigoCVTU']}" 
                                       sortBy="#{tramite.codigo}" 
                                       filterBy="#{tramite.codigo}" filterMatchMode="contains" 
@@ -47,7 +54,7 @@
                             <p:column headerText="#{etiquetas['nombre.nombre']}" 
                                       sortBy="#{tramite.nombreRequirente}" 
                                       filterBy="#{tramite.nombreRequirente}" filterMatchMode="contains" 
-                                      width="30%" style="text-align: center">
+                                      width="25%" style="text-align: center">
                                 <h:outputText value="#{tramite.nombreRequirente}"/>
                             </p:column>
 <!--                            <p:column headerText="#{etiquetas['nombre.correoElectronico']}" 
@@ -100,31 +107,44 @@
                                      value="#{gestionTramiteNotarialCtrl.tramiteSeleccionado.correoRequirente}"
                                      style="width: 90%" readonly="true"/>
 
-                        <p:outputLabel for="trazabilidadTramite" value="#{etiquetas['nombre.actualizacionTramite']}" />
+                        <p:outputLabel value="#{etiquetas['nombre.descripcionActoNotarial']}" />
+                        <p:inputTextarea
+                            id="descripcion"
+                            value="#{gestionTramiteNotarialCtrl.tramiteSeleccionado.descripcion}"
+                            rows="2"                  
+                            style="width: 90%"
+                            readonly="true"/>
+
+<!--                        <p:outputLabel for="trazabilidadTramite" value="#{etiquetas['nombre.actualizacionTramite']}" />
                         <p:inputText id="trazabilidadTramite"
                                      value="#{gestionTramiteNotarialCtrl.tramiteSeleccionado.tramite.codigo}"
-                                     style="width: 90%" readonly="true"/>
+                                     style="width: 90%" readonly="true"/>-->
 
-                        <p:outputLabel value="#{etiquetas['nombre.documentoNotarial']}" />
+                        <p:outputLabel value="#{etiquetas['nombre.documentoNotarial']}" />                        
                         <p:fileUpload                                
                             id="documentoTramite"
                             messageTemplate="#{mensajes['mensaje.archivoInvalido']}"
                             style="width:90%"
-                            mode="advanced"                            
-                            label="#{etiquetas['seleccionar']}..."
+                            mode="advanced"
+                            auto="true"                            
+                            label="#{etiquetas['seleccionar']}"
                             uploadLabel="#{etiquetas['cargar']}"
                             cancelLabel="#{etiquetas['cancelar']}" 
                             dragDropSupport="true"
                             sizeLimit="6000000"
-                            allowTypes="/(\.|\/)(pdf)$/"                           
+                            onstart="adicionar()"                            
+                            allowTypes="/(\.|\/)(pdf|PDF)$/"
                             fileUploadListener="#{gestionTramiteNotarialCtrl.uploadDocumento}"
                             required="true"
+                            fileLimitMessage="Solo se puede cargar un Documento"
                             update="downloadDocumento, guardarBtn"/>
+<!--                            <p:ajax event="onAdd" listener="#{gestionTramiteNotarialCtrl.onAdicionar}" update="downloadDocumento, guardarBtn"/>-->
 
-                        <p:outputLabel for="downloadDocumento" value="#{etiquetas['nombre.actualizacionTramite']}" />
+
+                        <p:remoteCommand name="adicionar" update="downloadDocumento, guardarBtn" action="#{gestionTramiteNotarialCtrl.onAdicionar}" />
                         <p:commandButton id="downloadDocumento"
                                          disabled="#{gestionTramiteNotarialCtrl.disabledDescargar}"
-                                         value="#{etiquetas['descargar']}" 
+                                         value="#{etiquetas['nombre.visualizarActoCargado']}" 
                                          action="#{gestionTramiteNotarialCtrl.visualizarArchivo}"
                                          ajax="false"                                                                                   
                                          icon="fa fa-fw fa-download">                            

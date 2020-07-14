@@ -22,8 +22,9 @@ import ec.gob.dinardap.persistence.constante.CriteriaTypeEnum;
 import ec.gob.dinardap.persistence.dao.GenericDao;
 import ec.gob.dinardap.persistence.servicio.impl.GenericServiceImpl;
 import ec.gob.dinardap.persistence.util.Criteria;
+import ec.gob.dinardap.seguridad.modelo.Notificacion;
+import ec.gob.dinardap.seguridad.servicio.NotificacionServicio;
 import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
-import ec.gob.dinardap.util.constante.EstadoEnum;
 
 @Stateless(name = "TramiteServicio")
 public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> implements TramiteServicio {
@@ -39,6 +40,9 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 
 	@EJB
 	private MailServicio mailServicio;
+	
+	@EJB
+	private NotificacionServicio notificacionServicio;
 
 	@Override
 	public GenericDao<Tramite, Long> getDao() {
@@ -52,7 +56,7 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 	}
 
 	@Override
-	public void actualizarEstadoTramite(Tramite tramite) {
+	public void actualizarEstadoTramite(Tramite tramite, Integer sistemaId) {
 		this.update(tramite);
 
 		String parametroAmbiente = "DESARROLLO";
@@ -61,7 +65,7 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 		StringBuilder html = new StringBuilder(
 				"<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
 		html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
-		html.append("Estimad@ " + tramite.getNombreRequirente() + ", <br /><br />");
+		html.append("Estimado(a) " + tramite.getNombreRequirente() + ", <br /><br />");
 		html.append("Le informamos que se ha cargado satisfactoriamente el Acto Notarial.<br />");
 		html.append("CVTU: " + tramite.getCodigo() + "<br/ ><br />");
 		html.append("Favor ingresar a la plataforma GOB EC para continuar con el proceso.<br/>");
@@ -71,15 +75,18 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 		html.append("</B></FONT>");
 
 		List<String> to = new ArrayList<String>();
+		Notificacion notificacion = notificacionServicio.getPorInstitucionSistema(tramite.getContinuaTramite().getInstitucionId(), sistemaId);
 		StringBuilder asunto = new StringBuilder(200);
 
 		if (parametroAmbiente.equals("PRODUCCION")) {
 
 		} else {
 			to.add(tramite.getCorreoRequirente());
-			asunto.append("Notificación SANYR");
+			if(notificacion != null)
+				to.add(notificacion.getCorreoElectronico());
+			asunto.append("Notificación SANYR - ");
 		}
-		asunto.append("Confirmación de solicitud para categorizar a la empresa: ");
+		asunto.append("Confirmación acto notarial cargado ");
 		mailMessage = credencialesCorreo();
 		mailMessage.setTo(to);
 		mailMessage.setSubject(asunto.toString());
@@ -195,14 +202,14 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 	}
 
 	@Override
-	public void emailRegistros(TramiteRegistradorDto tramiteDto,String mensaje) {		
+	public void emailRegistros(TramiteRegistradorDto tramiteDto, String mensaje) {		
 
 		
 		MailMessage mailMessage = new MailMessage();
 		StringBuilder html = new StringBuilder(
 				"<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
 		html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
-		html.append("Estimad@ " + tramiteDto.getTramite().getNombreRequirente() + ", <br /><br />");
+		html.append("Estimado(a) " + tramiteDto.getTramite().getNombreRequirente() + ", <br /><br />");
 		html.append(" "+ mensaje+ "<br />");
 		html.append("CVTU: " + tramiteDto.getTramite().getCodigo() + "<br/ ><br />");		
 		html.append("Gracias por usar nuestros servicios.<br /><br />");
@@ -214,7 +221,11 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 		StringBuilder asunto = new StringBuilder(200);
 
 		to.add(tramiteDto.getTramite().getCorreoRequirente());
-		asunto.append("Notificación SANYR");
+		asunto.append("Notificación SANYR - ");
+		if(tramiteDto.getTramite().getEstado() == EstadoTramiteEnum.CERRADO.getEstado())
+			asunto.append("Trámite atendido");
+		else
+			asunto.append("Trámite inconsistente");
 
 		mailMessage = credencialesCorreo();
 		mailMessage.setTo(to);

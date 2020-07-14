@@ -134,6 +134,7 @@ public class EditarUsuarioCtrl extends BaseCtrl {
 		boolean flag = true;
 		if(getAsgSeleccionada().getEstado()) {
 			if(verificarInstitucinesAsignadas()) {
+				getAsgSeleccionada().setEstado(false);
 				addErrorMessage(null, getBundleMensaje("usuario.institucion.existente", null), null);
 				flag = false;
 			}

@@ -34,150 +34,155 @@ import org.primefaces.model.UploadedFile;
 @ViewScoped
 public class GestionTramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
-	private static final long serialVersionUID = 4955068063614741302L;
-	// Declaración de variables
-	// Variables de control visual
-	private Boolean onTramiteSelecccionado;
-	private Boolean disabledDescargar;
+    private static final long serialVersionUID = 4955068063614741302L;
+    // Declaración de variables
+    // Variables de control visual
+    private Boolean onTramiteSelecccionado;
+    private Boolean disabledDescargar;
 
-	// Variables de negocio
-	private Integer institucionId;
-	private Integer usuarioId;
-	private Tramite tramiteSeleccionado;
-	private UploadedFile file;
-	private byte[] fileByte;
+    // Variables de negocio
+    private Integer institucionId;
+    private Integer usuarioId;
+    private Tramite tramiteSeleccionado;
+    private UploadedFile file;
+    private byte[] fileByte;
 
-	// Listas
-	private List<Tramite> tramiteList;
+    // Listas
+    private List<Tramite> tramiteList;
 
-	@EJB
-	private TramiteServicio tramiteServicio;
-	@EJB
-	private DocumentoServicio documentoServicio;
-	@EJB
-	private ParametroServicio parametroServicio;
+    @EJB
+    private TramiteServicio tramiteServicio;
+    @EJB
+    private DocumentoServicio documentoServicio;
+    @EJB
+    private ParametroServicio parametroServicio;
 
-	@PostConstruct
-	protected void init() {
-		institucionId = Integer.parseInt(BaseCtrl.getSessionVariable("institucionId")); // con Login
+    @PostConstruct
+    protected void init() {
+        institucionId = Integer.parseInt(BaseCtrl.getSessionVariable("institucionId")); // con Login
 
-		usuarioId = Integer.parseInt(BaseCtrl.getSessionVariable("usuarioId")); // con Login
-		tramiteList = new ArrayList<Tramite>();
-		tramiteList = tramiteServicio.getTramiteList(institucionId, EstadoTramiteEnum.GENERADO.getEstado());
+        usuarioId = Integer.parseInt(BaseCtrl.getSessionVariable("usuarioId")); // con Login
+        tramiteList = new ArrayList<Tramite>();
+        tramiteList = tramiteServicio.getTramiteList(institucionId, EstadoTramiteEnum.GENERADO.getEstado());
 
-		tramiteSeleccionado = new Tramite();
-		onTramiteSelecccionado = Boolean.FALSE;
-		disabledDescargar = Boolean.TRUE;
+        tramiteSeleccionado = new Tramite();
+        onTramiteSelecccionado = Boolean.FALSE;
+        disabledDescargar = Boolean.TRUE;
 
-	}
+    }
 
-	public void onSelectTramite() {
-		onTramiteSelecccionado = Boolean.TRUE;
-		disabledDescargar = Boolean.TRUE;
-		fileByte = null;
-	}
+    public void onSelectTramite() {
+        onTramiteSelecccionado = Boolean.TRUE;
+        disabledDescargar = Boolean.TRUE;
+        fileByte = null;
+    }
 
-	public void uploadDocumento(FileUploadEvent event) {
-		try {
-			file = event.getFile();
-			fileByte = IOUtils.toByteArray(file.getInputstream());
-			disabledDescargar = Boolean.FALSE;
-		} catch (IOException ex) {
-			Logger.getLogger(GestionTramiteNotarialCtrl.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	}
+    public void onAdicionar() {
+        System.out.println("En Seleccionar");
+        fileByte = null;
+        disabledDescargar = Boolean.TRUE;
+    }
 
-	public void visualizarArchivo() {
-		if (fileByte != null) {
-			downloadFile(fileByte, file.getContentType(), file.getFileName());
-		}
-	}
+    public void uploadDocumento(FileUploadEvent event) {
+        try {
+            file = event.getFile();
+            fileByte = IOUtils.toByteArray(file.getInputstream());
+            disabledDescargar = Boolean.FALSE;
+        } catch (IOException ex) {
+            Logger.getLogger(GestionTramiteNotarialCtrl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-	public void finalizarTramite() {
-		Documento documento = new Documento();
-		documento.setTramite(tramiteSeleccionado);
-		documento.setRuta(getRuta());
-		documento.setFechaCarga(new Date());
-		documento.setContextoArchivo(ContextoEnum.NOTARIAL.getContexto());
-		documento.setNombreCarga(file.getFileName());
-		documento.setSubidoPor(usuarioId);
-		documento.setEstado(EstadoDocumentoEnum.ACTIVO.getEstado());
+    public void visualizarArchivo() {
+        if (fileByte != null) {
+            downloadFile(fileByte, file.getContentType(), file.getFileName());
+        }
+    }
 
-		tramiteSeleccionado.setEstado(EstadoTramiteEnum.CARGADO.getEstado());
+    public void finalizarTramite() {
+        Documento documento = new Documento();
+        documento.setTramite(tramiteSeleccionado);
+        documento.setRuta(getRuta());
+        documento.setFechaCarga(new Date());
+        documento.setContextoArchivo(ContextoEnum.NOTARIAL.getContexto());
+        documento.setNombreCarga(file.getFileName());
+        documento.setSubidoPor(usuarioId);
+        documento.setEstado(EstadoDocumentoEnum.ACTIVO.getEstado());
 
-		SftpDto sftpDto = new SftpDto();
-		sftpDto.getCredencialesSFTP().setDirDestino(documento.getRuta());
-		sftpDto.setArchivo(fileByte);
-		
-		//documento.setRuta(parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor().concat(documento.getRuta()));
+        tramiteSeleccionado.setEstado(EstadoTramiteEnum.CARGADO.getEstado());
 
-		documentoServicio.crearDocumento(documento, sftpDto);
-		tramiteServicio.actualizarEstadoTramite(tramiteSeleccionado);
+        SftpDto sftpDto = new SftpDto();
+        sftpDto.getCredencialesSFTP().setDirDestino(documento.getRuta());
+        sftpDto.setArchivo(fileByte);
 
-		tramiteList = new ArrayList<Tramite>();
-		tramiteList = tramiteServicio.getTramiteList(institucionId, EstadoTramiteEnum.GENERADO.getEstado());
+        //documento.setRuta(parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor().concat(documento.getRuta()));
+        documentoServicio.crearDocumento(documento, sftpDto);
+        tramiteServicio.actualizarEstadoTramite(tramiteSeleccionado, Integer.parseInt(getIdentificacionSistema()));
 
-		fileByte = null;
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información",
-				getBundleMensaje("mensaje.tramiteFinalizado", null)));
+        tramiteList = new ArrayList<Tramite>();
+        tramiteList = tramiteServicio.getTramiteList(institucionId, EstadoTramiteEnum.GENERADO.getEstado());
 
-		tramiteSeleccionado = new Tramite();
-		onTramiteSelecccionado = Boolean.FALSE;
-		disabledDescargar = Boolean.TRUE;
+        fileByte = null;
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información",
+                getBundleMensaje("mensaje.tramiteFinalizado", null)));
 
-	}
+        tramiteSeleccionado = new Tramite();
+        onTramiteSelecccionado = Boolean.FALSE;
+        disabledDescargar = Boolean.TRUE;
 
-	public void cancelar() {
-		tramiteSeleccionado = new Tramite();
-		onTramiteSelecccionado = Boolean.FALSE;
-		disabledDescargar = Boolean.TRUE;
-	}
+    }
 
-	private String getRuta() {
+    public void cancelar() {
+        tramiteSeleccionado = new Tramite();
+        onTramiteSelecccionado = Boolean.FALSE;
+        disabledDescargar = Boolean.TRUE;
+    }
+
+    private String getRuta() {
 //        /notarial/2020/6/8/ID_INSTITUCION/5ED9548B-3MFNLN-0001.pdf
-		Calendar calendar = Calendar.getInstance();
-		String ruta = "";
-		ruta += parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
-		ruta += calendar.get(Calendar.YEAR) + "/";
-		ruta += (calendar.get(Calendar.MONTH) + 1) + "/";
-		ruta += calendar.get(Calendar.DAY_OF_MONTH) + "/";
-		ruta += institucionId + "/";
-		ruta += tramiteSeleccionado.getCodigo() + "." + file.getContentType().split("\\/")[1];
-		return ruta;
-	}
+        Calendar calendar = Calendar.getInstance();
+        String ruta = "";
+        ruta += parametroServicio.findByPk(ParametroEnum.SFTP_NOTARIAL_REGISTRAL_RUTA.name()).getValor();
+        ruta += calendar.get(Calendar.YEAR) + "/";
+        ruta += (calendar.get(Calendar.MONTH) + 1) + "/";
+        ruta += calendar.get(Calendar.DAY_OF_MONTH) + "/";
+        ruta += institucionId + "/";
+        ruta += tramiteSeleccionado.getCodigo() + "." + file.getContentType().split("\\/")[1];
+        return ruta;
+    }
 
-	// Getters & Setters
-	public List<Tramite> getTramiteList() {
-		return tramiteList;
-	}
+    // Getters & Setters
+    public List<Tramite> getTramiteList() {
+        return tramiteList;
+    }
 
-	public void setTramiteList(List<Tramite> tramiteList) {
-		this.tramiteList = tramiteList;
+    public void setTramiteList(List<Tramite> tramiteList) {
+        this.tramiteList = tramiteList;
 
-	}
+    }
 
-	public Tramite getTramiteSeleccionado() {
-		return tramiteSeleccionado;
-	}
+    public Tramite getTramiteSeleccionado() {
+        return tramiteSeleccionado;
+    }
 
-	public void setTramiteSeleccionado(Tramite tramiteSeleccionado) {
-		this.tramiteSeleccionado = tramiteSeleccionado;
-	}
+    public void setTramiteSeleccionado(Tramite tramiteSeleccionado) {
+        this.tramiteSeleccionado = tramiteSeleccionado;
+    }
 
-	public Boolean getOnTramiteSelecccionado() {
-		return onTramiteSelecccionado;
-	}
+    public Boolean getOnTramiteSelecccionado() {
+        return onTramiteSelecccionado;
+    }
 
-	public void setOnTramiteSelecccionado(Boolean onTramiteSelecccionado) {
-		this.onTramiteSelecccionado = onTramiteSelecccionado;
-	}
+    public void setOnTramiteSelecccionado(Boolean onTramiteSelecccionado) {
+        this.onTramiteSelecccionado = onTramiteSelecccionado;
+    }
 
-	public Boolean getDisabledDescargar() {
-		return disabledDescargar;
-	}
+    public Boolean getDisabledDescargar() {
+        return disabledDescargar;
+    }
 
-	public void setDisabledDescargar(Boolean disabledDescargar) {
-		this.disabledDescargar = disabledDescargar;
-	}
+    public void setDisabledDescargar(Boolean disabledDescargar) {
+        this.disabledDescargar = disabledDescargar;
+    }
 
 }

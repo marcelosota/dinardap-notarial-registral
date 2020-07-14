@@ -12,7 +12,8 @@
 					<b:row>
 						<b:column col-md="4" col-xs="12" offset="4">
 							<b:inputText id="usuario" value="#{loginCtrl.nombreUsuario}"
-								placeholder="#{etiquetas['nombre.usuario']}" required="true">
+								placeholder="#{etiquetas['nombre.usuario']}" required="true"
+								requiredMessage="#{etiquetas['nombre.usuario']} #{mensajes['requerido']}">
 								<f:facet name="prepend">
 									<b:icon name="user" />
 								</f:facet>
@@ -23,7 +24,8 @@
 					<b:row>
 						<b:column col-md="4" col-xs="12" offset="4">
 							<b:inputSecret id="clave" value="#{loginCtrl.contrasena}"
-								placeholder="#{etiquetas['nombre.clave']}" required="true">
+								placeholder="#{etiquetas['nombre.clave']}" required="true"
+								requiredMessage="#{etiquetas['nombre.clave']} #{mensajes['requerido']}">
 								<f:facet name="prepend">
 									<b:iconAwesome name="key" />
 								</f:facet>

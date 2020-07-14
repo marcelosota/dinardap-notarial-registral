@@ -5,20 +5,58 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
-<!-- 
-		Replace path to template, title, header and body
-		with actual data.
-	 -->
 <ui:composition template="/template/general.xhtml">
 	<ui:define name="content">
 		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Trámites
-			Pendientes Registrador</h1>
+			Pendientes Registrador</h1>		
+
 		<h:form id="formRegistrador">
+			<p:remoteCommand name="actualizarTabla"
+				action="#{tramitesPendientesRegistrosCtrl.refrescarDtb}"
+				update=":formRegistrador:dtbPendientes" />
+			<p:dataTable id="dtbPendientes" var="dtb" widgetVar="wm"
+				value="#{tramitesPendientesRegistrosCtrl.listaTramitePendiente}"
+				rows="7" paginator="true" paginatorPosition="bottom"
+				selectionMode="single" rowKey="#{dtb.codigo}"
+				selection="#{tramitesPendientesRegistrosCtrl.selectedTramite}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+				emptyMessage="No existen registros"
+				filteredValue="#{tramitesPendientesRegistrosCtrl.filtro}">
+				<p:ajax event="rowSelect"
+					listener="#{tramitesPendientesRegistrosCtrl.filaSeleccionada}"
+					update=":formRegistrador" />
+				<p:column headerText="#{etiquetas['codigo.tramite']}" width="105"
+					filterBy="#{dtb.codigo}" sortBy="#{dtb.codigo}"
+					filterMatchMode="contains">
+					<h:outputText value="#{dtb.codigo}" />
+				</p:column>
+				<p:column headerText="#{etiquetas['nombre.institucion']}"
+					width="160">
+					<h:outputText value="#{dtb.institucion}"
+						styleClass="texto-justificado" />
+				</p:column>
+				<p:column
+					headerText="#{etiquetas['nombre.descripcionActoNotarial']}"
+					width="160">
+					<h:outputText value="#{dtb.descripcionNotarial}"
+						styleClass="texto-justificado" />
+				</p:column>
+				<p:column headerText="#{etiquetas['registrado.por']}" width="100">
+					<h:outputText value="#{dtb.registradoPor}"
+						styleClass="texto-justificado" />
+				</p:column>
+				<p:column headerText="#{etiquetas['fecha.registro']}" width="100">
+					<h:outputText value="#{dtb.fechaRegistro}"
+						styleClass="texto-justificado">
+						<f:convertDateTime pattern="yyyy-MM-dd" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
 			<p:panel style="width: 95%" header="#{etiquetas['detalle.tramite']}">
 				<h:panelGrid columns="3" style="width: 50%"
 					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda,form-input-izquierda">
 					<p:outputLabel id="codigoTramite" for="codigo"
-						value="#{etiquetas['nombre.codigoValidacionTramite']}" />
+						value="#{etiquetas['codigo.tramite']}" />
 					<p:inputText id="codigo"
 						value="#{tramitesPendientesRegistrosCtrl.ctvu}" required="true"
 						required-message="#{etiquetas['cvtu']}-#{mensajes['requerido']}" />
@@ -108,21 +146,20 @@
 						<i class="fa fa-file-pdf-o fa-lg documentoRegistral"></i>
 					</h:commandLink>
 				</h:panelGrid>
-				<br></br>
-				<br></br>
-				<h:panelGrid columns="2" style="text-align: center; width:100%;">
+				<br />
+				<br />
+				<h:panelGrid columns="2"
+					style="width: 50%; margin: 4px 5px; text-align: center;">
 					<p:commandButton value="#{etiquetas['guardar']}" id="guardarBtn"
-						style="margin-right:20px;" icon="ui-icon-disk"
-						update="@form formRegistrador "
-						action="#{tramitesPendientesRegistrosCtrl.guardarTramite}" />
+						style="margin-right:20px;"
+						icon="ui-icon-disk" update="@form" process="@this"
+						action="#{tramitesPendientesRegistrosCtrl.guardarTramite}"
+						oncomplete="PF('wm').clearFilters(); actualizarTabla();"  />
 					<p:commandButton value="#{etiquetas['cancelar']}" id="cancelarBtn"
 						style="margin-right:20px;" icon="fa fa-fw fa-ban" update="@form"
-						action="#{tramitesPendientesRegistrosCtrl.cancelar}" />
+						action="#{tramitesPendientesRegistrosCtrl.cancelar}" />					
 				</h:panelGrid>
-
 			</p:panel>
-
-
 
 
 		</h:form>
