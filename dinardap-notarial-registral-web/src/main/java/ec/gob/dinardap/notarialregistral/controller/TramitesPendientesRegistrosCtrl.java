@@ -343,7 +343,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 						tramiteDto.setCerradoPor(usuario);
 						tramiteDto.setEstado(EstadoTramiteEnum.INCONSISTENTE.getEstado());
 						if (tramiteServicio.guardarRegistro(tramiteDto) == true) {
-							String inconsistente = "Su trámite tiene una inconsistencia que ha sido observada por el registrador.";
+							String inconsistente = "tiene una inconsistencia que ha sido observada por el registrador.";
 							tramiteServicio.emailRegistros(tramiteDto, inconsistente);
 							limpiar();							
 							addInfoMessage(getBundleMensaje("registro.guardado", null), null);
@@ -363,10 +363,9 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 							if (documentoServicio.subirArchivos(documentoDto) == true) {
 								System.out.println("documento registral subido");
 								if (tramiteServicio.guardarRegistro(tramiteDto) == true) {
-									String atendido = "Su trámite ha sido atendido por el registrador.";
+									String atendido = "ha sido atendido y cerrado por el registrador.";
 									tramiteServicio.emailRegistros(tramiteDto, atendido);
-									limpiar();
-									refrescarDtb();
+									limpiar();									
 									addInfoMessage(getBundleMensaje("registro.guardado", null), null);
 								} else
 									addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
