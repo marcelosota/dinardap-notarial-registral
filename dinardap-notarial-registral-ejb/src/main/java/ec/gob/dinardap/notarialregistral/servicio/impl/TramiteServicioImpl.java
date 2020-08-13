@@ -209,9 +209,8 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 		StringBuilder html = new StringBuilder(
 				"<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
 		html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
-		html.append("Estimado(a) " + tramiteDto.getTramite().getNombreRequirente() + ", <br /><br />");
-		html.append(" "+ mensaje+ "<br />");
-		html.append("CVTU: " + tramiteDto.getTramite().getCodigo() + "<br/ ><br />");		
+		html.append("Estimado(a) " + tramiteDto.getTramite().getNombreRequirente() + ", <br /><br />");	
+		html.append("Su trámite con CVTU: " + tramiteDto.getTramite().getCodigo() + " " + mensaje +"<br/ ><br />");	
 		html.append("Gracias por usar nuestros servicios.<br /><br />");
 		html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
 		html.append("Dirección Nacional de Registros de Datos Públicos");
@@ -221,6 +220,7 @@ public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> imple
 		StringBuilder asunto = new StringBuilder(200);
 
 		to.add(tramiteDto.getTramite().getCorreoRequirente());
+		//to.add("jadira.paspuel@dinardap.gob.ec");
 		asunto.append("Notificación SANYR - ");
 		if(tramiteDto.getTramite().getEstado() == EstadoTramiteEnum.CERRADO.getEstado())
 			asunto.append("Trámite atendido");

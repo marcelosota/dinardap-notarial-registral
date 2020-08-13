@@ -23,6 +23,7 @@ public class TramiteRegistradorDto {
 	private Tramite tramite;
 	private String rutaNotarial;
 	private String rutaRegistral;
+	private String descripcionNotarial;
 	
 	
 	
@@ -121,6 +122,12 @@ public class TramiteRegistradorDto {
 	}
 	public void setRutaRegistral(String rutaRegistral) {
 		this.rutaRegistral = rutaRegistral;
+	}
+	public String getDescripcionNotarial() {
+		return descripcionNotarial;
+	}
+	public void setDescripcionNotarial(String descripcionNotarial) {
+		this.descripcionNotarial = descripcionNotarial;
 	}	
 	
 	

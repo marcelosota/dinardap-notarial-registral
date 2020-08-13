@@ -23,13 +23,14 @@ public class TramiteDaoEjb extends GenericDaoEjb<Tramite, Long> implements Trami
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<TramiteRegistradorDto> tramitesPendientes(Short estadoTramite, Integer canton) {
-		StringBuilder sql = new StringBuilder("select t.tramite_id, t.codigo, i.nombre as institucion, u.nombre as registradoPor, t.fecha_registro ");		
-		sql.append(" from ec_dinardap_notarial_registral.tramite t ");		
-		sql.append(" INNER JOIN ec_dinardap_seguridad.institucion i ON t.institucion_id = i.institucion_id ");
+	public List<TramiteRegistradorDto> tramitesPendientes(Short estadoTramite, Integer institucionId) {
+		StringBuilder sql = new StringBuilder("select t.tramite_id, t.codigo, inot.nombre as institucion, t.descripcion, u.nombre as registradoPor, t.fecha_registro ");		
+		sql.append(" from ec_dinardap_notarial_registral.tramite t ");
+		sql.append(" INNER JOIN ec_dinardap_seguridad.institucion inot ON t.institucion_id = inot.institucion_id ");
+		sql.append(" INNER JOIN ec_dinardap_seguridad.institucion ir ON t.continua_tramite_id = ir.institucion_id ");
 		sql.append(" INNER JOIN ec_dinardap_seguridad.usuario u ON t.registrado_por = u.usuario_id ");		
 		sql.append(" where t.estado = ").append(estadoTramite);
-		sql.append(" and i.canton_id= ").append(canton);;
+		sql.append(" and ir.institucion_id= ").append(institucionId);;
 		sql.append("  order by fecha_registro ");		
 		Query query = em.createNativeQuery(sql.toString());
 		List<Object[]> lista = query.getResultList();
@@ -54,12 +55,17 @@ public class TramiteDaoEjb extends GenericDaoEjb<Tramite, Long> implements Trami
 					item.setInstitucion(null);
 				}
 				if (fila[3] != null) {
-					item.setRegistradoPor(fila[3].toString());
+					item.setDescripcionNotarial(fila[3].toString());
+				} else {
+					item.setDescripcionNotarial(null);
+				}
+				if (fila[4] != null) {
+					item.setRegistradoPor(fila[4].toString());
 				} else {
 					item.setRegistradoPor(null);
 				}
-				if (fila[4] != null) {
-					item.setFechaRegistro(fechaHora.convertirFecha(fila[4].toString()));
+				if (fila[5] != null) {
+					item.setFechaRegistro(fechaHora.convertirFecha(fila[5].toString()));
 				} else {
 					item.setFechaRegistro(null);
 				}

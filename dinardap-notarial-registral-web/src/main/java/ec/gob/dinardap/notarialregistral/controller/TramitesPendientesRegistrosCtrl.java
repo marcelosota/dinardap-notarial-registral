@@ -1,7 +1,9 @@
 package ec.gob.dinardap.notarialregistral.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -10,6 +12,7 @@ import javax.inject.Named;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 
 import ec.gob.dinardap.notarialregistral.constante.ContextoEnum;
 import ec.gob.dinardap.notarialregistral.constante.EstadoTramiteEnum;
@@ -51,6 +54,8 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	@EJB
 	private ParametroServicio parametroServicio;
 
+	private List<TramiteRegistradorDto> listaTramitePendiente;
+	private List<TramiteRegistradorDto> filtro;
 	private TramiteRegistradorDto selectedTramite;
 	private TramiteRegistradorDto tramiteDto;
 	private Integer institucionId;
@@ -63,7 +68,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 	@PostConstruct
 	protected void init() {
-		
+
 		tramiteDto = new TramiteRegistradorDto();
 		selectedTramite = new TramiteRegistradorDto();
 		tramiteDto.setTramite(new Tramite());
@@ -74,7 +79,8 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		// usuario = usuarioServicio.obtenerUsuarioPorIdentificacion(getLoggedUser());
 		usuario = usuarioServicio.findByPk(Integer.parseInt(getLoggedUser()));
 		institucionId = Integer.parseInt(getSessionVariable("institucionId"));
-		//// modificar el canton del usuario logueado
+		//// modificar el canton del usuario logueado		
+		
 
 	}
 
@@ -85,7 +91,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 	public void setSelectedTramite(TramiteRegistradorDto selectedTramite) {
 		this.selectedTramite = selectedTramite;
-	}	
+	}
 
 	public Integer getInstitucionId() {
 		return institucionId;
@@ -143,7 +149,39 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		this.tramiteDto = tramiteDto;
 	}
 
+	public List<TramiteRegistradorDto> getListaTramitePendiente() {
+
+		listaTramitePendiente = tramiteDao.tramitesPendientes(EstadoTramiteEnum.CARGADO.getEstado(), institucionId);
+		if (filtro == null)
+			filtro = listaTramitePendiente;		
+
+		return listaTramitePendiente;
+	}
+
+	public void setListaTramitePendiente(List<TramiteRegistradorDto> listaTramitePendiente) {
+		this.listaTramitePendiente = listaTramitePendiente;
+	}
+	
+	public List<TramiteRegistradorDto> getFiltro() {
+		return filtro;
+	}
+
+	public void setFiltro(List<TramiteRegistradorDto> filtro) {
+		this.filtro = filtro;
+	}
+
 	//////////////////// funciones
+	public void refrescarDtb()
+	{
+		listaTramitePendiente = tramiteDao.tramitesPendientes(EstadoTramiteEnum.CARGADO.getEstado(), institucionId);
+		if (filtro == null)
+			filtro = listaTramitePendiente;	
+	}
+	public void filaSeleccionada(SelectEvent event) {
+		ctvu = ((TramiteRegistradorDto) event.getObject()).getCodigo();
+		consultarPorCvtu();
+	}
+
 	public void consultarPorCvtu() {
 		tramiteDto.setTramite(new Tramite());
 		try {
@@ -274,11 +312,14 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 		tramiteDto = new TramiteRegistradorDto();
 		selectedTramite = new TramiteRegistradorDto();
-		tramiteDto.setTramite(new Tramite());		
+		tramiteDto.setTramite(new Tramite());
 		documentoDto = new DocumentoDto();
 		documentoDto.setDocumento(new Documento());
 		estadoInconsistente = true;
-		setCtvu(null);
+		setCtvu(null);	
+		setEstadoTramite(null);
+		
+		
 	}
 
 	public Boolean verificarEstadoTramite() {
@@ -302,9 +343,9 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 						tramiteDto.setCerradoPor(usuario);
 						tramiteDto.setEstado(EstadoTramiteEnum.INCONSISTENTE.getEstado());
 						if (tramiteServicio.guardarRegistro(tramiteDto) == true) {
-							String inconsistente = "Su trámite tiene una inconsistencia que ha sido observada por el registrador.";
-							tramiteServicio.emailRegistros(tramiteDto,inconsistente);
-							limpiar();
+							String inconsistente = "tiene una inconsistencia que ha sido observada por el registrador.";
+							tramiteServicio.emailRegistros(tramiteDto, inconsistente);
+							limpiar();							
 							addInfoMessage(getBundleMensaje("registro.guardado", null), null);
 						} else
 							addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
@@ -322,9 +363,9 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 							if (documentoServicio.subirArchivos(documentoDto) == true) {
 								System.out.println("documento registral subido");
 								if (tramiteServicio.guardarRegistro(tramiteDto) == true) {
-									String atendido = "Su trámite ha sido atendido por el registrador.";
-									tramiteServicio.emailRegistros(tramiteDto,atendido);
-									limpiar();
+									String atendido = "ha sido atendido y cerrado por el registrador.";
+									tramiteServicio.emailRegistros(tramiteDto, atendido);
+									limpiar();									
 									addInfoMessage(getBundleMensaje("registro.guardado", null), null);
 								} else
 									addErrorMessage(null, getBundleMensaje("error.validacion", null), null);
@@ -356,7 +397,11 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	public void cancelar() {
 		limpiar();
 	}
-	
+	public void print()
+	{
+		System.out.println("imprimir");
+	}
+
 	public void descargarRegistro() {
 		TipoArchivo tipoArchivo = new TipoArchivo();
 
@@ -370,6 +415,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 			addErrorMessage(null, getBundleMensaje("error.archivo", null), null);
 		}
+
 	}
 
 }
