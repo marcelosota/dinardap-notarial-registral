@@ -92,7 +92,7 @@
 						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
 						style="width:40%" label="#{etiquetas['seleccionar']}"
 						fileUploadListener="#{tramitesPendientesRegistrosCtrl.subirArchivo}"
-						sizeLimit="6000000" process="@this" allowTypes="/(\.|\/)(pdf)$/"
+						sizeLimit="20971520" process="@this" allowTypes="/(\.|\/)(pdf)$/"
 						mode="advanced" auto="true" required="true" update="" />
 					<h:outputText id="oplRegistral"
 						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"

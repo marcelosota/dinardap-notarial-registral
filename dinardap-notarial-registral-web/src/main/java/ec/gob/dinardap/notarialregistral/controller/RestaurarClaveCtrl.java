@@ -58,11 +58,11 @@ public class RestaurarClaveCtrl extends BaseCtrl {
 				System.out.println("Enviar Correo");
 				try {
 					MailMessage mailMessage = new MailMessage();
-					StringBuilder html = new StringBuilder("<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
+					StringBuilder html = new StringBuilder("<center><h1><B>Sistema de Actos Notariales y Registrales</B></h1></center>");
                     html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
                     html.append("Estimado(a) " + usuario.getNombre() + ", <br /><br />");
                     html.append("Se ha restablecido sus credenciales con éxito.<br/><br />");
-                    html.append("Usario: " + usuario.getCedula() + "<br/ ><br />");
+                    html.append("Usuario: " + usuario.getCedula() + "<br/ ><br />");
                     html.append("Contraseña: " + clave + "<br/ ><br /><br/>");
                     html.append("Nota: Favor actualizar su contraseña una vez que haya ingresado en el sistema SANYR.<br/>");
                     html.append("Gracias por usar nuestros servicios.<br /><br />");
