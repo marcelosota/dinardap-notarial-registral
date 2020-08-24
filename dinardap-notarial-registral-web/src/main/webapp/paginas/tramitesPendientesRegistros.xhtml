@@ -16,8 +16,8 @@
 					<p:outputLabel id="codigoTramite" for="codigo"
 						value="#{etiquetas['codigo.tramite']}" />
 					<p:inputText id="codigo"
-						value="#{tramitesPendientesRegistrosCtrl.ctvu}" required="true"
-						required-message="#{etiquetas['cvtu']}-#{mensajes['requerido']}" />
+						value="#{tramitesPendientesRegistrosCtrl.ctvu}" required="true"                                                
+						requiredMessage="#{etiquetas['cvtu']}-#{mensajes['requerido']}" />
 					<p:commandButton value="#{etiquetas['buscar']}" update="@form"
 						actionListener="#{tramitesPendientesRegistrosCtrl.consultarPorCvtu}"
 						icon="ui-icon-search" process="@this, codigo" />
@@ -27,7 +27,7 @@
 					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
 					<p:outputLabel for="identificacion"
 						value="#{etiquetas['identificacion']}" />
-					<p:inputText render="" id="identificacion"
+					<p:inputText id="identificacion"
 						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.tramite.identificacionRequirente}"
 						size="64" readonly="true">
 					</p:inputText>
@@ -75,7 +75,7 @@
 						rendered="#{!tramitesPendientesRegistrosCtrl.estadoInconsistente}"
 						disabled="" rows="4" cols="60" autoResize="true"
 						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.observacionRegistro}"
-						size="500" maxlength="512" required="true"
+						maxlength="512" required="true"
 						requiredMessage="Observación : #{mensajes['requerido']}" />
 					<h:outputText
 						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
@@ -84,7 +84,7 @@
 						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
 						disabled="" rows="4" cols="60" autoResize="true"
 						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.observacionRegistro}"
-						size="500" maxlength="512" />
+						maxlength="512" />
 					<h:outputText id="oplDocumento"
 						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
 						value="#{etiquetas['cargar.documento.registral']}*" />
