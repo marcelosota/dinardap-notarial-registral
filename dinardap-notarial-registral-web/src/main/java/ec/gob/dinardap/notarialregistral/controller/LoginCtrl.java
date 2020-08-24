@@ -46,8 +46,10 @@ public class LoginCtrl extends BaseCtrl {
                 Integer.parseInt(getIdentificacionSistema()));
         if (validacionDto != null) {
             setSessionVariable("perfil", validacionDto.getPerfil());
-            setSessionVariable("institucionId", validacionDto.getInstitucionId().toString());
+            //setSessionVariable("perfil", String.join(",", validacionDto.getPerfil().toString()));
+            //setSessionVariable("institucionId", String.join(",", validacionDto.getInstitucionId().toString()));
             setSessionVariable("usuarioId", validacionDto.getUsuarioId().toString());
+            setSessionVariable("institucionId", validacionDto.getInstitucion());
             ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
             try {
                 limpiarCampos();
