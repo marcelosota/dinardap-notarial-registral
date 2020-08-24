@@ -70,7 +70,7 @@ public class LoginCtrl extends BaseCtrl {
             setSessionVariable("perfil", validacionDto.getPerfil());
             setSessionVariable("usuarioId", validacionDto.getUsuarioId().toString());
             //Seleccionar Institucion
-            String instituciones[] = validacionDto.getInstitucionId().split(",");
+            String instituciones[] = validacionDto.getInstitucion().split(",");
             institucionList = new ArrayList<Institucion>();
             if (instituciones.length > 1) {
                 for (String institucion1 : instituciones) {
@@ -108,7 +108,7 @@ public class LoginCtrl extends BaseCtrl {
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Autenticacíon", "Seleccionar una Institución"));
-        }        
+        }
     }
 
     public void validarUsuario1() {
@@ -120,7 +120,7 @@ public class LoginCtrl extends BaseCtrl {
         if (validacionDto != null) {
             setSessionVariable("perfil", validacionDto.getPerfil());
             //Seleccionar Institucion
-            String instituciones[] = validacionDto.getInstitucionId().split(",");
+            String instituciones[] = validacionDto.getInstitucion().split(",");
             System.out.println("Instituciones: " + instituciones.length);
             if (instituciones.length > 1) {
                 PrimeFaces current = PrimeFaces.current();
