@@ -12,10 +12,15 @@ import javax.inject.Named;
 import ec.gob.dinardap.autorizacion.constante.SemillaEnum;
 import ec.gob.dinardap.autorizacion.util.EncriptarCadenas;
 import ec.gob.dinardap.seguridad.dto.ValidacionDto;
+import ec.gob.dinardap.seguridad.modelo.Institucion;
+import ec.gob.dinardap.seguridad.servicio.InstitucionServicio;
 import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
+import org.primefaces.PrimeFaces;
 //import ec.gob.dinardap.turno.modelo.RegistroMercantil;
 //import ec.gob.dinardap.turno.modelo.Usuario;
 //import ec.gob.dinardap.turno.servicio.RegistroMercantilServicio;
@@ -30,13 +35,30 @@ public class LoginCtrl extends BaseCtrl {
     @EJB
     private UsuarioServicio usuarioServicio;
 
+    @EJB
+    private InstitucionServicio institucionServicio;
+
     private String nombreUsuario;
     private String contrasena;
+
+    private Institucion institucion;
+    private List<Institucion> institucionList;
 
     private ValidacionDto validacionDto;
 
     @PostConstruct
     public void init() {
+    }
+
+    public List<Institucion> completeNombreInstitucion(String query) {
+        List<Institucion> filteredInstitucion = new ArrayList<Institucion>();
+        for (Institucion i : institucionList) {
+            if (i.getNombre().toLowerCase().contains(query)
+                    || i.getNombre().toUpperCase().contains(query)) {
+                filteredInstitucion.add(i);
+            }
+        }
+        return filteredInstitucion;
     }
 
     public void validarUsuario() {
@@ -46,10 +68,37 @@ public class LoginCtrl extends BaseCtrl {
                 Integer.parseInt(getIdentificacionSistema()));
         if (validacionDto != null) {
             setSessionVariable("perfil", validacionDto.getPerfil());
-            //setSessionVariable("perfil", String.join(",", validacionDto.getPerfil().toString()));
-            //setSessionVariable("institucionId", String.join(",", validacionDto.getInstitucionId().toString()));
             setSessionVariable("usuarioId", validacionDto.getUsuarioId().toString());
-            setSessionVariable("institucionId", validacionDto.getInstitucion());
+            //Seleccionar Institucion
+            String instituciones[] = validacionDto.getInstitucion().split(",");
+            institucionList = new ArrayList<Institucion>();
+            if (instituciones.length > 1) {
+                for (String institucion1 : instituciones) {
+                    Institucion i = institucionServicio.findByPk(Integer.parseInt(institucion1.trim()));
+                    if (i != null) {
+                        institucionList.add(i);
+                    }
+                }
+                PrimeFaces current = PrimeFaces.current();
+                current.executeScript("PF('seleccionInstitucionDlg').show();");
+            } else {
+                setSessionVariable("institucionId", instituciones[0].trim());
+                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+                try {
+                    limpiarCampos();
+                    context.redirect(context.getRequestContextPath() + "/paginas/brand.jsf");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Autenticacíon", getBundleMensaje("error.credenciales", null)));
+        }
+    }
+
+    public void ingresar() {
+        if (institucion.getInstitucionId() != null) {
+            setSessionVariable("institucionId", institucion.getInstitucionId().toString());
             ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
             try {
                 limpiarCampos();
@@ -58,7 +107,7 @@ public class LoginCtrl extends BaseCtrl {
                 e.printStackTrace();
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Autenticacíon", getBundleMensaje("error.credenciales", null)));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de Autenticacíon", "Seleccionar una Institución"));
         }
     }
 
@@ -136,6 +185,22 @@ public class LoginCtrl extends BaseCtrl {
 
     public void setEntidad(Integer entidad) {
 //        this.entidad = entidad;
+    }
+
+    public Institucion getInstitucion() {
+        return institucion;
+    }
+
+    public void setInstitucion(Institucion institucion) {
+        this.institucion = institucion;
+    }
+
+    public List<Institucion> getInstitucionList() {
+        return institucionList;
+    }
+
+    public void setInstitucionList(List<Institucion> institucionList) {
+        this.institucionList = institucionList;
     }
 
 }
