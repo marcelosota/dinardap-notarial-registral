@@ -23,6 +23,7 @@ import ec.gob.dinardap.interoperadorv2.ws.ConsultarResponse;
 import ec.gob.dinardap.notarialregistral.constante.EstadoTramiteEnum;
 import ec.gob.dinardap.notarialregistral.constante.InteroperabilidadEnum;
 import ec.gob.dinardap.notarialregistral.constante.TipoIdentificacionEnum;
+import ec.gob.dinardap.notarialregistral.constante.TipoInstitucionEnum;
 import ec.gob.dinardap.notarialregistral.modelo.TipoTramite;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.servicio.TipoTramiteServicio;
@@ -44,7 +45,7 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     private Boolean disableCampos;
     private Boolean tramiteOrigen;
     private boolean flagCanton;
-	private boolean flagInstitucion;
+    private boolean flagInstitucion;
 
     //Variables de negocio
     private String tipoIdentificacion;
@@ -60,33 +61,32 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     private List<TipoTramite> tipoTramiteList;
     private List<String> tipoIdentificacionList;
     private List<Institucion> listaInstituciones;
-	private List<Provincia> provincia;
-	private List<Canton> canton;
+    private List<Provincia> provincia;
+    private List<Canton> canton;
 
     @EJB
     private TipoTramiteServicio tipoTramiteServicio;
 
     @EJB
     private TramiteServicio tramiteServicio;
-    
+
     @EJB
     private InstitucionServicio institucionServicio;
-    
+
     @EJB
     private UsuarioServicio usuariosServicio;
-    
+
     @EJB
     private ProvinciaServicio provinciaServicio;
-    
+
     @EJB
     private CantonServicio cantonServicio;
-    
 
     @PostConstruct
     protected void init() {
-    	institucionId = Integer.parseInt(BaseCtrl.getSessionVariable("institucionId")); //con Login
-    	usuarioId = Integer.parseInt(BaseCtrl.getSessionVariable("usuarioId")); // con Login
-    	
+        institucionId = Integer.parseInt(BaseCtrl.getSessionVariable("institucionId")); //con Login
+        usuarioId = Integer.parseInt(BaseCtrl.getSessionVariable("usuarioId")); // con Login
+
         tipoIdentificacionList = new ArrayList<String>();
         tipoIdentificacionList = TipoIdentificacionEnum.getTipoIdentificacionList();
         tipoIdentificacion = "";
@@ -97,7 +97,6 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
         //tipoTramiteList = new ArrayList<TipoTramite>();
         //tipoTramiteList = tipoTramiteServicio.getTipoTramiteEstado(EstadoTipoTramiteEnum.ACTIVO.getEstado());
-
         tramite = new Tramite();
 
         onCedula = Boolean.TRUE;
@@ -110,9 +109,9 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     }
 
     @SuppressWarnings("unused")
-	public void blurIdentificacionCedula() {
-        String nombreAux = getNombreCiudadano(tramite.getIdentificacionRequirente());
-        //String nombreAux = "Chris";
+    public void blurIdentificacionCedula() {
+//        String nombreAux = getNombreCiudadano(tramite.getIdentificacionRequirente());
+        String nombreAux = "Chris";
         if (nombreAux != null) {
             tramite.setNombreRequirente(nombreAux);
         } else {
@@ -132,8 +131,8 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     }
 
     public void crearTramite() {
-        tramiteGenerado = new Tramite();        
-        
+        tramiteGenerado = new Tramite();
+
         tramite.setInstitucion(institucionServicio.findByPk(institucionId));
         tramite.setContinuaTramite(institucionServicio.findByPk(getContinuaTramiteId()));
         tramite.setFechaRegistro(new Date());
@@ -214,26 +213,36 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
             codigoTramiteInicial = null;
         }
     }
-    
+
     public void cantonPorProvincia() {
-		if(canton != null && canton.size() > 0)
-			canton.clear();
-		if(getProvinciaId() != null) {
-			setCanton(cantonServicio.buscarCantonesPorProvincia(getProvinciaId()));
-			setFlagCanton(false);
-		}else {
-			setFlagCanton(true);
-		}
-			
-	}
+        if (canton != null && canton.size() > 0) {
+            canton.clear();
+        }
+        if (getProvinciaId() != null) {
+            setCanton(cantonServicio.buscarCantonesPorProvincia(getProvinciaId()));
+            setFlagCanton(false);
+        } else {
+            setFlagCanton(true);
+        }
+
+    }
+
     public void institucionProvinciaCanton() {
-    	if(listaInstituciones != null && listaInstituciones.size() > 0)
-    		listaInstituciones.clear();
-    	if(getProvinciaId() != null && getCantonId() != null) {
-    		setListaInstituciones(institucionServicio.obtenerInstitucionPorCantonEstado(getCantonId(), EstadoEnum.ACTIVO.getEstado()));
-    		setFlagInstitucion(false);
-    	}else
-    		setFlagInstitucion(true);
+        System.out.println("Instituciones de acuerdo al Cantón: ");
+        if (listaInstituciones != null && listaInstituciones.size() > 0) {
+            listaInstituciones.clear();
+        }
+        if (getProvinciaId() != null && getCantonId() != null) {
+            List<Integer> tipoInstitucionList = new ArrayList<Integer>();
+            tipoInstitucionList.add(TipoInstitucionEnum.REGISTRO_MERCANTIL.getTipoInstitucion());
+            tipoInstitucionList.add(TipoInstitucionEnum.REGISTRO_PROPIEDAD.getTipoInstitucion());
+            tipoInstitucionList.add(TipoInstitucionEnum.REGISTRO_MIXTO.getTipoInstitucion());
+
+            setListaInstituciones(institucionServicio.obtenerInstitucionPorCantonEstado(getCantonId(), EstadoEnum.ACTIVO.getEstado(), tipoInstitucionList));
+            setFlagInstitucion(false);
+        } else {
+            setFlagInstitucion(true);
+        }
     }
 
     //Getters & Setters    
@@ -262,32 +271,32 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     }
 
     public List<Institucion> getListaInstituciones() {
-		return listaInstituciones;
-	}
+        return listaInstituciones;
+    }
 
-	public void setListaInstituciones(List<Institucion> listaInstituciones) {
-		this.listaInstituciones = listaInstituciones;
-	}
+    public void setListaInstituciones(List<Institucion> listaInstituciones) {
+        this.listaInstituciones = listaInstituciones;
+    }
 
-	public List<Provincia> getProvincia() {
-		provincia = new ArrayList<Provincia>();
-		provincia = provinciaServicio.obtenerProvincias();
-		return provincia;
-	}
+    public List<Provincia> getProvincia() {
+        provincia = new ArrayList<Provincia>();
+        provincia = provinciaServicio.obtenerProvincias();
+        return provincia;
+    }
 
-	public void setProvincia(List<Provincia> provincia) {
-		this.provincia = provincia;
-	}
+    public void setProvincia(List<Provincia> provincia) {
+        this.provincia = provincia;
+    }
 
-	public List<Canton> getCanton() {
-		return canton;
-	}
+    public List<Canton> getCanton() {
+        return canton;
+    }
 
-	public void setCanton(List<Canton> canton) {
-		this.canton = canton;
-	}
+    public void setCanton(List<Canton> canton) {
+        this.canton = canton;
+    }
 
-	public Boolean getOnCedula() {
+    public Boolean getOnCedula() {
         return onCedula;
     }
 
@@ -328,22 +337,22 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     }
 
     public boolean isFlagCanton() {
-		return flagCanton;
-	}
+        return flagCanton;
+    }
 
-	public void setFlagCanton(boolean flagCanton) {
-		this.flagCanton = flagCanton;
-	}
+    public void setFlagCanton(boolean flagCanton) {
+        this.flagCanton = flagCanton;
+    }
 
-	public boolean isFlagInstitucion() {
-		return flagInstitucion;
-	}
+    public boolean isFlagInstitucion() {
+        return flagInstitucion;
+    }
 
-	public void setFlagInstitucion(boolean flagInstitucion) {
-		this.flagInstitucion = flagInstitucion;
-	}
+    public void setFlagInstitucion(boolean flagInstitucion) {
+        this.flagInstitucion = flagInstitucion;
+    }
 
-	public String getCodigoTramiteInicial() {
+    public String getCodigoTramiteInicial() {
         return codigoTramiteInicial;
     }
 
@@ -351,36 +360,36 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
         this.codigoTramiteInicial = codigoTramiteInicial;
     }
 
-	public Integer getUsuarioId() {
-		return usuarioId;
-	}
+    public Integer getUsuarioId() {
+        return usuarioId;
+    }
 
-	public void setUsuarioId(Integer usuarioId) {
-		this.usuarioId = usuarioId;
-	}
+    public void setUsuarioId(Integer usuarioId) {
+        this.usuarioId = usuarioId;
+    }
 
-	public Integer getProvinciaId() {
-		return provinciaId;
-	}
+    public Integer getProvinciaId() {
+        return provinciaId;
+    }
 
-	public void setProvinciaId(Integer provinciaId) {
-		this.provinciaId = provinciaId;
-	}
+    public void setProvinciaId(Integer provinciaId) {
+        this.provinciaId = provinciaId;
+    }
 
-	public Integer getCantonId() {
-		return cantonId;
-	}
+    public Integer getCantonId() {
+        return cantonId;
+    }
 
-	public void setCantonId(Integer cantonId) {
-		this.cantonId = cantonId;
-	}
+    public void setCantonId(Integer cantonId) {
+        this.cantonId = cantonId;
+    }
 
-	public Integer getContinuaTramiteId() {
-		return continuaTramiteId;
-	}
+    public Integer getContinuaTramiteId() {
+        return continuaTramiteId;
+    }
 
-	public void setContinuaTramiteId(Integer continuaTramiteId) {
-		this.continuaTramiteId = continuaTramiteId;
-	}
+    public void setContinuaTramiteId(Integer continuaTramiteId) {
+        this.continuaTramiteId = continuaTramiteId;
+    }
 
 }
