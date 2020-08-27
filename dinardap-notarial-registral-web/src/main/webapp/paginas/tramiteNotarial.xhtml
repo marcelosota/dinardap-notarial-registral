@@ -102,8 +102,22 @@
                                         required="true"
                                         title="#{tramiteNotarialCtrl.tramite.tipoTramite}"/>-->
 
-                        <p:outputLabel for="tipoIdentificacion" value="#{etiquetas['nombre.tipoIdentificacion']}" />
-                        <p:selectOneMenu id="tipoIdentificacion" value="#{tramiteNotarialCtrl.tipoIdentificacion}"
+                        <p:outputLabel value="#{etiquetas['nombre.tipoIdentificacion']}" />
+                        <b:selectOneMenu id="tipoIdentificacion"
+                                         value="#{tramiteNotarialCtrl.tipoIdentificacion}"                                         
+                                         required="true"                                         
+                                         ajax="true" onchange="ajax:tramiteNotarialCtrl.onTipoIdentificacion"
+                                         process="@this" update="formRegistroTramite:auxCedula, 
+                                         formRegistroTramite:auxLblCedula,
+                                         formRegistroTramite:auxPasaporte,
+                                         formRegistroTramite:auxLblPasaporte,
+                                         formRegistroTramite:nombre,
+                                         formRegistroTramite:auxLblNacionalidad,
+                                         formRegistroTramite:auxNacionalidad"
+                                         style="font-size:x-small; width: 90%">
+                            <f:selectItems value="#{tramiteNotarialCtrl.tipoIdentificacionList}" />                            
+                        </b:selectOneMenu>
+<!--                        <p:selectOneMenu id="tipoIdentificacion" value="#{tramiteNotarialCtrl.tipoIdentificacion}"
                                          style="width: 90%">
                             <p:ajax event="itemSelect" 
                                     update="formRegistroTramite:auxCedula, 
@@ -115,7 +129,7 @@
                                     formRegistroTramite:auxNacionalidad"
                                     listener="#{tramiteNotarialCtrl.onTipoIdentificacion}"/>
                             <f:selectItems value="#{tramiteNotarialCtrl.tipoIdentificacionList}" />
-                        </p:selectOneMenu>
+                        </p:selectOneMenu>-->
 
                         <h:panelGroup id="auxLblCedula">
                             <p:outputLabel for="cedula" value="#{etiquetas['nombre.identificacion']}" rendered="#{tramiteNotarialCtrl.onCedula}"/>

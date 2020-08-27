@@ -10,7 +10,8 @@ import ec.gob.dinardap.persistence.servicio.GenericService;
 
 @Local
 public interface TramiteServicio extends GenericService<Tramite, Long> {
-	public boolean guardarRegistro(TramiteRegistradorDto tramiteDto);
+
+    public boolean guardarRegistro(TramiteRegistradorDto tramiteDto);
 
     public void crearTramite(Tramite tramite);
 
@@ -21,9 +22,9 @@ public interface TramiteServicio extends GenericService<Tramite, Long> {
     public Boolean existenciaTramiteAsociado(Long tramiteId);
 
     public List<Tramite> getTramiteList(Integer institucionId, Short estado);
-    
+
     public Tramite tramiteCargadosByCodigoValidacionTramite(String codigoValidacionTramite);
-    
-    public void emailRegistros(TramiteRegistradorDto tramiteDto,String mensaje);
+
+    public void emailRegistros(TramiteRegistradorDto tramiteDto, String mensaje);
 
 }

@@ -32,10 +32,11 @@ import ec.gob.dinardap.seguridad.modelo.Institucion;
 import ec.gob.dinardap.seguridad.servicio.InstitucionServicio;
 import ec.gob.dinardap.seguridad.servicio.UsuarioServicio;
 import ec.gob.dinardap.util.constante.EstadoEnum;
+import org.apache.commons.lang.SerializationUtils;
 
-@Named(value = "tramiteNotarialCtrl")
+@Named(value = "tramiteNotarialInconsistenciaCtrl")
 @ViewScoped
-public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
+public class TramiteNotarialInconsistenciaCtrl extends BaseCtrl implements Serializable {
 
     private static final long serialVersionUID = 4955068063614741302L;
     //Declaración de variables
@@ -44,6 +45,7 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     private Boolean onPasaporte;
     private Boolean disableCampos;
     private Boolean tramiteOrigen;
+    private Boolean onSelectTramiteInconsistente;
     private boolean flagCanton;
     private boolean flagInstitucion;
 
@@ -52,12 +54,16 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     private String codigoTramiteInicial;
     private Tramite tramite;
     private Tramite tramiteGenerado;
+    private Tramite tramiteSeleccionado;
     private Integer institucionId;
     private Integer usuarioId;
     private Integer provinciaId;
     private Integer cantonId;
     private Integer continuaTramiteId;
+
+    private static Tramite tramiteAnterior;
     //Listas    
+    private List<Tramite> actoNotarialList;
     private List<TipoTramite> tipoTramiteList;
     private List<String> tipoIdentificacionList;
     private List<Institucion> listaInstituciones;
@@ -89,6 +95,12 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
         tipoIdentificacionList = new ArrayList<String>();
         tipoIdentificacionList = TipoIdentificacionEnum.getTipoIdentificacionList();
+
+        actoNotarialList = new ArrayList<Tramite>();
+        actoNotarialList = tramiteServicio.getTramiteList(institucionId, EstadoTramiteEnum.INCONSISTENTE.getEstado());
+
+        tramiteSeleccionado = new Tramite();
+
         tipoIdentificacion = "";
 
         if (!TipoIdentificacionEnum.getTipoIdentificacionList().isEmpty()) {
@@ -103,9 +115,30 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
         onPasaporte = Boolean.FALSE;
         disableCampos = Boolean.TRUE;
         tramiteOrigen = Boolean.FALSE;
+        onSelectTramiteInconsistente = Boolean.FALSE;
         setFlagCanton(true);
         setFlagInstitucion(true);
 
+    }
+
+    public void onSelectTramite() {
+        if (tramite.getNacionalidadRequirente() != null) {
+            onCedula = Boolean.FALSE;
+            onPasaporte = Boolean.TRUE;
+        } else {
+            onCedula = Boolean.TRUE;
+            onPasaporte = Boolean.FALSE;
+        }
+        provinciaId = tramite.getContinuaTramite().getCanton().getProvincia().getProvinciaId();
+        cantonId = tramite.getContinuaTramite().getCanton().getCantonId();
+        continuaTramiteId = tramite.getContinuaTramite().getInstitucionId();
+
+        tramiteAnterior = new Tramite();
+        tramiteAnterior = (Tramite) SerializationUtils.clone(tramite);
+        cantonPorProvincia();
+        institucionProvinciaCanton();
+
+        onSelectTramiteInconsistente = Boolean.TRUE;
     }
 
     @SuppressWarnings("unused")
@@ -131,44 +164,51 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
     }
 
     public void crearTramite() {
-        tramiteGenerado = new Tramite();
+        Tramite tramiteOriginal = new Tramite();
+        tramiteOriginal.setTramiteId(tramiteAnterior.getTramiteId());
 
-        tramite.setInstitucion(institucionServicio.findByPk(institucionId));
-        tramite.setContinuaTramite(institucionServicio.findByPk(getContinuaTramiteId()));
-        tramite.setFechaRegistro(new Date());
-        tramite.setRegistradoPor(usuariosServicio.findByPk(getUsuarioId()));
-        tramite.setEstado(EstadoTramiteEnum.GENERADO.getEstado());
-        if (tramiteOrigen) {
-            Tramite tramiteOriginal = tramiteServicio.getTramiteByCodigoValidacionTramite(codigoTramiteInicial);
-            if (tramiteOriginal.getTramiteId() != null) {
-                if (!tramiteServicio.existenciaTramiteAsociado(tramiteOriginal.getTramiteId())) {
-                    tramite.setTramite(tramiteOriginal);
-                    tramiteServicio.crearTramite(tramite);
-                    tramiteGenerado = tramite;
-                    PrimeFaces current = PrimeFaces.current();
-                    current.executeScript("PF('generacionTramiteDlg').show();");
-                    tramite = new Tramite();
-                    codigoTramiteInicial = null;
-                    if (!TipoIdentificacionEnum.getTipoIdentificacionList().isEmpty()) {
-                        tipoIdentificacion = TipoIdentificacionEnum.getTipoIdentificacionList().get(0);
-                    }
-                } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", getBundleMensaje("error.tramiteSeguimientoExistente", null) + codigoTramiteInicial));
-                }
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", getBundleMensaje("error.tramiteSeguimientoInexistente", null)));
-            }
-        } else {
-            tramiteServicio.crearTramite(tramite);
-            tramiteGenerado = tramite;
-            PrimeFaces current = PrimeFaces.current();
-            current.executeScript("PF('generacionTramiteDlg').show();");
-            tramite = new Tramite();
-            codigoTramiteInicial = null;
-            if (!TipoIdentificacionEnum.getTipoIdentificacionList().isEmpty()) {
-                tipoIdentificacion = TipoIdentificacionEnum.getTipoIdentificacionList().get(0);
-            }
+        Tramite tramiteNuevo = new Tramite();
+        tramiteNuevo = tramite;
+        tramiteNuevo.setTramiteId(null);
+        tramiteNuevo.setTramite(tramiteOriginal);
+        tramiteNuevo.setInstitucion(institucionServicio.findByPk(institucionId));
+        tramiteNuevo.setContinuaTramite(institucionServicio.findByPk(getContinuaTramiteId()));
+        tramiteNuevo.setFechaRegistro(new Date());
+        tramiteNuevo.setRegistradoPor(usuariosServicio.findByPk(getUsuarioId()));
+        tramiteNuevo.setEstado(EstadoTramiteEnum.GENERADO.getEstado());
+        tramiteNuevo.setCerradoPor(null);
+        tramiteNuevo.setObservacion(null);
+        tramiteNuevo.setFechaCierre(null);
+        tramiteServicio.crearTramite(tramiteNuevo);
+
+        tramiteAnterior.setEstado(EstadoTramiteEnum.INCONSISTENTE_ATENDIDO.getEstado());
+        tramiteServicio.update(tramiteAnterior);
+
+        tramiteGenerado = tramiteNuevo;
+
+        PrimeFaces current = PrimeFaces.current();
+        current.executeScript("PF('generacionTramiteDlg').show();");
+        tramite = new Tramite();
+        codigoTramiteInicial = null;
+        if (!TipoIdentificacionEnum.getTipoIdentificacionList().isEmpty()) {
+            tipoIdentificacion = TipoIdentificacionEnum.getTipoIdentificacionList().get(0);
         }
+
+        actoNotarialList = new ArrayList<Tramite>();
+        actoNotarialList = tramiteServicio.getTramiteList(institucionId, EstadoTramiteEnum.INCONSISTENTE.getEstado());
+
+        onCedula = Boolean.TRUE;
+        onPasaporte = Boolean.FALSE;
+        disableCampos = Boolean.TRUE;
+        tramiteOrigen = Boolean.FALSE;
+        onSelectTramiteInconsistente = Boolean.FALSE;
+        provinciaId = null;
+        cantonId = null;
+        continuaTramiteId = null;
+
+        setFlagCanton(true);
+        setFlagInstitucion(true);
+
     }
 
     public void cancelar() {
@@ -177,6 +217,15 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
         if (!TipoIdentificacionEnum.getTipoIdentificacionList().isEmpty()) {
             tipoIdentificacion = TipoIdentificacionEnum.getTipoIdentificacionList().get(0);
         }
+
+        onCedula = Boolean.TRUE;
+        onPasaporte = Boolean.FALSE;
+        disableCampos = Boolean.TRUE;
+        tramiteOrigen = Boolean.FALSE;
+        onSelectTramiteInconsistente = Boolean.FALSE;
+        provinciaId = null;
+        cantonId = null;
+        continuaTramiteId = null;
     }
 
     public void onTipoIdentificacion() {
@@ -227,7 +276,7 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
     }
 
-    public void institucionProvinciaCanton() {        
+    public void institucionProvinciaCanton() {
         if (listaInstituciones != null && listaInstituciones.size() > 0) {
             listaInstituciones.clear();
         }
@@ -388,6 +437,30 @@ public class TramiteNotarialCtrl extends BaseCtrl implements Serializable {
 
     public void setContinuaTramiteId(Integer continuaTramiteId) {
         this.continuaTramiteId = continuaTramiteId;
+    }
+
+    public List<Tramite> getActoNotarialList() {
+        return actoNotarialList;
+    }
+
+    public void setActoNotarialList(List<Tramite> actoNotarialList) {
+        this.actoNotarialList = actoNotarialList;
+    }
+
+    public Tramite getTramiteSeleccionado() {
+        return tramiteSeleccionado;
+    }
+
+    public void setTramiteSeleccionado(Tramite tramiteSeleccionado) {
+        this.tramiteSeleccionado = tramiteSeleccionado;
+    }
+
+    public Boolean getOnSelectTramiteInconsistente() {
+        return onSelectTramiteInconsistente;
+    }
+
+    public void setOnSelectTramiteInconsistente(Boolean onSelectTramiteInconsistente) {
+        this.onSelectTramiteInconsistente = onSelectTramiteInconsistente;
     }
 
 }
