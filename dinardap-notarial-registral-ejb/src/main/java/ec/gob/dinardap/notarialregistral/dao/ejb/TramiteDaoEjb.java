@@ -6,10 +6,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 
-import ec.gob.dinardap.notarialregistral.constante.ContextoEnum;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
-import ec.gob.dinardap.notarialregistral.modelo.Documento;
 import ec.gob.dinardap.notarialregistral.modelo.Tramite;
 import ec.gob.dinardap.notarialregistral.util.FechaHoraSistema;
 import ec.gob.dinardap.persistence.dao.ejb.GenericDaoEjb;
@@ -21,7 +19,8 @@ public class TramiteDaoEjb extends GenericDaoEjb<Tramite, Long> implements Trami
 	public TramiteDaoEjb() {
 		super(Tramite.class);
 	}
-	@SuppressWarnings("unchecked")
+	
+	/*@SuppressWarnings("unchecked")
 	@Override
 	public List<TramiteRegistradorDto> tramitesPendientes(Short estadoTramite, Integer institucionId) {
 		StringBuilder sql = new StringBuilder("select t.tramite_id, t.codigo, inot.nombre as institucion, t.descripcion, u.nombre as registradoPor, t.fecha_registro ");		
@@ -74,7 +73,32 @@ public class TramiteDaoEjb extends GenericDaoEjb<Tramite, Long> implements Trami
 			}
 		}
 		return tramitesPendientes;
-	}
+	}*/
+	
+	@SuppressWarnings("unchecked")
+    @Override
+    public List<TramiteRegistradorDto> tramitesPendientes(Short estadoTramite, Integer institucionId) {
+        Query query = em.createQuery("SELECT t FROM Tramite t where t.estado=:estado AND t.continuaTramite.institucionId=:institucionId");
+        query.setParameter("estado", estadoTramite);
+        query.setParameter("institucionId", institucionId);
+        List<TramiteRegistradorDto> tramitesPendientes = new ArrayList<TramiteRegistradorDto>();
+        List<Tramite> tramiteList = new ArrayList<Tramite>();
+        if (!query.getResultList().isEmpty()) {
+            tramiteList = query.getResultList();
+            for (Tramite tramite : tramiteList) {
+                TramiteRegistradorDto item = new TramiteRegistradorDto();
+                item.setTramiteId(tramite.getTramiteId());
+                item.setCodigo(tramite.getCodigo());
+                item.setInstitucion(tramite.getInstitucion().getNombre());
+                item.setDescripcionNotarial(tramite.getDescripcion());
+                item.setRegistradoPor(tramite.getRegistradoPor().getNombre());
+                item.setFechaRegistro(tramite.getFechaRegistro());
+                tramitesPendientes.add(item);
+            }
+        }
+        return tramitesPendientes;
+    }
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<TramiteRegistradorDto> misTramites(Short contextoNotarial, Short contextoRegistral, Short estadoTramite, Integer usuarioId) {

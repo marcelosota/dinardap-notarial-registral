@@ -10,10 +10,10 @@
 		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Trámites
 			Pendientes Registrador</h1>		
 
-		<h:form id="formRegistrador">
+		<h:form id="formRegistradorDtb">
 			<p:remoteCommand name="actualizarTabla"
 				action="#{tramitesPendientesRegistrosCtrl.refrescarDtb}"
-				update=":formRegistrador:dtbPendientes" />
+				update="formRegistradorDtb:dtbPendientes" />
 			<p:dataTable id="dtbPendientes" var="dtb" widgetVar="wm"
 				value="#{tramitesPendientesRegistrosCtrl.listaTramitePendiente}"
 				rows="7" paginator="true" paginatorPosition="bottom"
@@ -24,7 +24,7 @@
 				filteredValue="#{tramitesPendientesRegistrosCtrl.filtro}">
 				<p:ajax event="rowSelect"
 					listener="#{tramitesPendientesRegistrosCtrl.filaSeleccionada}"
-					update=":formRegistrador" />
+					update="formulario" />
 				<p:column headerText="#{etiquetas['codigo.tramite']}" width="105"
 					filterBy="#{dtb.codigo}" sortBy="#{dtb.codigo}"
 					filterMatchMode="contains">
@@ -52,15 +52,20 @@
 					</h:outputText>
 				</p:column>
 			</p:dataTable>
+		</h:form>
+		<h:form id="formulario">
 			<p:panel style="width: 95%" header="#{etiquetas['detalle.tramite']}">
 				<h:panelGrid columns="3" style="width: 50%"
 					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda,form-input-izquierda">
 					<p:outputLabel id="codigoTramite" for="codigo"
 						value="#{etiquetas['codigo.tramite']}" />
 					<p:inputText id="codigo"
-						value="#{tramitesPendientesRegistrosCtrl.ctvu}" required="true"                                                
-						requiredMessage="#{etiquetas['cvtu']}-#{mensajes['requerido']}" />
-					<p:commandButton value="#{etiquetas['buscar']}" update="@form"
+						value="#{tramitesPendientesRegistrosCtrl.ctvu}" 
+						required="true"
+						requiredMessage="#{etiquetas['codigo.tramite']} #{mensajes['requerido']}"/>
+					<p:commandButton value="#{etiquetas['buscar']}" 
+						update="codigo, identificacion, requirente, correo, 
+						somEstadoTramite, observacionInconsistente, observacionCerrado, fupDocumentoRegistral"
 						actionListener="#{tramitesPendientesRegistrosCtrl.consultarPorCvtu}"
 						icon="ui-icon-search" process="@this, codigo" />
 				</h:panelGrid>
@@ -102,7 +107,7 @@
 					<p:selectOneMenu id="somEstadoTramite" disabled=""
 						value="#{tramitesPendientesRegistrosCtrl.estadoTramite}"
 						required="true"
-						requiredMessage="Estado : #{mensajes['requerido']}">
+						requiredMessage="#{etiquetas['estado.tramite']} #{mensajes['requerido']}">
 						<p:ajax event="change"
 							listener="#{tramitesPendientesRegistrosCtrl.cambiarEstadoTramite}"
 							update="@form observacionInconsistente observacionCerrado fupDocumentoRegistral oplDocumento" />
@@ -152,11 +157,12 @@
 					style="width: 50%; margin: 4px 5px; text-align: center;">
 					<p:commandButton value="#{etiquetas['guardar']}" id="guardarBtn"
 						style="margin-right:20px;"
-						icon="ui-icon-disk" update="@form" process="@this"
-						action="#{tramitesPendientesRegistrosCtrl.guardarTramite}"
-						oncomplete="PF('wm').clearFilters(); actualizarTabla();"  />
+						icon="ui-icon-disk" 
+						update="formulario, formRegistradorDtb" 
+						action="#{tramitesPendientesRegistrosCtrl.guardarTramite}" 
+						oncomplete="PF('wm').clearFilters(); :formRegistradorDtb:actualizarTabla();" />
 					<p:commandButton value="#{etiquetas['cancelar']}" id="cancelarBtn"
-						style="margin-right:20px;" icon="fa fa-fw fa-ban" update="@form"
+						style="margin-right:20px;" icon="fa fa-fw fa-ban" update="formulario"
 						action="#{tramitesPendientesRegistrosCtrl.cancelar}" />					
 				</h:panelGrid>
 			</p:panel>

@@ -9,7 +9,7 @@
         <description>Identificador del sistema</description>
         <param-name>sistema.identificacion</param-name>
         <!--<param-value>SAU sistemaId-pruebas</param-value> Pruebas -->
-        <param-value>4</param-value> <!-- Desarrollo 6--> 
+        <param-value>6</param-value> <!-- Desarrollo 6--> 
     </context-param>
     <context-param>
         <description>Secret key genereado al momento de aprobar la creación del aplicativo dentro del sistema SAU</description>

@@ -178,7 +178,8 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 			filtro = listaTramitePendiente;	
 	}
 	public void filaSeleccionada(SelectEvent event) {
-		ctvu = ((TramiteRegistradorDto) event.getObject()).getCodigo();
+		ctvu = selectedTramite.getCodigo();
+		//ctvu = ((TramiteRegistradorDto) event.getObject()).getCodigo();
 		consultarPorCvtu();
 	}
 
@@ -318,7 +319,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		estadoInconsistente = true;
 		setCtvu(null);	
 		setEstadoTramite(null);
-		
+		listaTramitePendiente = new ArrayList<TramiteRegistradorDto>();
 		
 	}
 
@@ -396,6 +397,9 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 
 	public void cancelar() {
 		limpiar();
+	}
+	public void cancelar1() {
+		listaTramitePendiente = new ArrayList<TramiteRegistradorDto>();
 	}
 	public void print()
 	{
