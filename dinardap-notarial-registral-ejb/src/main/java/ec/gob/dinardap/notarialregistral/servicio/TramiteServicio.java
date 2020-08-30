@@ -26,5 +26,7 @@ public interface TramiteServicio extends GenericService<Tramite, Long> {
     public Tramite tramiteCargadosByCodigoValidacionTramite(String codigoValidacionTramite);
 
     public void emailRegistros(TramiteRegistradorDto tramiteDto, String mensaje);
+    
+    public void emailRegistrosCG(Tramite tramite, String mensaje);
 
 }

@@ -1,168 +1,200 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="/template/general.xhtml">
+        <ui:define name="content">
+            <h1 class="h-wai">#{etiquetas['nombre.sistema']} - Trámites Pendientes Registrador</h1>
+            <h:form id="formActosNotariales">
+                <b:panel style="width: 100%" title="#{etiquetas['nombre.actosNotarialesCargados']}">
+                    <h:panelGrid columns="1" style="width: 100%;">
 
-<ui:composition template="/template/general.xhtml">
-	<ui:define name="content">
-		<h1 class="h-wai">#{etiquetas['nombre.sistema']} - Trámites
-			Pendientes Registrador</h1>		
+                        <p:dataTable id="actosNotarialesTbl"
+                                     value="#{tramitesPendientesRegistrosCtrl.tramiteList}"
+                                     var="tramite"
+                                     rowKey="#{tramite.tramiteId}"
+                                     selectionMode="single" 
+                                     selection="#{tramitesPendientesRegistrosCtrl.tramiteSelected}"
+                                     reflow="true" rows="5" paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,25,50"
+                                     emptyMessage="No existen registros"
+                                     tableStyle="width:auto">
 
-		<h:form id="formRegistrador">
-			<p:remoteCommand name="actualizarTabla"
-				action="#{tramitesPendientesRegistrosCtrl.refrescarDtb}"
-				update=":formRegistrador:dtbPendientes" />
-			<p:dataTable id="dtbPendientes" var="dtb" widgetVar="wm"
-				value="#{tramitesPendientesRegistrosCtrl.listaTramitePendiente}"
-				rows="7" paginator="true" paginatorPosition="bottom"
-				selectionMode="single" rowKey="#{dtb.codigo}"
-				selection="#{tramitesPendientesRegistrosCtrl.selectedTramite}"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-				emptyMessage="No existen registros"
-				filteredValue="#{tramitesPendientesRegistrosCtrl.filtro}">
-				<p:ajax event="rowSelect"
-					listener="#{tramitesPendientesRegistrosCtrl.filaSeleccionada}"
-					update=":formRegistrador" />
-				<p:column headerText="#{etiquetas['codigo.tramite']}" width="105"
-					filterBy="#{dtb.codigo}" sortBy="#{dtb.codigo}"
-					filterMatchMode="contains">
-					<h:outputText value="#{dtb.codigo}" />
-				</p:column>
-				<p:column headerText="#{etiquetas['nombre.institucion']}"
-					width="160">
-					<h:outputText value="#{dtb.institucion}"
-						styleClass="texto-justificado" />
-				</p:column>
-				<p:column
-					headerText="#{etiquetas['nombre.descripcionActoNotarial']}"
-					width="160">
-					<h:outputText value="#{dtb.descripcionNotarial}"
-						styleClass="texto-justificado" />
-				</p:column>
-				<p:column headerText="#{etiquetas['registrado.por']}" width="100">
-					<h:outputText value="#{dtb.registradoPor}"
-						styleClass="texto-justificado" />
-				</p:column>
-				<p:column headerText="#{etiquetas['fecha.registro']}" width="100">
-					<h:outputText value="#{dtb.fechaRegistro}"
-						styleClass="texto-justificado">
-						<f:convertDateTime pattern="yyyy-MM-dd" />
-					</h:outputText>
-				</p:column>
-			</p:dataTable>
-			<p:panel style="width: 95%" header="#{etiquetas['detalle.tramite']}">
-				<h:panelGrid columns="3" style="width: 50%"
-					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda,form-input-izquierda">
-					<p:outputLabel id="codigoTramite" for="codigo"
-						value="#{etiquetas['codigo.tramite']}" />
-					<p:inputText id="codigo"
-						value="#{tramitesPendientesRegistrosCtrl.ctvu}" required="true"                                                
-						requiredMessage="#{etiquetas['cvtu']}-#{mensajes['requerido']}" />
-					<p:commandButton value="#{etiquetas['buscar']}" update="@form"
-						actionListener="#{tramitesPendientesRegistrosCtrl.consultarPorCvtu}"
-						icon="ui-icon-search" process="@this, codigo" />
-				</h:panelGrid>
-				<p:separator />
-				<h:panelGrid columns="2"
-					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
-					<p:outputLabel for="identificacion"
-						value="#{etiquetas['identificacion']}" />
-					<p:inputText id="identificacion"
-						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.tramite.identificacionRequirente}"
-						size="64" readonly="true">
-					</p:inputText>
-					<p:outputLabel for="requirente"
-						value="#{etiquetas['nombre.requirente']}" />
-					<p:inputText id="requirente"
-						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.tramite.nombreRequirente}"
-						size="64" readonly="true">
-					</p:inputText>
-					<p:outputLabel for="correo"
-						value="#{etiquetas['correo.electronico']}" />
-					<p:inputText id="correo"
-						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.tramite.correoRequirente}"
-						size="64" readonly="true">
-					</p:inputText>
-					<p:outputLabel for="btnDescargaActoNotarial"
-						value="#{etiquetas['acto.notarial']}" />
-					<h:commandLink id="btnDescargaActoNotarial" target="_blank"
-						value="Descargar" immediate="true"
-						action="#{tramitesPendientesRegistrosCtrl.descargarActoNotarial}">
-						<i class="fa fa-file-pdf-o fa-lg actoNotarial"></i>
-					</h:commandLink>
-				</h:panelGrid>
-			</p:panel>
-			<p:panel header="#{etiquetas['seccion.registros']}"
-				style="margin-bottom:20px;width: 95%">
-				<h:panelGrid columns="2"
-					columnClasses="form-label-derecha ui-grid-col-1, form-input-izquierda">
-					<h:outputText value="#{etiquetas['estado.tramite']}*" />
-					<p:selectOneMenu id="somEstadoTramite" disabled=""
-						value="#{tramitesPendientesRegistrosCtrl.estadoTramite}"
-						required="true"
-						requiredMessage="Estado : #{mensajes['requerido']}">
-						<p:ajax event="change"
-							listener="#{tramitesPendientesRegistrosCtrl.cambiarEstadoTramite}"
-							update="@form observacionInconsistente observacionCerrado fupDocumentoRegistral oplDocumento" />
-						<f:selectItem itemLabel="Seleccionar .." itemValue="#{null}" />
-						<f:selectItem itemLabel="INCONSISTENTE" itemValue="4" />
-						<f:selectItem itemLabel="ATENDIDO" itemValue="5" />
-					</p:selectOneMenu>
-					<h:outputText
-						rendered="#{!tramitesPendientesRegistrosCtrl.estadoInconsistente}"
-						value="#{etiquetas['observacion']}*" />
-					<p:inputTextarea id="observacionInconsistente"
-						rendered="#{!tramitesPendientesRegistrosCtrl.estadoInconsistente}"
-						disabled="" rows="4" cols="60" autoResize="true"
-						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.observacionRegistro}"
-						maxlength="512" required="true"
-						requiredMessage="Observación : #{mensajes['requerido']}" />
-					<h:outputText
-						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
-						value="#{etiquetas['observacion']}" />
-					<p:inputTextarea id="observacionCerrado"
-						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
-						disabled="" rows="4" cols="60" autoResize="true"
-						value="#{tramitesPendientesRegistrosCtrl.tramiteDto.observacionRegistro}"
-						maxlength="512" />
-					<h:outputText id="oplDocumento"
-						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
-						value="#{etiquetas['cargar.documento.registral']}*" />
-					<p:fileUpload id="fupDocumentoRegistral"
-						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
-						style="width:40%" label="#{etiquetas['seleccionar']}"
-						fileUploadListener="#{tramitesPendientesRegistrosCtrl.subirArchivo}"
-						sizeLimit="20971520" process="@this" allowTypes="/(\.|\/)(pdf)$/"
-						mode="advanced" auto="true" required="true" update="" />
-					<h:outputText id="oplRegistral"
-						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
-						value="#{etiquetas['visualizar.documento.registral']}*" />
-					<h:commandLink id="btnDescargaRegistral" target="_blank"
-						rendered="#{tramitesPendientesRegistrosCtrl.estadoInconsistente}"
-						value="Descargar" immediate="true"
-						action="#{tramitesPendientesRegistrosCtrl.descargarRegistro()}">
-						<i class="fa fa-file-pdf-o fa-lg documentoRegistral"></i>
-					</h:commandLink>
-				</h:panelGrid>
-				<br />
-				<br />
-				<h:panelGrid columns="2"
-					style="width: 50%; margin: 4px 5px; text-align: center;">
-					<p:commandButton value="#{etiquetas['guardar']}" id="guardarBtn"
-						style="margin-right:20px;"
-						icon="ui-icon-disk" update="@form" process="@this"
-						action="#{tramitesPendientesRegistrosCtrl.guardarTramite}"
-						oncomplete="PF('wm').clearFilters(); actualizarTabla();"  />
-					<p:commandButton value="#{etiquetas['cancelar']}" id="cancelarBtn"
-						style="margin-right:20px;" icon="fa fa-fw fa-ban" update="@form"
-						action="#{tramitesPendientesRegistrosCtrl.cancelar}" />					
-				</h:panelGrid>
-			</p:panel>
+                            <p:ajax event="rowSelect" listener="#{tramitesPendientesRegistrosCtrl.onSelectTramite}" update="formActoRegistral"/>
+                            <p:column headerText="#{etiquetas['nombre.codigoCVTU']}"
+                                      filterBy="#{tramite.codigo}" filterMatchMode="contains" 
+                                      width="20%" style="text-align: left">
+                                <h:outputText value="#{tramite.codigo}" />
+                            </p:column>
+                            <p:column headerText="#{etiquetas['nombre.identificacion']}" 
+                                      sortBy="#{tramite.identificacionRequirente}" 
+                                      filterBy="#{tramite.identificacionRequirente}" filterMatchMode="contains" 
+                                      width="10%" style="text-align: center">
+                                <h:outputText value="#{tramite.identificacionRequirente}"/>
+                            </p:column>
+                            <p:column headerText="#{etiquetas['nombre.nombre']}" 
+                                      sortBy="#{tramite.nombreRequirente}" 
+                                      filterBy="#{tramite.nombreRequirente}" filterMatchMode="contains" 
+                                      width="20%" style="text-align: center">
+                                <h:outputText value="#{tramite.nombreRequirente}"/>
+                            </p:column>
+                            <p:column headerText="#{etiquetas['nombre.descripcionActoNotarial']}" 
+                                      sortBy="#{tramite.descripcion}" 
+                                      filterBy="#{tramite.descripcion}" filterMatchMode="contains" 
+                                      width="20%" style="text-align: left">
+                                <h:outputText value="#{tramite.descripcion}" />
+                            </p:column>
+                            <p:column headerText="#{etiquetas['nombre.institucion']}"
+                                      filterBy="#{tramite.institucion.nombre} - #{tramite.institucion.siglas}" filterMatchMode="contains" 
+                                      width="20%" style="text-align: left">
+                                <h:outputText value="#{tramite.institucion.nombre} - #{tramite.institucion.siglas}" />
+                            </p:column>
+                            <p:column headerText="#{etiquetas['nombre.fechaRegistro']}" 
+                                      sortBy="#{tramite.fechaRegistro}"                                       
+                                      width="10%" style="text-align: center">
+                                <h:outputText value="#{tramite.fechaRegistro}">
+                                    <f:convertDateTime pattern="yyyy/MM/dd hh:mm a"  />
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </b:panel>
+            </h:form>
 
+            <h:form id="formActoRegistral">
+                <b:panel style="width: 75%" rendered="#{tramitesPendientesRegistrosCtrl.onTamiteSelect}" title="#{etiquetas['detalle.tramite']}">
+                    <b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
+                        <p:outputLabel for="identificacion" value="#{etiquetas['nombre.identificacion']}" />
+                        <p:inputText id="identificacion"
+                                     disabled="true"
+                                     value="#{tramitesPendientesRegistrosCtrl.tramiteSelected.identificacionRequirente}"
+                                     style="width: 90%">
+                        </p:inputText>
 
-		</h:form>
-	</ui:define>
-</ui:composition>
+                        <p:outputLabel for="nombre" value="#{etiquetas['nombre.nombre']}"/>
+                        <p:inputText id="nombre" 
+                                     disabled="true"                                     
+                                     value="#{tramitesPendientesRegistrosCtrl.tramiteSelected.nombreRequirente}"
+                                     style="width: 90%"
+                                     readonly="true">
+                        </p:inputText>
+
+                        <p:outputLabel for="correoElectronico" value="#{etiquetas['nombre.correoElectronico']}" />
+                        <p:inputText id="correoElectronico"
+                                     disabled="true"
+                                     value="#{tramitesPendientesRegistrosCtrl.tramiteSelected.correoRequirente}" 
+                                     style="width: 90%"
+                                     readonly="true">                            
+                        </p:inputText>
+
+                        <p:outputLabel for="downloadDocumento"
+                                       value="#{etiquetas['acto.notarial']}" />
+                        <p:commandButton id="downloadDocumento"                                         
+                                         value="#{etiquetas['nombre.visualizarActoCargado']}"                                          
+                                         ajax="false"
+                                         action="#{tramitesPendientesRegistrosCtrl.descargarActoNotarial}"
+                                         icon="fa fa-fw fa-download">                            
+                        </p:commandButton>
+
+                    </b:panelGrid>
+                </b:panel>
+                <b:panel style="width: 75%" rendered="#{tramitesPendientesRegistrosCtrl.onTamiteSelect}" title="#{etiquetas['seccion.registros']}">
+                    <b:panelGrid colSpans="3,9" style="width: 100%; margin: 4px 5px;">
+                        <p:outputLabel for="somEstadoTramite"  value="#{etiquetas['estado.tramite']}"/>
+                        <p:selectOneMenu id="somEstadoTramite" disabled=""
+                                         value="#{tramitesPendientesRegistrosCtrl.estadoTramite}"
+                                         required="true"
+                                         requiredMessage="#{etiquetas['estado.tramite']} #{mensajes['requerido']}">
+                            <p:ajax event="change"
+                                    listener="#{tramitesPendientesRegistrosCtrl.cambiarEstadoTramite}"
+                                    update="formActoRegistral"/>
+                            <f:selectItem itemLabel=".::Seleccionar::." itemValue="#{null}" />
+                            <f:selectItem itemLabel="INCONSISTENTE" itemValue="4" />
+                            <f:selectItem itemLabel="ATENDIDO" itemValue="5" />
+                        </p:selectOneMenu>
+
+                        <h:panelGroup id="auxLblObservacion">
+                            <p:outputLabel for="observacion" value="#{etiquetas['observacion']}" rendered="#{tramitesPendientesRegistrosCtrl.onInconsistente}"/>
+                        </h:panelGroup>
+                        <h:panelGroup id="auxObservacion">
+                            <p:inputTextarea
+                                id="observacion"
+                                rendered="#{tramitesPendientesRegistrosCtrl.onInconsistente}"
+                                value="#{tramitesPendientesRegistrosCtrl.tramiteSelected.observacion}"
+                                rows="3"
+                                required="true"
+                                style="width: 90%"
+                                counter="display"
+                                maxlength="256"
+                                counterTemplate="{0} caracteres restantes."/>
+                            <h:panelGroup rendered="#{tramitesPendientesRegistrosCtrl.onInconsistente}"><br /></h:panelGroup> 
+                            <h:outputText id="display" rendered="#{tramitesPendientesRegistrosCtrl.onInconsistente}"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup  id="auxLblDocumentoTramite">
+                            <p:outputLabel for="documentoTramite" value="#{etiquetas['nombre.documentoNotarial']}" rendered="#{tramitesPendientesRegistrosCtrl.onCerrado}" />
+                        </h:panelGroup>
+                        <h:panelGroup  id="auxDocumentoTramite">
+                            <p:fileUpload                                
+                                id="documentoTramite"
+                                rendered="#{tramitesPendientesRegistrosCtrl.onCerrado}"
+                                messageTemplate="#{mensajes['mensaje.archivoInvalido']}"
+                                style="width:90%"
+                                mode="advanced"
+                                auto="true"                            
+                                label="#{etiquetas['seleccionar']}"
+                                uploadLabel="#{etiquetas['cargar']}"
+                                cancelLabel="#{etiquetas['cancelar']}" 
+                                dragDropSupport="true"
+                                fileUploadListener="#{tramitesPendientesRegistrosCtrl.uploadDocumento}"
+                                sizeLimit="20971520"
+                                onstart="adicionar()"                            
+                                allowTypes="/(\.|\/)(pdf|PDF)$/"
+                                required="true"
+                                fileLimitMessage="Solo se puede cargar un Documento"
+                                update="downloadDocumentoCargado, guardarBtn"/>
+                        </h:panelGroup>
+
+<!--                            <p:ajax event="onAdd" listener="#{gestionTramiteNotarialCtrl.onAdicionar}" update="downloadDocumento, guardarBtn"/>-->
+
+                        <h:panelGroup  id="auxLblAdicionar">
+                            <p:remoteCommand name="adicionar" action="#{gestionTramiteNotarialCtrl.onAdicionar}" rendered="#{tramitesPendientesRegistrosCtrl.onCerrado}"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup  id="auxdownloadDocumentoCargado">
+                            <p:commandButton id="downloadDocumentoCargado"
+                                             rendered="#{tramitesPendientesRegistrosCtrl.onCerrado}"
+                                             disabled="#{tramitesPendientesRegistrosCtrl.disabledDescargar}"
+                                             value="#{etiquetas['nombre.visualizarActoRegistralCargado']}" 
+                                             action="#{tramitesPendientesRegistrosCtrl.visualizarArchivo}"                                             
+                                             ajax="false"                                                                                   
+                                             icon="fa fa-fw fa-download">                            
+                            </p:commandButton> 
+                        </h:panelGroup>
+                    </b:panelGrid>
+
+                    <b:panelGrid colSpans="6,6" style="width: 100%; margin: 4px 5px; text-align: center;">
+                        <p:commandButton id="guardarBtn" value="#{etiquetas['finalizar']}" style="margin-right:20px;" icon="fa fa-fw fa-check-square-o"
+                                         disabled="#{tramitesPendientesRegistrosCtrl.disabledFinalizar}"
+                                         action="#{tramitesPendientesRegistrosCtrl.finalizarTramite}"
+                                         update="formActoRegistral, formActosNotariales">
+                            <p:confirm header="#{etiquetas['confirmacion']}" message="#{mensajes['mensaje.finalizarTramiteRegistral']}" icon="fa fa-fw fa-warning" />
+                        </p:commandButton>
+                        <p:commandButton value="#{etiquetas['cancelar']}" id="cancelarBtn" style="margin-right:20px;" icon="fa fa-fw fa-ban" 
+                                         action="#{tramitesPendientesRegistrosCtrl.cancelar}"
+                                         process="@this" update="formActoRegistral"/>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="#{etiquetas['si']}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-fw fa-check" />
+                            <p:commandButton value="#{etiquetas['no']}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-fw fa-remove" />
+                        </p:confirmDialog>
+                    </b:panelGrid>
+                </b:panel>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
 </html>

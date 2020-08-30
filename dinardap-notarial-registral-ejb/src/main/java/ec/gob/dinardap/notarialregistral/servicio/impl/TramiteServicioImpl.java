@@ -29,210 +29,246 @@ import ec.gob.dinardap.seguridad.servicio.ParametroServicio;
 @Stateless(name = "TramiteServicio")
 public class TramiteServicioImpl extends GenericServiceImpl<Tramite, Long> implements TramiteServicio {
 
-	@EJB
-	private TramiteDao tramiteDao;
+    @EJB
+    private TramiteDao tramiteDao;
 
-	@EJB
-	private ClienteQueueMailServicio clienteQueueMailServicio;
+    @EJB
+    private ClienteQueueMailServicio clienteQueueMailServicio;
 
-	@EJB
-	private ParametroServicio parametroServicio;
+    @EJB
+    private ParametroServicio parametroServicio;
 
-	@EJB
-	private MailServicio mailServicio;
-	
-	@EJB
-	private NotificacionServicio notificacionServicio;
+    @EJB
+    private MailServicio mailServicio;
 
-	@Override
-	public GenericDao<Tramite, Long> getDao() {
-		return tramiteDao;
-	}
+    @EJB
+    private NotificacionServicio notificacionServicio;
 
-	@Override
-	public void crearTramite(Tramite tramite) {
-		tramite.setCodigo(GeneradorCodigo.generarCodigo(tramite.getInstitucion().getInstitucionId()));
-		this.create(tramite);
-	}
+    @Override
+    public GenericDao<Tramite, Long> getDao() {
+        return tramiteDao;
+    }
 
-	@Override
-	public void actualizarEstadoTramite(Tramite tramite, Integer sistemaId) {
-		this.update(tramite);
+    @Override
+    public void crearTramite(Tramite tramite) {
+        tramite.setCodigo(GeneradorCodigo.generarCodigo(tramite.getInstitucion().getInstitucionId()));
+        this.create(tramite);
+    }
 
-		String parametroAmbiente = "DESARROLLO";
-		MailMessage mailMessage = new MailMessage();
+    @Override
+    public void actualizarEstadoTramite(Tramite tramite, Integer sistemaId) {
+        this.update(tramite);
 
-		StringBuilder html = new StringBuilder(
-				"<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
-		html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
-		html.append("Estimado(a) " + tramite.getNombreRequirente() + ", <br /><br />");
-		html.append("Le informamos que se ha cargado satisfactoriamente el Acto Notarial.<br />");
-		html.append("CVTU: " + tramite.getCodigo() + "<br/ ><br />");
-		html.append("Favor ingresar a la plataforma GOB EC para continuar con el proceso.<br/>");
-		html.append("Gracias por usar nuestros servicios.<br /><br />");
-		html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
-		html.append("Dirección Nacional de Registros de Datos Públicos");
-		html.append("</B></FONT>");
+        String parametroAmbiente = "DESARROLLO";
+        MailMessage mailMessage = new MailMessage();
 
-		List<String> to = new ArrayList<String>();
-		Notificacion notificacion = notificacionServicio.getPorInstitucionSistema(tramite.getContinuaTramite().getInstitucionId(), sistemaId);
-		StringBuilder asunto = new StringBuilder(200);
+        StringBuilder html = new StringBuilder(
+                "<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
+        html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
+        html.append("Estimado(a) " + tramite.getNombreRequirente() + ", <br /><br />");
+        html.append("Le informamos que se ha cargado satisfactoriamente el Acto Notarial.<br />");
+        html.append("CVTU: " + tramite.getCodigo() + "<br/ ><br />");
+        html.append("Favor ingresar a la plataforma GOB EC para continuar con el proceso.<br/>");
+        html.append("Gracias por usar nuestros servicios.<br /><br />");
+        html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
+        html.append("Dirección Nacional de Registros de Datos Públicos");
+        html.append("</B></FONT>");
 
-		if (parametroAmbiente.equals("PRODUCCION")) {
+        List<String> to = new ArrayList<String>();
+        Notificacion notificacion = notificacionServicio.getPorInstitucionSistema(tramite.getContinuaTramite().getInstitucionId(), sistemaId);
+        StringBuilder asunto = new StringBuilder(200);
 
-		} else {
-			to.add(tramite.getCorreoRequirente());
-			if(notificacion != null)
-				to.add(notificacion.getCorreoElectronico());
-			asunto.append("Notificación SANYR - ");
-		}
-		asunto.append("Confirmación acto notarial cargado ");
-		mailMessage = credencialesCorreo();
-		mailMessage.setTo(to);
-		mailMessage.setSubject(asunto.toString());
-		mailMessage.setText(html.toString());
+        if (parametroAmbiente.equals("PRODUCCION")) {
 
-		clienteQueueMailServicio.encolarMail(mailMessage);
+        } else {
+            to.add(tramite.getCorreoRequirente());
+            if (notificacion != null) {
+                to.add(notificacion.getCorreoElectronico());
+            }
+            asunto.append("Notificación SANYR - ");
+        }
+        asunto.append("Confirmación acto notarial cargado ");
+        mailMessage = credencialesCorreo();
+        mailMessage.setTo(to);
+        mailMessage.setSubject(asunto.toString());
+        mailMessage.setText(html.toString());
 
-	}
+        clienteQueueMailServicio.encolarMail(mailMessage);
 
-	@Override
-	public Tramite getTramiteByCodigoValidacionTramite(String codigoValidacionTramite) {
-		List<Tramite> tramiteList = new ArrayList<Tramite>();
-		Tramite tramite = new Tramite();
-		String[] criteriaNombres = { "codigo" };
-		CriteriaTypeEnum[] criteriaTipos = { CriteriaTypeEnum.STRING_EQUALS };
-		Object[] criteriaValores = { codigoValidacionTramite };
-		String[] orderBy = { "tramiteId" };
-		boolean[] asc = { true };
-		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
-		tramiteList = findByCriterias(criteria);
-		if (!tramiteList.isEmpty()) {
-			tramite = tramiteList.get(tramiteList.size() - 1);
-		}
-		return tramite;
-	}
+    }
 
-	@Override
-	public Boolean existenciaTramiteAsociado(Long tramiteId) {
-		List<Tramite> tramiteList = new ArrayList<Tramite>();
-		Boolean existenciaTramiteAsociado = Boolean.FALSE;
-		String[] criteriaNombres = { "tramite.tramiteId" };
-		CriteriaTypeEnum[] criteriaTipos = { CriteriaTypeEnum.LONG_EQUALS };
-		Object[] criteriaValores = { tramiteId };
-		String[] orderBy = { "tramiteId" };
-		boolean[] asc = { true };
-		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
-		tramiteList = findByCriterias(criteria);
-		if (!tramiteList.isEmpty()) {
-			existenciaTramiteAsociado = Boolean.TRUE;
-		}
-		return existenciaTramiteAsociado;
-	}
+    @Override
+    public Tramite getTramiteByCodigoValidacionTramite(String codigoValidacionTramite) {
+        List<Tramite> tramiteList = new ArrayList<Tramite>();
+        Tramite tramite = new Tramite();
+        String[] criteriaNombres = {"codigo"};
+        CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.STRING_EQUALS};
+        Object[] criteriaValores = {codigoValidacionTramite};
+        String[] orderBy = {"tramiteId"};
+        boolean[] asc = {true};
+        Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+        tramiteList = findByCriterias(criteria);
+        if (!tramiteList.isEmpty()) {
+            tramite = tramiteList.get(tramiteList.size() - 1);
+        }
+        return tramite;
+    }
 
-	@Override
-	public List<Tramite> getTramiteList(Integer institucionId, Short estado) {
-		List<Tramite> tramiteList = new ArrayList<Tramite>();
-		String[] criteriaNombres = { "institucion.institucionId", "estado" };
-		CriteriaTypeEnum[] criteriaTipos = { CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS };
-		Object[] criteriaValores = { institucionId, estado };
-		String[] orderBy = { "tramiteId" };
-		boolean[] asc = { true };
+    @Override
+    public Boolean existenciaTramiteAsociado(Long tramiteId) {
+        List<Tramite> tramiteList = new ArrayList<Tramite>();
+        Boolean existenciaTramiteAsociado = Boolean.FALSE;
+        String[] criteriaNombres = {"tramite.tramiteId"};
+        CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.LONG_EQUALS};
+        Object[] criteriaValores = {tramiteId};
+        String[] orderBy = {"tramiteId"};
+        boolean[] asc = {true};
+        Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+        tramiteList = findByCriterias(criteria);
+        if (!tramiteList.isEmpty()) {
+            existenciaTramiteAsociado = Boolean.TRUE;
+        }
+        return existenciaTramiteAsociado;
+    }
 
-		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
-		if (!findByCriterias(criteria).isEmpty()) {
-			tramiteList = findByCriterias(criteria);
-			for (Tramite tramite : tramiteList) {
-				if (tramite.getTramite() != null) {
-					tramite.getTramite().getTramiteId();
-				}
-				if (tramite.getTipoTramite() != null) {
-					tramite.getTipoTramite().getTipoTramiteId();
-				}
-			}
-		}
-		return tramiteList;
-	}
+    @Override
+    public List<Tramite> getTramiteList(Integer institucionId, Short estado) {
+        List<Tramite> tramiteList = new ArrayList<Tramite>();
+        String[] criteriaNombres = {"institucion.institucionId", "estado"};
+        CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.INTEGER_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
+        Object[] criteriaValores = {institucionId, estado};
+        String[] orderBy = {"tramiteId"};
+        boolean[] asc = {true};
 
-	@Override
-	public boolean guardarRegistro(TramiteRegistradorDto tramiteDto) {
-		try {
-			if (tramiteDto.getTramite() != null) {
-				tramiteDto.getTramite().setFechaCierre(new Timestamp(new Date().getTime()));
-				tramiteDto.getTramite().setFechaDescarga(tramiteDto.getFechaDescarga());
-				tramiteDto.getTramite().setCerradoPor(tramiteDto.getCerradoPor());
-				tramiteDto.getTramite().setObservacion(tramiteDto.getObservacionRegistro());
-				tramiteDto.getTramite().setEstado(tramiteDto.getEstado());
-				update(tramiteDto.getTramite());
+        Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+        if (!findByCriterias(criteria).isEmpty()) {
+            tramiteList = findByCriterias(criteria);
+            for (Tramite tramite : tramiteList) {
+                if (tramite.getTramite() != null) {
+                    tramite.getTramite().getTramiteId();
+                }
+                if (tramite.getTipoTramite() != null) {
+                    tramite.getTipoTramite().getTipoTramiteId();
+                }
+            }
+        }
+        return tramiteList;
+    }
 
-			}
-			return true;
+    @Override
+    public boolean guardarRegistro(TramiteRegistradorDto tramiteDto) {
+        try {
+            if (tramiteDto.getTramite() != null) {
+                tramiteDto.getTramite().setFechaCierre(new Timestamp(new Date().getTime()));
+                tramiteDto.getTramite().setFechaDescarga(tramiteDto.getFechaDescarga());
+                tramiteDto.getTramite().setCerradoPor(tramiteDto.getCerradoPor());
+                tramiteDto.getTramite().setObservacion(tramiteDto.getObservacionRegistro());
+                tramiteDto.getTramite().setEstado(tramiteDto.getEstado());
+                update(tramiteDto.getTramite());
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+            }
+            return true;
 
-	private MailMessage credencialesCorreo() {
-		MailMessage credenciales = new MailMessage();
-		credenciales.setFrom(parametroServicio.findByPk(ParametroEnum.MAIL_SANYR.name()).getValor());
-		credenciales.setUsername(parametroServicio.findByPk(ParametroEnum.MAIL_USERNAME_SANYR.name()).getValor());
-		credenciales.setPassword(parametroServicio.findByPk(ParametroEnum.MAIL_CONTRASENA_SANYR.name()).getValor());
-		return credenciales;
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	@Override
-	public Tramite tramiteCargadosByCodigoValidacionTramite(String codigoValidacionTramite) {
-		List<Tramite> tramiteList = new ArrayList<Tramite>();
-		Tramite tramite = new Tramite();
-		String[] criteriaNombres = { "codigo", "estado" };
-		CriteriaTypeEnum[] criteriaTipos = { CriteriaTypeEnum.STRING_EQUALS, CriteriaTypeEnum.SHORT_EQUALS };
-		Object[] criteriaValores = { codigoValidacionTramite, EstadoTramiteEnum.CARGADO.getEstado() };
-		String[] orderBy = { "tramiteId" };
-		boolean[] asc = { true };
-		Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
-		tramiteList = findByCriterias(criteria);
-		if (!tramiteList.isEmpty()) {
-			tramite = tramiteList.get(0);
-			return tramite;
-		} else
-			return tramite = null;
+    private MailMessage credencialesCorreo() {
+        MailMessage credenciales = new MailMessage();
+        credenciales.setFrom(parametroServicio.findByPk(ParametroEnum.MAIL_SANYR.name()).getValor());
+        credenciales.setUsername(parametroServicio.findByPk(ParametroEnum.MAIL_USERNAME_SANYR.name()).getValor());
+        credenciales.setPassword(parametroServicio.findByPk(ParametroEnum.MAIL_CONTRASENA_SANYR.name()).getValor());
+        return credenciales;
+    }
 
-	}
+    @Override
+    public Tramite tramiteCargadosByCodigoValidacionTramite(String codigoValidacionTramite) {
+        List<Tramite> tramiteList = new ArrayList<Tramite>();
+        Tramite tramite = new Tramite();
+        String[] criteriaNombres = {"codigo", "estado"};
+        CriteriaTypeEnum[] criteriaTipos = {CriteriaTypeEnum.STRING_EQUALS, CriteriaTypeEnum.SHORT_EQUALS};
+        Object[] criteriaValores = {codigoValidacionTramite, EstadoTramiteEnum.CARGADO.getEstado()};
+        String[] orderBy = {"tramiteId"};
+        boolean[] asc = {true};
+        Criteria criteria = new Criteria(criteriaNombres, criteriaTipos, criteriaValores, orderBy, asc);
+        tramiteList = findByCriterias(criteria);
+        if (!tramiteList.isEmpty()) {
+            tramite = tramiteList.get(0);
+            return tramite;
+        } else {
+            return tramite = null;
+        }
 
-	@Override
-	public void emailRegistros(TramiteRegistradorDto tramiteDto, String mensaje) {		
+    }
 
-		
-		MailMessage mailMessage = new MailMessage();
-		StringBuilder html = new StringBuilder(
-				"<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
-		html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
-		html.append("Estimado(a) " + tramiteDto.getTramite().getNombreRequirente() + ", <br /><br />");	
-		html.append("Su trámite con CVTU: " + tramiteDto.getTramite().getCodigo() + " " + mensaje +"<br/ ><br />");	
-		html.append("Gracias por usar nuestros servicios.<br /><br />");
-		html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
-		html.append("Dirección Nacional de Registros de Datos Públicos");
-		html.append("</B></FONT>");
+    @Override
+    public void emailRegistros(TramiteRegistradorDto tramiteDto, String mensaje) {
 
-		List<String> to = new ArrayList<String>();
-		StringBuilder asunto = new StringBuilder(200);
+        MailMessage mailMessage = new MailMessage();
+        StringBuilder html = new StringBuilder(
+                "<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
+        html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
+        html.append("Estimado(a) " + tramiteDto.getTramite().getNombreRequirente() + ", <br /><br />");
+        html.append("Su trámite con CVTU: " + tramiteDto.getTramite().getCodigo() + " " + mensaje + "<br/ ><br />");
+        html.append("Gracias por usar nuestros servicios.<br /><br />");
+        html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
+        html.append("Dirección Nacional de Registros de Datos Públicos");
+        html.append("</B></FONT>");
 
-		to.add(tramiteDto.getTramite().getCorreoRequirente());
-		//to.add("jadira.paspuel@dinardap.gob.ec");
-		asunto.append("Notificación SANYR - ");
-		if(tramiteDto.getTramite().getEstado() == EstadoTramiteEnum.CERRADO.getEstado())
-			asunto.append("Trámite atendido");
-		else
-			asunto.append("Trámite inconsistente");
+        List<String> to = new ArrayList<String>();
+        StringBuilder asunto = new StringBuilder(200);
 
-		mailMessage = credencialesCorreo();
-		mailMessage.setTo(to);
-		mailMessage.setSubject(asunto.toString());
-		mailMessage.setText(html.toString());
+        to.add(tramiteDto.getTramite().getCorreoRequirente());
+        //to.add("jadira.paspuel@dinardap.gob.ec");
+        asunto.append("Notificación SANYR - ");
+        if (tramiteDto.getTramite().getEstado() == EstadoTramiteEnum.CERRADO.getEstado()) {
+            asunto.append("Trámite atendido");
+        } else {
+            asunto.append("Trámite inconsistente");
+        }
 
-		clienteQueueMailServicio.encolarMail(mailMessage);
+        mailMessage = credencialesCorreo();
+        mailMessage.setTo(to);
+        mailMessage.setSubject(asunto.toString());
+        mailMessage.setText(html.toString());
 
-	}
+        clienteQueueMailServicio.encolarMail(mailMessage);
+
+    }
+
+    @Override
+    public void emailRegistrosCG(Tramite tramite, String mensaje) {
+
+        MailMessage mailMessage = new MailMessage();
+        StringBuilder html = new StringBuilder(
+                "<center><h1><B>Sistema de Actos Notariados y Registrados</B></h1></center>");
+        html.append("<center><h1><B>(SANYR)</h1></B></center><br/><br/>");
+        html.append("Estimado(a) " + tramite.getNombreRequirente() + ", <br /><br />");
+        html.append("Su trámite con CVTU: " + tramite.getCodigo() + " " + mensaje + "<br/ ><br />");
+        html.append("Gracias por usar nuestros servicios.<br /><br />");
+        html.append("<FONT FACE=\"Arial Narrow, sans-serif\"><B> ");
+        html.append("Dirección Nacional de Registros de Datos Públicos");
+        html.append("</B></FONT>");
+
+        List<String> to = new ArrayList<String>();
+        StringBuilder asunto = new StringBuilder(200);
+
+        to.add(tramite.getCorreoRequirente());
+        //to.add("jadira.paspuel@dinardap.gob.ec");
+        asunto.append("Notificación SANYR - ");
+        if (tramite.getEstado() == EstadoTramiteEnum.CERRADO.getEstado()) {
+            asunto.append("Trámite atendido");
+        } else {
+            asunto.append("Trámite inconsistente");
+        }
+
+        mailMessage = credencialesCorreo();
+        mailMessage.setTo(to);
+        mailMessage.setSubject(asunto.toString());
+        mailMessage.setText(html.toString());
+        clienteQueueMailServicio.encolarMail(mailMessage);
+
+    }
 }
