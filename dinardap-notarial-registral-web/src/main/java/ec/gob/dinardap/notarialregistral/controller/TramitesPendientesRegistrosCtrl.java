@@ -1,7 +1,6 @@
 package ec.gob.dinardap.notarialregistral.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -80,7 +79,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		usuario = usuarioServicio.findByPk(Integer.parseInt(getLoggedUser()));
 		institucionId = Integer.parseInt(getSessionVariable("institucionId"));
 		//// modificar el canton del usuario logueado		
-		
+		refrescarDtb();
 
 	}
 
@@ -174,7 +173,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	public void refrescarDtb()
 	{
 		listaTramitePendiente = tramiteDao.tramitesPendientes(EstadoTramiteEnum.CARGADO.getEstado(), institucionId);
-		if (filtro == null)
+		//if (filtro == null)
 			filtro = listaTramitePendiente;	
 	}
 	public void filaSeleccionada(SelectEvent event) {
@@ -319,7 +318,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 		estadoInconsistente = true;
 		setCtvu(null);	
 		setEstadoTramite(null);
-		listaTramitePendiente = new ArrayList<TramiteRegistradorDto>();
+		refrescarDtb();
 		
 	}
 
@@ -398,9 +397,7 @@ public class TramitesPendientesRegistrosCtrl extends BaseCtrl {
 	public void cancelar() {
 		limpiar();
 	}
-	public void cancelar1() {
-		listaTramitePendiente = new ArrayList<TramiteRegistradorDto>();
-	}
+
 	public void print()
 	{
 		System.out.println("imprimir");

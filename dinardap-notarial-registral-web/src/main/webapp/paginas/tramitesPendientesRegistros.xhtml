@@ -13,7 +13,10 @@
 		<h:form id="formRegistradorDtb">
 			<p:remoteCommand name="actualizarTabla"
 				action="#{tramitesPendientesRegistrosCtrl.refrescarDtb}"
-				update="formRegistradorDtb:dtbPendientes" />
+				update=":formRegistradorDtb:dtbPendientes" />
+			<f:event type="preRenderView"
+				listener="tramitesPendientesRegistrosCtrl.refrescarDtb}">
+			</f:event>
 			<p:dataTable id="dtbPendientes" var="dtb" widgetVar="wm"
 				value="#{tramitesPendientesRegistrosCtrl.listaTramitePendiente}"
 				rows="7" paginator="true" paginatorPosition="bottom"
@@ -158,7 +161,7 @@
 					<p:commandButton value="#{etiquetas['guardar']}" id="guardarBtn"
 						style="margin-right:20px;"
 						icon="ui-icon-disk" 
-						update="formulario, formRegistradorDtb" 
+						update="formulario, :formRegistradorDtb:dtbPendientes" 
 						action="#{tramitesPendientesRegistrosCtrl.guardarTramite}" 
 						oncomplete="PF('wm').clearFilters(); :formRegistradorDtb:actualizarTabla();" />
 					<p:commandButton value="#{etiquetas['cancelar']}" id="cancelarBtn"
