@@ -25,15 +25,33 @@
 					<p:column headerText="#{etiquetas['nombre.codigoCVTU']}"
 						width="20%" filterBy="#{dtb.codigo}" sortBy="#{dtb.codigo}"
 						filterMatchMode="contains">
-						<h:outputText value="#{dtb.codigo}" />
+						<h:outputText value="#{dtb.codigo}" style="font-size: small" />
 					</p:column>
 					<p:column headerText="#{etiquetas['nombre.institucion']}"
 						width="20%" filterBy="#{dtb.institucion}"
 						sortBy="#{dtb.institucion}" filterMatchMode="contains">
 						<h:outputText value="#{dtb.institucion}"
+							styleClass="texto-justificado" style="font-size: small"/>
+					</p:column>
+					<p:column headerText="#{etiquetas['nombre.requirente']}"
+						width="20%" filterBy="#{dtb.nombreRequirente}"
+						sortBy="#{dtb.nombreRequirente}" filterMatchMode="contains">
+						<h:outputText value="#{dtb.nombreRequirente}"
 							styleClass="texto-justificado" />
 					</p:column>
-					<p:column headerText="#{etiquetas['fecha.registro']}" width="20%"
+					<p:column headerText="#{etiquetas['identificacion']}"
+						width="10%" filterBy="#{dtb.identificacionRequirente}"
+						sortBy="#{dtb.identificacionRequirente}" filterMatchMode="contains">
+						<h:outputText value="#{dtb.identificacionRequirente}"
+							styleClass="texto-justificado" />
+					</p:column>
+					<p:column headerText="#{etiquetas['nombre.descripcionActoNotarial']}"
+						width="20%" filterBy="#{dtb.descripcionNotarial}"
+						sortBy="#{dtb.descripcionNotarial}" filterMatchMode="contains">
+						<h:outputText value="#{dtb.descripcionNotarial}"
+							styleClass="texto-justificado" />
+					</p:column>
+					<p:column headerText="#{etiquetas['fecha.registro']}" width="10%"
 						filterBy="#{dtb.fechaRegistro}" sortBy="#{dtb.fechaRegistro}"
 						filterMatchMode="contains">
 						<h:outputText value="#{dtb.fechaRegistro}"
@@ -41,7 +59,7 @@
 							<f:convertDateTime pattern="yyyy-MM-dd" />
 						</h:outputText>
 					</p:column>
-					<p:column headerText="#{etiquetas['fecha.cierre']}" width="20%"
+					<p:column headerText="#{etiquetas['fecha.cierre']}" width="10%"
 						filterBy="#{dtb.fechaCierre}" sortBy="#{dtb.fechaCierre}"
 						filterMatchMode="contains">
 						<h:outputText value="#{dtb.fechaCierre}"
@@ -49,9 +67,10 @@
 							<f:convertDateTime pattern="yyyy-MM-dd" />
 						</h:outputText>
 					</p:column>
-					<p:column headerText="#{etiquetas['acto.notarial']}" width="20%"
+					<p:column headerText="#{etiquetas['acto.notarial']}" width="10%"
 						style="text-align: center">
-						<h:commandLink id="btDescargaActo" target="_blank" disabled=""
+						<h:commandLink id="btDescargaActo" target="_blank" 
+							rendered="#{dtb.documentoNotarial}" 
 							immediate="true" style="text-align: center"
 							action="#{misTramitesRegistrosCtrl.descargarActoNotarial}">
 							<i class="fa fa-file-pdf-o fa-lg actoNotarial"></i>
@@ -61,14 +80,14 @@
 							<f:setPropertyActionListener
 								target="#{misTramitesRegistrosCtrl.tramiteId}"
 								value="#{dtb.tramiteId}" />
-
 						</h:commandLink>
 						<p:tooltip for="btDescargaActo" value="Descargar Acto Notarial" />
 					</p:column>
 					<p:column headerText="#{etiquetas['documento.registral']}"
-						width="20%" style="text-align: center">
+						width="10%" style="text-align: center">
 						<h:commandLink id="btDescargaRegistral" target="_blank"
-							disabled="" immediate="true"
+							rendered="#{dtb.documentoRegistral}" 
+							immediate="true"
 							action="#{misTramitesRegistrosCtrl.descargarDocumentoRegistral}"
 							style="text-align: center">
 							<i class="fa fa-file-pdf-o fa-lg documentoRegistral"></i>
@@ -79,8 +98,7 @@
 								target="#{misTramitesRegistrosCtrl.tramiteId}"
 								value="#{dtb.tramiteId}" />
 						</h:commandLink>
-						<p:tooltip for="btDescargaRegistral"
-							value="Descargar documento Registral" />
+						<p:tooltip for="btDescargaRegistral" value="Descargar documento Registral" />
 					</p:column>
 				</p:dataTable>
 

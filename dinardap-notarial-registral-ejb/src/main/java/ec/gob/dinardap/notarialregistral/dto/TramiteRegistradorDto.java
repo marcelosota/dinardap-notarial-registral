@@ -24,6 +24,8 @@ public class TramiteRegistradorDto {
 	private String rutaNotarial;
 	private String rutaRegistral;
 	private String descripcionNotarial;
+	private boolean documentoNotarial;
+	private boolean documentoRegistral;
 	
 	
 	
@@ -128,6 +130,18 @@ public class TramiteRegistradorDto {
 	}
 	public void setDescripcionNotarial(String descripcionNotarial) {
 		this.descripcionNotarial = descripcionNotarial;
+	}
+	public boolean isDocumentoNotarial() {
+		return documentoNotarial;
+	}
+	public void setDocumentoNotarial(boolean documentoNotarial) {
+		this.documentoNotarial = documentoNotarial;
+	}
+	public boolean isDocumentoRegistral() {
+		return documentoRegistral;
+	}
+	public void setDocumentoRegistral(boolean documentoRegistral) {
+		this.documentoRegistral = documentoRegistral;
 	}	
 	
 	

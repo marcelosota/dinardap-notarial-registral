@@ -16,7 +16,7 @@
                                         value="#{loginCtrl.institucion}"
                                         completeMethod="#{loginCtrl.completeNombreInstitucion}"
                                         converter="#{institucionConverter}" var="institucion"
-                                        itemLabel="#{institucion.nombre}"
+                                        itemLabel="#{institucion.nombre} - #{institucion.siglas}"
                                         itemValue="#{institucion}" style="width: 100%"
                                         inputStyle="width: 100%" maxResults="20" required="true"
                                         title="#{loginCtrl.institucion.nombre}" />

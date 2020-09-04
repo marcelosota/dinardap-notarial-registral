@@ -9,7 +9,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import ec.gob.dinardap.notarialregistral.constante.ContextoEnum;
-import ec.gob.dinardap.notarialregistral.constante.EstadoTramiteEnum;
 import ec.gob.dinardap.notarialregistral.dao.TramiteDao;
 import ec.gob.dinardap.notarialregistral.dto.DocumentoDto;
 import ec.gob.dinardap.notarialregistral.dto.TramiteRegistradorDto;
@@ -77,7 +76,7 @@ public class MisTramitesRegistrosCtrl extends BaseCtrl {
 
 	public List<TramiteRegistradorDto> getListaTramitesCerrados() {
 		listaTramitesCerrados = tramiteDao.misTramites(ContextoEnum.NOTARIAL.getContexto(),
-		ContextoEnum.REGISTRAL.getContexto(), EstadoTramiteEnum.CERRADO.getEstado(), usuario.getUsuarioId());	
+		ContextoEnum.REGISTRAL.getContexto(), usuario.getUsuarioId());	
 		
 		return listaTramitesCerrados;
 	}

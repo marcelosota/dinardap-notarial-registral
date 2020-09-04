@@ -85,7 +85,8 @@ public class GestionTramiteNotarialCtrl extends BaseCtrl implements Serializable
 
     public void uploadDocumento(FileUploadEvent event) {
         try {
-            file = event.getFile();
+            fileByte = null;
+        	file = event.getFile();
             fileByte = IOUtils.toByteArray(file.getInputstream());
             disabledDescargar = Boolean.FALSE;
         } catch (IOException ex) {
